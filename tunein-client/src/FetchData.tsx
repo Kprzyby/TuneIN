@@ -8,7 +8,7 @@ export class FetchData extends Component {
     }
 
     async componentDidMount(): Promise<void> {
-        const url = "weatherforecast";
+        const url = "/api/weatherforecast";
         const response = await fetch(url);
         const data = await response.json();
         console.log(data);
