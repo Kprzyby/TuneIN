@@ -1,4 +1,5 @@
 using Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Services;
@@ -38,6 +39,33 @@ builder.Services.AddDbContext<DataContext>(e => e.UseSqlServer(builder.Configura
 //DependencyInjection
 builder.Services.RegisterServices(builder.Configuration);
 
+//adding session
+builder.Services.AddDistributedMemoryCache();
+
+//adding authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+    options.Cookie.Name = "UserLoginCookie";
+    options.SlidingExpiration = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.IsEssential = true;
+    options.ExpireTimeSpan = new TimeSpan(0, 1, 0, 0);
+    options.Events.OnRedirectToLogin = (context) =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+    options.Cookie.HttpOnly = true;
+});
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = new TimeSpan(0, 30, 0);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,7 +78,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllers();
 

@@ -48,7 +48,7 @@ namespace Services
 
         public async Task<bool> CheckIfUserExists(string email)
         {
-            var userExists = await _authRepository.CheckIfUserExists(email);
+            var userExists = await _authRepository.CheckIfUserExistsAsync(email);
 
             return userExists;
         }
@@ -75,6 +75,32 @@ namespace Services
             }
 
             return true;
+        }
+
+        public async Task<bool> ValidateUserAsync(string email, string password)
+        {
+            try
+            {
+                User user = await _authRepository.GetUserByEmailAsync(email);
+
+                if (user == default)
+                {
+                    return false;
+                }
+
+                var hashedPassword = CreateHash(password, user.Salt);
+
+                if (hashedPassword != user.Password)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         #endregion Methods

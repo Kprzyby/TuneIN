@@ -29,10 +29,18 @@ namespace Data.Repositories
 
         #region Methods
 
-        public async Task<bool> CheckIfUserExists(string email)
+        public async Task<bool> CheckIfUserExistsAsync(string email)
         {
             var result = await _dataContext.Users
                 .AnyAsync(e => e.Email == email);
+
+            return result;
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var result = await _dataContext.Users
+                .SingleOrDefaultAsync(e => e.Email == email);
 
             return result;
         }
