@@ -1,4 +1,5 @@
 ﻿using Backend.ViewModels.User;
+using Data.DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -22,13 +23,35 @@ namespace Backend.Controllers
 
         #endregion Constructors
 
+        #region Methods
+
         [HttpPost]
         [Route("Auth/SignUp")]
         public async Task<IActionResult> SignUp(SignUpViewModel newUser)
         {
-            bool userExists = _authService.CheckIfUserExists(newUser.Email);
+            bool userExists = await _authService.CheckIfUserExists(newUser.Email);
 
-            return Ok("sda");
+            if (userExists == true)
+            {
+                return StatusCode(409, "This email is already taken");
+            }
+
+            NewUserDTO userDTO = new NewUserDTO()
+            {
+                Email = newUser.Email,
+                Password = newUser.Password
+            };
+
+            var result = await _authService.AddUserAsync(userDTO);
+
+            if (result == false)
+            {
+                return StatusCode(500, "Error while creating user!");
+            }
+
+            return StatusCode(201, "User created successfully!");
         }
+
+        #endregion Methods
     }
 }

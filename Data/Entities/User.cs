@@ -14,6 +14,8 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
 
+        public byte[] Salt { get; set; }
+
         public string Email { get; set; }
         public string Password { get; set; }
     }

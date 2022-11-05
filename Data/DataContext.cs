@@ -9,33 +9,33 @@ namespace Data
         {
         }
 
-        private DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public void AttachEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {
             Set<TEntity>().Attach(entity);
         }
 
-        public void AddEntity<TEntity>(TEntity entity) where TEntity : class, new()
+        public async Task AddEntityAsync<TEntity>(TEntity entity) where TEntity : class, new()
         {
-            Set<TEntity>().Add(entity);
+            await Set<TEntity>().AddAsync(entity);
         }
 
-        public void AddEntityAndSaveChanges<TEntity>(TEntity entity) where TEntity : class, new()
+        public async Task AddEntityAndSaveChangesAsync<TEntity>(TEntity entity) where TEntity : class, new()
         {
-            AddEntity(entity);
-            SaveChanges();
+            await AddEntityAsync(entity);
+            await SaveChangesAsync();
         }
 
-        public void AddEntitiesRange<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
+        public async Task AddEntitiesRangeAsync<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
         {
-            Set<TEntity>().AddRange(entity);
+            await Set<TEntity>().AddRangeAsync(entity);
         }
 
-        public void AddEntitiesRangeAndSaveChanges<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
+        public async Task AddEntitiesRangeAndSaveChangesAsync<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
         {
-            AddEntitiesRange(entity);
-            SaveChanges();
+            await AddEntitiesRangeAsync(entity);
+            await SaveChangesAsync();
         }
 
         public void UpdateEntity<TEntity>(TEntity entity) where TEntity : class, new()
@@ -43,10 +43,10 @@ namespace Data
             Entry(entity).State = EntityState.Modified;
         }
 
-        public void UpdateEntityAndSaveChanges<TEntity>(TEntity entity) where TEntity : class, new()
+        public async Task UpdateEntityAndSaveChangesAsync<TEntity>(TEntity entity) where TEntity : class, new()
         {
             UpdateEntity(entity);
-            SaveChanges();
+            await SaveChangesAsync();
         }
 
         public void UpdateEntitiesRange<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, new()
@@ -57,10 +57,10 @@ namespace Data
             }
         }
 
-        public void UpdateEntitiesRangeAndSaveChanges<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, new()
+        public async Task UpdateEntitiesRangeAndSaveChangesAsync<TEntity>(IEnumerable<TEntity> entities) where TEntity : class, new()
         {
             UpdateEntitiesRange(entities);
-            SaveChanges();
+            await SaveChangesAsync();
         }
 
         public void RemoveEntity<TEntity>(TEntity entity) where TEntity : class, new()
@@ -73,10 +73,10 @@ namespace Data
             Set<TEntity>().RemoveRange(entity);
         }
 
-        public void RemoveEntitiesRangeAndSaveChanges<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
+        public async Task RemoveEntitiesRangeAndSaveChangesAsync<TEntity>(IEnumerable<TEntity> entity) where TEntity : class, new()
         {
             RemoveEntitiesRange(entity);
-            SaveChanges();
+            await SaveChangesAsync();
         }
     }
 }

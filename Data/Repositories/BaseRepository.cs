@@ -37,28 +37,28 @@ namespace Data.Repositories
 
         #region Repository<TInterface> Members
 
-        public virtual TEntity Add(TEntity entity)
+        public virtual async Task<TEntity> Add(TEntity entity)
         {
-            _dataContext.AddEntity(entity);
+            await _dataContext.AddEntityAsync(entity);
 
             return entity;
         }
 
-        public virtual TEntity AddAndSaveChanges(TEntity entity)
+        public virtual async Task<TEntity> AddAndSaveChangesAsync(TEntity entity)
         {
-            _dataContext.AddEntityAndSaveChanges(entity);
+            await _dataContext.AddEntityAndSaveChangesAsync(entity);
 
             return entity;
         }
 
-        public virtual void AddRange(IEnumerable<TEntity> entity)
+        public virtual async Task AddRangeAsync(IEnumerable<TEntity> entity)
         {
-            _dataContext.AddEntitiesRange(entity);
+            await _dataContext.AddEntitiesRangeAsync(entity);
         }
 
-        public virtual void AddRangeAndSaveChanges(IEnumerable<TEntity> entity)
+        public virtual async Task AddRangeAndSaveChangesAsync(IEnumerable<TEntity> entity)
         {
-            _dataContext.AddEntitiesRangeAndSaveChanges(entity);
+            await _dataContext.AddEntitiesRangeAndSaveChangesAsync(entity);
         }
 
         public virtual void Attach(TEntity entity)
@@ -71,15 +71,14 @@ namespace Data.Repositories
             _dataContext.UpdateEntity(entity);
         }
 
-        public virtual void UpdateAndSaveChanges(TEntity entity)
+        public virtual async Task UpdateAndSaveChangesAsync(TEntity entity)
         {
-            Update(entity);
-            _dataContext.SaveChanges();
+            await _dataContext.UpdateEntityAndSaveChangesAsync(entity);
         }
 
-        public virtual void UpdateRangeAndSaveChanges(IEnumerable<TEntity> entities)
+        public virtual async Task UpdateRangeAndSaveChangesAsync(IEnumerable<TEntity> entities)
         {
-            _dataContext.UpdateEntitiesRangeAndSaveChanges(entities);
+            await _dataContext.UpdateEntitiesRangeAndSaveChangesAsync(entities);
         }
 
         public virtual void Remove(TEntity entity)
@@ -87,19 +86,19 @@ namespace Data.Repositories
             _dataContext.RemoveEntity(entity);
         }
 
-        public virtual void RemoveById(int id)
+        public virtual async Task RemoveById(int id)
         {
-            var entity = GetById(id);
+            var entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 Remove(entity);
             }
         }
 
-        public virtual void RemoveByIdAndSaveChanges(int id)
+        public virtual async Task RemoveByIdAndSaveChangesAsync(int id)
         {
-            RemoveById(id);
-            SaveChanges();
+            await RemoveById(id);
+            await SaveChangesAsync();
         }
 
         public virtual void RemoveRange(IEnumerable<TEntity> entity)
@@ -107,9 +106,9 @@ namespace Data.Repositories
             _dataContext.RemoveEntitiesRange(entity);
         }
 
-        public virtual void RemoveRangeAndSaveChanges(IEnumerable<TEntity> entity)
+        public virtual async Task RemoveRangeAndSaveChangesAsync(IEnumerable<TEntity> entity)
         {
-            _dataContext.RemoveEntitiesRangeAndSaveChanges(entity);
+            await _dataContext.RemoveEntitiesRangeAndSaveChangesAsync(entity);
         }
 
         public virtual void DetectChanges()
@@ -117,9 +116,9 @@ namespace Data.Repositories
             _dataContext.ChangeTracker.DetectChanges();
         }
 
-        public virtual void SaveChanges()
+        public virtual async Task SaveChangesAsync()
         {
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
 
         public virtual IQueryable<TEntity> GetAll()
@@ -143,9 +142,11 @@ namespace Data.Repositories
 
         #region Public Methods
 
-        public virtual TEntity GetById(int id)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
-            return DataContext.Set<TEntity>().Find(id);
+            var result = await DataContext.Set<TEntity>().FindAsync(id);
+
+            return result;
         }
 
         #endregion Public Methods
