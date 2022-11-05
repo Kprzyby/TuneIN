@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "siY8nNWbjR8GaJ+ndkUnmaIv8yn65rpkMT4OZmw6efXq2NwRTPLMuajsJdpHVKFLsf45aXyvdi7pya3BTKYmQw==",
+  "dgSpecHash": "8QzaxdUoznKTmPtoNPLX9jB4gSuKd9z+hasXLzkwbNFxQTANuB9l6S2MMPfNTFK32FPeKllUCew/AXA+VdvsEw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kprzy\\Source\\Repos\\Kprzyby\\TuneIN\\Data\\Data.csproj",
+  "projectFilePath": "C:\\Users\\Kprzy\\source\\repos\\Kprzyby\\TuneIN\\Data\\Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kprzy\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Kprzy\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
