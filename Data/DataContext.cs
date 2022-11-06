@@ -5,11 +5,22 @@ namespace Data
 {
     public class DataContext : DbContext
     {
+        #region Constructors
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
 
+        #endregion Constructors
+
+        #region Properties
+
         public DbSet<User> Users { get; set; }
+        public DbSet<TutorshipAnnouncement> TutorshipAnnouncements { get; set; }
+
+        #endregion Properties
+
+        #region Methods
 
         public void AttachEntity<TEntity>(TEntity entity) where TEntity : class, new()
         {
@@ -78,5 +89,7 @@ namespace Data
             RemoveEntitiesRange(entity);
             await SaveChangesAsync();
         }
+
+        #endregion Methods
     }
 }

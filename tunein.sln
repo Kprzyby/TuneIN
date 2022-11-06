@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backend", "Backend\Backend.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{DC335587-40F6-4633-9414-836CC6E8D7C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{31FFCF1B-A764-4103-ABDE-EF61C80A69B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{31FFCF1B-A764-4103-ABDE-EF61C80A69B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{B15598E6-F1BC-44E9-ADCD-49C4C619479F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{31FFCF1B-A764-4103-ABDE-EF61C80A69B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31FFCF1B-A764-4103-ABDE-EF61C80A69B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31FFCF1B-A764-4103-ABDE-EF61C80A69B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B15598E6-F1BC-44E9-ADCD-49C4C619479F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B15598E6-F1BC-44E9-ADCD-49C4C619479F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B15598E6-F1BC-44E9-ADCD-49C4C619479F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B15598E6-F1BC-44E9-ADCD-49C4C619479F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
