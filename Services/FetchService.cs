@@ -28,39 +28,34 @@ namespace Services
             
         }
         */
-        public async Task GetURL(string userInput)
+        public async Task<string> GetURL(string userInput)
         {
             var html = await GetHtml(userInput);
             var data = ParseHtmlUsingHtmlAgilityPack(html);
+            return data;
         }
 
 
         private async Task<string> GetHtml(string userInput)
         {
             var client = new HttpClient();
-            string finalString = "https://www.ultimate-guitar.com/search.php?search_type=title&value=" + userInput;
+            string finalString = "https://www.google.com/search?q=ultimate+guitar+" + userInput;
             return await client.GetStringAsync(finalString);
+
         }
-        private Task<string> ParseHtmlUsingHtmlAgilityPack(string html)
+        private string ParseHtmlUsingHtmlAgilityPack(string html)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
-
+            return html;
+            /*
             var repositories =
                 htmlDoc
                     .DocumentNode
                     .SelectNodes("//div[@class='LQUZJ']/div[@class='lIKMM g7KZB']/header/span/span");
 
-            List<(string RepositoryName, string Description)> data = new();
-
-            foreach (var repo in repositories)
-            {
-                var name = repo.SelectSingleNode("div/div/span/a").InnerText;
-                var description = repo.SelectSingleNode("p").InnerText;
-                data.Add((name, description));
-            }
-
-            return data;
+            string link = repositories[0].SelectSingleNode("/a").InnerText;
+            return link;*/
         }
 
     }

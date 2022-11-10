@@ -1,12 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services;
+using System.Net;
 
 namespace Backend.Controllers
 {
+    [ApiController]
     public class LibraryController : Controller
     {
-        public IActionResult Index()
+
+        #region Properties
+
+        private readonly FetchService _fetchService;
+
+        #endregion Properties
+
+        #region Constructors
+
+        public LibraryController(FetchService fetchService)
         {
-            return View();
+            _fetchService = fetchService;
         }
+
+        #endregion Constructors
+
+        #region Methods
+        [HttpGet]
+        [Route("Library/GetURL")]
+        public async Task<IActionResult> GetURL(string url)
+        {
+            var link = await _fetchService.GetURL(url);
+            return Ok(link); 
+        }
+
+        #endregion Methods
     }
 }
