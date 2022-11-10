@@ -12,16 +12,16 @@ namespace Services
     [ScopedAttribute]
     public class FetchService
     {
-        public string GetURL(string userInput)
+        public async Task<string> GetURL(string userInput)
         {
-            var html = GetHtml(userInput);
+            var html = await GetHtmlAsync(userInput);
             var data = ParseHtmlUsingHtmlAgilityPack(html);
             string link = GetLink(data);
             return link;
         }
 
 
-        private string GetHtml(string userInput)
+        private async Task<string> GetHtmlAsync(string userInput)
         {
             var options = new ChromeOptions
             {
@@ -32,8 +32,8 @@ namespace Services
 
             var chrome = new ChromeDriver(options);
             string url = "https://www.ultimate-guitar.com/search.php?search_type=title&value=" + userInput;
-            chrome.Navigate().GoToUrl(url);
-
+            //chrome.Navigate().GoToUrl(url);
+            await Task.Run(() => chrome.Navigate().GoToUrl(url));
             return chrome.PageSource;
 
         }

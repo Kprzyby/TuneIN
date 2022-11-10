@@ -26,9 +26,9 @@ namespace Backend.Controllers
         #region Methods
         [HttpGet]
         [Route("Library/GetURL")]
-        public IActionResult GetURL(string url)
+        public async Task<IActionResult> GetURLAsync(string url)
         {
-            var link = _fetchService.GetURL(url);
+            var link = await _fetchService.GetURL(url);
             return Ok(link); 
         }
 
