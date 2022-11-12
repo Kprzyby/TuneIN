@@ -66,7 +66,8 @@ namespace Services
                 {
                     Email = userDTO.Email,
                     Password = hashedPassword,
-                    Salt = salt
+                    Salt = salt,
+                    UserRole = userDTO.UserRole
                 };
 
                 await _authRepository.AddAndSaveChangesAsync(newUser);
