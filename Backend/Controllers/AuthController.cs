@@ -1,7 +1,9 @@
 ﻿using Backend.ViewModels.User;
+using Common.Enums;
 using Data.DTOs.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using System.Security.Claims;
@@ -28,6 +30,7 @@ namespace Backend.Controllers
 
         #region Methods
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignUp")]
         public async Task<IActionResult> SignUp(SignUpViewModel newUser)
@@ -42,7 +45,8 @@ namespace Backend.Controllers
             NewUserDTO userDTO = new NewUserDTO()
             {
                 Email = newUser.Email,
-                Password = newUser.Password
+                Password = newUser.Password,
+                UserRole = UserRole.UNCONFIRMED.ToString()
             };
 
             var result = await _authService.AddUserAsync(userDTO);
@@ -55,24 +59,24 @@ namespace Backend.Controllers
             return StatusCode(201, "User created successfully!");
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignIn")]
         public async Task<IActionResult> SignIn(SignInViewModel logInCredentials)
         {
-            var authenticated = await _authService.ValidateUserAsync(logInCredentials.Email, logInCredentials.Password);
+            var claimsIdentity = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
 
-            if (authenticated == false)
+            if (claimsIdentity == null)
             {
                 return BadRequest("Wrong credentials!");
             }
-
-            var claimsIdentity = new ClaimsIdentity(null, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             return Ok("User signed in successfully!");
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [Route("Auth/SignOut")]
         public async Task<IActionResult> SignOut()

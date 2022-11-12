@@ -2,6 +2,8 @@
 using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace Services
@@ -77,7 +79,7 @@ namespace Services
             return true;
         }
 
-        public async Task<bool> ValidateUserAsync(string email, string password)
+        public async Task<ClaimsIdentity?> ValidateUserAndCreateClaimsAsync(string email, string password)
         {
             try
             {
@@ -85,21 +87,29 @@ namespace Services
 
                 if (user == default)
                 {
-                    return false;
+                    return null;
                 }
 
                 var hashedPassword = CreateHash(password, user.Salt);
 
                 if (hashedPassword != user.Password)
                 {
-                    return false;
+                    return null;
                 }
 
-                return true;
+                List<Claim> claims = new List<Claim>()
+                {
+                    new Claim("Id", user.Id.ToString()),
+                    new Claim("UserRole", user.UserRole)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                return claimsIdentity;
             }
             catch (Exception ex)
             {
-                return false;
+                return null;
             }
         }
 
