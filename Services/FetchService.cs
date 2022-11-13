@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Data.CustomDataAttributes.InjectionAttributes;
+﻿using Data.CustomDataAttributes.InjectionAttributes;
 using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
 
@@ -20,7 +15,6 @@ namespace Services
             return link;
         }
 
-
         private async Task<string> GetHtmlAsync(string userInput)
         {
             var options = new ChromeOptions
@@ -35,7 +29,6 @@ namespace Services
             //chrome.Navigate().GoToUrl(url);
             await Task.Run(() => chrome.Navigate().GoToUrl(url));
             return chrome.PageSource;
-
         }
 
         private List<string> ParseHtmlUsingHtmlAgilityPack(string html)
@@ -43,7 +36,6 @@ namespace Services
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
 
-            
             var repositories =
              htmlDoc
                  .DocumentNode
@@ -54,22 +46,20 @@ namespace Services
                        .ToList();
 
             return hrefs;
-
         }
+
         private string GetLink(List<string> links)
         {
             string linkToChords = null;
             foreach (var link in links)
             {
-                if(link.Contains("chords"))
+                if (link.Contains("chords"))
                 {
                     linkToChords = link;
                     break;
                 }
-                
             }
             return linkToChords;
         }
-
     }
 }
