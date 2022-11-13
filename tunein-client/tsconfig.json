@@ -19,12 +19,17 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@setup/*": ["./src/setup/*"]
+    }
   },
   "include": [
     "src"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "files": ["globals.d.ts"]
 }
