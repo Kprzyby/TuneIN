@@ -54,6 +54,16 @@ namespace Services
             return hashedPassword;
         }
 
+        private string CreateConfirmationMessage(string userName, string confirmationURL)
+        {
+            string result = $"<p>Hi, {userName}! Glad to have you on board. Your account " +
+                    $"is almost ready to go. To finish creating your account click the link below:</p>" +
+                    $"<a href='{confirmationURL}'>Click here to confirm your account</a><br><br><br><br>" +
+                    $"<p>This email was generated automatically. Please do not respond.</p>";
+
+            return result;
+        }
+
         public async Task<bool> CheckIfUserExists(string email)
         {
             var userExists = await _authRepository.CheckIfUserExistsAsync(email);
@@ -159,9 +169,9 @@ namespace Services
                 EmailClient emailClient = new EmailClient(connectionString);
 
                 EmailContent content = new EmailContent("Confirm your account");
-                content.Html = $"<p>Hi, {userName}! Glad to have you on board. Your account " +
-                    $"is almost ready to go. To finish creating your account click the link below:</p>" +
-                    $"<a href='{confirmationURL}'>Click here to confirm your account</a>";
+
+                string messageBody = CreateConfirmationMessage(userName, confirmationURL);
+                content.Html = messageBody;
 
                 List<EmailAddress> emailAddresses = new List<EmailAddress>()
                 {
