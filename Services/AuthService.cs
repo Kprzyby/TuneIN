@@ -64,7 +64,18 @@ namespace Services
             return result;
         }
 
-        public async Task<bool> CheckIfUserExists(string email)
+        private string CreatePasswordRecoveryMessage(string passwordRecoveryURL)
+        {
+            string result = $"<p>We've received a request to recover the password to your" +
+                $" account. To recover your password click on the link below:</p>" +
+                $"<a href='{passwordRecoveryURL}'>Click here to recover your password</a><br><br><br><br>" +
+                $"<p>If you didn't request the password recovery please ignore " +
+                $"this message.</p>";
+
+            return result;
+        }
+
+        public async Task<bool> CheckIfUserExistsAsync(string email)
         {
             var userExists = await _authRepository.CheckIfUserExistsAsync(email);
 
@@ -98,7 +109,7 @@ namespace Services
             return true;
         }
 
-        public async Task<bool> ConfirmAccount(string email, Guid confirmationGUID)
+        public async Task<bool> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
             try
             {
@@ -115,6 +126,80 @@ namespace Services
                 }
 
                 user.UserRole = UserRole.REGULAR_USER.ToString();
+
+                await _authRepository.UpdateAndSaveChangesAsync(user);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> SendPasswordRecoveryEmailAsync(string email, string URL, Guid passwordRecoveryGUID)
+        {
+            try
+            {
+                User user = await _authRepository.GetUserByEmailAsync(email);
+
+                if (user == default)
+                {
+                    return false;
+                }
+
+                user.PasswordRecoveryGUID = passwordRecoveryGUID;
+
+                Task updateUser = _authRepository.UpdateAndSaveChangesAsync(user);
+
+                string connectionString = _configuration.GetConnectionString("AzureEmailConnection");
+                EmailClient emailClient = new EmailClient(connectionString);
+
+                EmailContent content = new EmailContent("Password recovery");
+
+                string messageBody = CreatePasswordRecoveryMessage(URL);
+                content.Html = messageBody;
+
+                List<EmailAddress> emailAddresses = new List<EmailAddress>()
+                {
+                    new EmailAddress(email)
+                };
+                EmailRecipients recipients = new EmailRecipients(emailAddresses);
+
+                EmailMessage message = new EmailMessage("DoNotReply@ea98e812-1b13-4e43-b67c-11525e9a8145.azurecomm.net", content, recipients);
+
+                await emailClient.SendAsync(message);
+                await updateUser;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> ChangePasswordAsync(string email, string password, Guid passwordRecoveryGUID)
+        {
+            try
+            {
+                User user = await _authRepository.GetUserByEmailAsync(email);
+
+                if (user == default)
+                {
+                    return false;
+                }
+
+                if (user.PasswordRecoveryGUID != passwordRecoveryGUID)
+                {
+                    return false;
+                }
+
+                byte[] salt = CreateSalt(8);
+                string newPassword = CreateHash(password, salt);
+
+                user.Salt = salt;
+                user.Password = newPassword;
 
                 await _authRepository.UpdateAndSaveChangesAsync(user);
             }
@@ -160,7 +245,7 @@ namespace Services
             }
         }
 
-        public async Task<bool> SendConfirmationEmail(string email, string userName, string confirmationURL)
+        public async Task<bool> SendConfirmationEmailAsync(string email, string userName, string confirmationURL)
         {
             string connectionString = _configuration.GetConnectionString("AzureEmailConnection");
 
