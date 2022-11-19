@@ -5,6 +5,9 @@ namespace Backend.ViewModels.User
     public class SignUpViewModel
     {
         [Required(ErrorMessage = "This field is required!")]
+        public string UserName { get; set; }
+
+        [Required(ErrorMessage = "This field is required!")]
         [EmailAddress]
         public string Email { get; set; }
 

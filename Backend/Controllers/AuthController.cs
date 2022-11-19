@@ -44,19 +44,45 @@ namespace Backend.Controllers
 
             NewUserDTO userDTO = new NewUserDTO()
             {
+                UserName = newUser.UserName,
                 Email = newUser.Email,
                 Password = newUser.Password,
-                UserRole = UserRole.UNCONFIRMED.ToString()
+                UserRole = UserRole.UNCONFIRMED.ToString(),
+                ConfirmationGUID = Guid.NewGuid()
             };
 
-            var result = await _authService.AddUserAsync(userDTO);
+            var createResult = await _authService.AddUserAsync(userDTO);
 
-            if (result == false)
+            if (createResult == false)
             {
                 return StatusCode(500, "Error while creating user!");
             }
 
+            string confirmationURL = this.Url.Action("ConfirmAccount", "Auth", new { Email = newUser.Email, ConfirmationGUID = userDTO.ConfirmationGUID }, protocol: "https");
+
+            bool sendEmailResult = await _authService.SendConfirmationEmail(newUser.Email, newUser.UserName, confirmationURL);
+
+            if (sendEmailResult == false)
+            {
+                return BadRequest("Error while sending confirmation email!");
+            }
+
             return StatusCode(201, "User created successfully!");
+        }
+
+        [HttpPut]
+        [AllowAnonymous]
+        [Route("Auth/ConfirmAccount")]
+        public async Task<IActionResult> ConfirmAccount(ConfirmUserViewModel confirmationData)
+        {
+            bool result = await _authService.ConfirmAccount(confirmationData.Email, confirmationData.ConfirmationGUID);
+
+            if (result == false)
+            {
+                return BadRequest("Error while confirming the account!");
+            }
+
+            return Ok("Account confirmed successfully!");
         }
 
         [AllowAnonymous]

@@ -1,8 +1,12 @@
-﻿using Data.CustomDataAttributes.InjectionAttributes;
+﻿using Azure.Communication.Email;
+using Azure.Communication.Email.Models;
+using Common.Enums;
+using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -14,13 +18,15 @@ namespace Services
         #region Properties
 
         private readonly AuthRepository _authRepository;
+        private readonly IConfiguration _configuration;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthService(AuthRepository authRepository)
+        public AuthService(IConfiguration configuration, AuthRepository authRepository)
         {
+            _configuration = configuration;
             _authRepository = authRepository;
         }
 
@@ -64,13 +70,43 @@ namespace Services
 
                 User newUser = new User()
                 {
+                    UserName = userDTO.UserName,
                     Email = userDTO.Email,
                     Password = hashedPassword,
                     Salt = salt,
-                    UserRole = userDTO.UserRole
+                    UserRole = userDTO.UserRole,
+                    ConfirmationGUID = userDTO.ConfirmationGUID
                 };
 
                 await _authRepository.AddAndSaveChangesAsync(newUser);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> ConfirmAccount(string email, Guid confirmationGUID)
+        {
+            try
+            {
+                User user = await _authRepository.GetUserByEmailAsync(email);
+
+                if (user == default)
+                {
+                    return false;
+                }
+
+                if (user.ConfirmationGUID != confirmationGUID)
+                {
+                    return false;
+                }
+
+                user.UserRole = UserRole.REGULAR_USER.ToString();
+
+                await _authRepository.UpdateAndSaveChangesAsync(user);
             }
             catch (Exception ex)
             {
@@ -112,6 +148,37 @@ namespace Services
             {
                 return null;
             }
+        }
+
+        public async Task<bool> SendConfirmationEmail(string email, string userName, string confirmationURL)
+        {
+            string connectionString = _configuration.GetConnectionString("AzureEmailConnection");
+
+            try
+            {
+                EmailClient emailClient = new EmailClient(connectionString);
+
+                EmailContent content = new EmailContent("Confirm your account");
+                content.Html = $"<p>Hi, {userName}! Glad to have you on board. Your account " +
+                    $"is almost ready to go. To finish creating your account click the link below:</p>" +
+                    $"<a href='{confirmationURL}'>Click here to confirm your account</a>";
+
+                List<EmailAddress> emailAddresses = new List<EmailAddress>()
+                {
+                    new EmailAddress(email)
+                };
+                EmailRecipients recipients = new EmailRecipients(emailAddresses);
+
+                EmailMessage message = new EmailMessage("DoNotReply@ea98e812-1b13-4e43-b67c-11525e9a8145.azurecomm.net", content, recipients);
+
+                await emailClient.SendAsync(message);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         #endregion Methods
