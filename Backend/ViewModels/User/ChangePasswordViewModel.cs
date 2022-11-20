@@ -2,11 +2,8 @@
 
 namespace Backend.ViewModels.User
 {
-    public class SignUpViewModel
+    public class ChangePasswordViewModel
     {
-        [Required(ErrorMessage = "This field is required!")]
-        public string UserName { get; set; }
-
         [Required(ErrorMessage = "This field is required!")]
         [EmailAddress]
         public string Email { get; set; }
@@ -19,5 +16,8 @@ namespace Backend.ViewModels.User
         [Required(ErrorMessage = "This field is required!")]
         [DataType(DataType.Password)]
         public string RepeatPassword { get; set; }
+
+        [Required(ErrorMessage = "This field is required!")]
+        public Guid PasswordRecoveryGUID { get; set; }
     }
 }

@@ -9,10 +9,14 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
 
+        public string UserName { get; set; }
+
         public byte[] Salt { get; set; }
 
         public string Email { get; set; }
         public string Password { get; set; }
         public string UserRole { get; set; }
+        public Guid ConfirmationGUID { get; set; }
+        public Guid? PasswordRecoveryGUID { get; set; }
     }
 }
