@@ -1,3 +1,5 @@
+import colors from "./colors";
+
 export const fontFamilies = {
     header: "Prata",
     body: "Helvetica"
@@ -8,6 +10,7 @@ export const fontSizes = {
     fontSize16: "1rem",
     fontSize24: "1.5rem",
     fontSize48: "3rem",
+    fontSize72: "4.5rem",
     fontSize96: "6rem"
 };
 
@@ -43,6 +46,17 @@ export const textStyles = {
         fonstFamily: "header",
         fontSize: "fontSize96",
         lineHeight: "1rem",
+        color: "white"
+    },
+    RegisterTitile: {
+        fonstFamily: "header",
+        fontSize: "fontSize96",
+        lineHeight: "1rem",
+        color: colors.darkMainD
+    },
+    RegisterSuccess: {
+        fonstFamily: "header",
+        fontSize: "fontSize48",
         color: "white"
     }
 };
