@@ -12,8 +12,7 @@ const Register: React.FC = () => {
             login:"",
             password:"",
             passwordre: "",
-            email: "",
-            emailre: ""
+            email: ""
         },
         // TODO: validation for login and email repetition
         validationSchema: Yup.object({
@@ -24,9 +23,6 @@ const Register: React.FC = () => {
             email: Yup.string()
                 .email("Email is not valid")
                 .required("Email is required"),
-            emailre: Yup.string()
-                .required("Email is required")
-                .oneOf([Yup.ref("email"), null], "Emails must match"),
             password: Yup.string()
                 .min(8,"Password needs to be longer than 8 characters long")
                 .max(20,"Password needs to be shorter than 15 characters long")
@@ -64,10 +60,6 @@ const Register: React.FC = () => {
                         value={formik.values.email} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.email}</Styled.Error>
-                    <Styled.Input placeholder="Repeat Email" id="emailre"
-                        value={formik.values.emailre} 
-                        onChange={formik.handleChange}/>
-                    <Styled.Error>{formik.errors.emailre}</Styled.Error>
                     <RgbButton text="Sign in"/>
                 </Styled.Form>
             ) : (
