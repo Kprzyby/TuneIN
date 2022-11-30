@@ -58,6 +58,12 @@ export const textStyles = {
         fonstFamily: "header",
         fontSize: "fontSize48",
         color: "white"
-    }
+    },
+    PasswordTitile: {
+        fonstFamily: "header",
+        fontSize: "fontSize96",
+        lineHeight: "5rem",
+        color: colors.darkMainD
+    },
 };
   
