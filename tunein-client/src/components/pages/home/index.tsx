@@ -1,12 +1,12 @@
 import { NextPage } from 'next'
 import App from './App'
 import Register from '@components/organisms/Register';
+import Password from '@components/organisms/Password';
+//<App/>
 const Homepage: NextPage = () =>{
     return(
         <div>
-            <h1>Welcome to TuneIN</h1>
-            <h2>web design trudny ehh</h2>
-            <App/>
+            <Password />
             <Register />
         </div>
     );
