@@ -52,6 +52,7 @@ export const SuccesText = styled(Typography)`
     line-height: default;
 `;
 export const Input = styled.input`
+    box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
     font-size: 2rem;
