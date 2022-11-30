@@ -42,27 +42,27 @@ const Password: NextPage = () =>{
             <Styled.Title variant="PasswordTitile">Password Change</Styled.Title>
             {!success ? (
                 <Styled.Form onSubmit={formik.handleSubmit}>
+                    <Styled.TileTitle variant="PasswordTileTitle">Old password</Styled.TileTitle>
                     <Styled.Input placeholder="Password" id="password"
                         value={formik.values.password} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.password}</Styled.Error>
-
+                    <Styled.TileTitle variant="PasswordTileTitle">New password</Styled.TileTitle>
                     <Styled.Input placeholder="New Password" id="newPassword"
                         value={formik.values.newPassword} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.newPassword}</Styled.Error>
-
+                    <Styled.TileTitle variant="PasswordTileTitle">Repeat new password</Styled.TileTitle>
                     <Styled.Input placeholder="Repeat New Password" id="newPasswordre"
                         value={formik.values.newPasswordre} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.newPasswordre}</Styled.Error>
-
                     <RgbButton text="Change password"/>
                 </Styled.Form>
             ) : (
                 <Styled.Success>
                     <Styled.SuccesText variant="RegisterSuccess">You've changed</Styled.SuccesText>
-                    <Styled.SuccesText variant="RegisterSuccess">your passord</Styled.SuccesText>
+                    <Styled.SuccesText variant="RegisterSuccess">your password</Styled.SuccesText>
                 </Styled.Success>
             )}
         </Styled.Wrapper>
