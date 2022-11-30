@@ -21,7 +21,7 @@ export const Button = styled.button`
 export const Text = styled.span`
     background-color: ${({ theme }) => theme.colors.darkMain};
     padding: 1rem 1.5rem;
-    border-radius: 0.375rem;
+    border-radius: 0.765rem;
     color: lightgray;
     width: 100%;
     height: 100%;

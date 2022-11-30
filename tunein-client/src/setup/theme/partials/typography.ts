@@ -31,7 +31,7 @@ export const textStyles = {
         lineHeight: "1rem"
     },
     profileTitleS: {
-        fonstFamily: "header",
+        fontFamily: "header",
         fontSize: "fontSize16",
         lineHeight: "1rem",
         color: "white"
@@ -43,27 +43,32 @@ export const textStyles = {
         color: "white"
     },
     profileName: {
-        fonstFamily: "header",
+        fontFamily: "header",
         fontSize: "fontSize96",
         lineHeight: "1rem",
         color: "white"
     },
     RegisterTitile: {
-        fonstFamily: "header",
+        fontFamily: "header",
         fontSize: "fontSize96",
         lineHeight: "1rem",
         color: colors.darkMainD
     },
     RegisterSuccess: {
-        fonstFamily: "header",
+        fontFamily: "header",
         fontSize: "fontSize48",
-        color: "white"
+        color: colors.inputHint
     },
     PasswordTitile: {
-        fonstFamily: "header",
+        fontFamily: "header",
         fontSize: "fontSize96",
         lineHeight: "5rem",
         color: colors.darkMainD
     },
+    PasswordTileTitle: {
+        fontFamily: "body",
+        fontSize: "fontSize16",
+        color: colors.inputHint
+    }
 };
   

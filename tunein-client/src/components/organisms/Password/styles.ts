@@ -36,7 +36,6 @@ export const Form = styled.form`
     gap: 0.5rem;
     padding: 2rem;
     border-radius: 0.2rem;
-    box-shadow: 0.1rem 0.1rem;
 `;
 export const Success = styled.div`
     min-width: 30rem;
@@ -48,7 +47,6 @@ export const Success = styled.div`
     align-items: center;
     text-align: center;
     border-radius: 0.2rem;
-    box-shadow: 0.1rem 0.1rem;
 `;
 export const SuccesText = styled(Typography)`
     line-height: default;
@@ -57,8 +55,8 @@ export const Input = styled.input`
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
     font-size: 2rem;
+    border: none;
     border-radius: 0.2rem;
-    box-shadow: 0.05rem 0.05rem;
     padding-left: 0.5rem;
     /* Input security */
     -webkit-text-security: disc;
@@ -86,4 +84,8 @@ export const Error = styled.p`
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
   text-shadow: rgba(151, 65, 252, 0.2) 0.063rem 0.063rem 0.063rem;
+`;
+export const TileTitle = styled(Typography)`
+    width: 100%;
+    margin-left: 3rem;
 `;
