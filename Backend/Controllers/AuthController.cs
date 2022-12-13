@@ -11,19 +11,21 @@ using System.Security.Claims;
 namespace Backend.Controllers
 {
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         #region Properties
 
         private readonly AuthService _authService;
+        private readonly ChatService _chatService;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, ChatService chatService)
         {
             _authService = authService;
+            _chatService = chatService;
         }
 
         #endregion Constructors
@@ -131,6 +133,9 @@ namespace Backend.Controllers
                 return BadRequest("Wrong credentials!");
             }
 
+            var token = await _chatService.GenerateChatAccessTokenAsync(logInCredentials.Email);
+
+            Response.Cookies.Append("ChatToken", token);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             return Ok("User signed in successfully!");
@@ -142,6 +147,16 @@ namespace Backend.Controllers
         public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync("Cookies");
+
+            int userId = GetUserId();
+
+            Response.Cookies.Append("ChatToken", "");
+            var success = await _chatService.RemoveAllTokensAsync(userId);
+
+            if (success == false)
+            {
+                return StatusCode(502, "Error while logging out!");
+            }
 
             return Ok("User signed out successfully!");
         }
