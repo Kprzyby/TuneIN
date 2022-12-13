@@ -1,5 +1,7 @@
 ﻿using Azure.Communication;
+using Azure.Communication.Chat;
 using Azure.Communication.Identity;
+using Azure.Core;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.Entities;
 using Data.Repositories;
@@ -78,7 +80,7 @@ namespace Services
             }
         }
 
-        public async Task<string> RefreshTokensAsync(int id)
+        public async Task<AccessToken> RefreshTokensAsync(int id)
         {
             try
             {
@@ -92,9 +94,43 @@ namespace Services
 
                 var tokenResponse = await client.GetTokenAsync(chatIdentity, scopes: new[] { CommunicationTokenScope.Chat }, tokenExpiresIn);
 
-                var token = JsonSerializer.Serialize(tokenResponse.Value);
+                return tokenResponse.Value;
+            }
+            catch (Exception ex)
+            {
+                return new AccessToken("", new DateTimeOffset());
+            }
+        }
 
-                return token;
+        public async Task<string> CreateChatAsync(string? topic, List<int> participantsIds, AccessToken token)
+        {
+            try
+            {
+                Uri endpoint = new Uri(_configuration.GetConnectionString("ChatEndpoint"));
+                CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(token.Token);
+                ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+
+                List<ChatParticipant> chatParticipants = new List<ChatParticipant>();
+
+                foreach (int participantId in participantsIds)
+                {
+                    User user = await _authRepository.GetByIdAsync(participantId);
+                    ChatParticipant chatParticipant = new ChatParticipant(new CommunicationUserIdentifier(user.ChatIdentityId));
+                    chatParticipant.DisplayName = user.UserName;
+
+                    chatParticipants.Add(chatParticipant);
+                }
+
+                string chatTopic = "New chat";
+
+                if (topic != null)
+                {
+                    chatTopic = topic;
+                }
+
+                CreateChatThreadResult createChatThreadResult = await chatClient.CreateChatThreadAsync(chatTopic, chatParticipants);
+
+                return createChatThreadResult.ChatThread.Id;
             }
             catch (Exception ex)
             {
