@@ -10,10 +10,8 @@ const GlobalStyles = createGlobalStyle`
       box-sizing: border-box;
     }
     body{
-        font-family: ${theme.fonts.body};
         font-size: 16px;
         font-weight: ${theme.fontWeights.regular};
-        color: ${theme.colors.DarkGrey};
         overflow-x: hidden;
         width: 100%;
     }
@@ -22,5 +20,4 @@ const GlobalStyles = createGlobalStyle`
         text-decoration: none;
     }
 `;
-
 export default GlobalStyles;

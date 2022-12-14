@@ -56,6 +56,7 @@ export const Input = styled.input`
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
     font-size: 2rem;
+    font-family: ${({theme}) => theme.fonts.body};
     border: none;
     border-radius: 0.2rem;
     padding-left: 0.5rem;
@@ -70,7 +71,7 @@ export const Input = styled.input`
         transition: background-color 600000s 0s, color 600000s 0s;
     }
 `;
-export const Error = styled.p`
+export const Error = styled(Typography)`
   /* Animation */
   animation-name: ${errorAnim};
   animation-duration: 1s;
