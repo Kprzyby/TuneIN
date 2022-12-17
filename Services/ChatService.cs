@@ -1,8 +1,10 @@
-﻿using Azure.Communication;
+﻿using Azure;
+using Azure.Communication;
 using Azure.Communication.Chat;
 using Azure.Communication.Identity;
 using Azure.Core;
 using Data.CustomDataAttributes.InjectionAttributes;
+using Data.DTOs.Chat;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +39,15 @@ namespace Services
 
         #region Methods
 
+        private ChatClient GetChatClient(AccessToken token)
+        {
+            Uri endpoint = new Uri(_configuration.GetConnectionString("ChatEndpoint"));
+            CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(token.Token);
+            ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+
+            return chatClient;
+        }
+
         public async Task<string> GenerateChatAccessTokenAsync(string email)
         {
             try
@@ -47,7 +58,7 @@ namespace Services
                 var client = new CommunicationIdentityClient(connectionString);
 
                 var chatIdentity = new CommunicationUserIdentifier(user.ChatIdentityId);
-                TimeSpan tokenExpiresIn = TimeSpan.FromMinutes(5);
+                TimeSpan tokenExpiresIn = TimeSpan.FromHours(2);
                 var tokenResponse = await client.GetTokenAsync(chatIdentity, scopes: new[] { CommunicationTokenScope.Chat }, tokenExpiresIn);
 
                 var token = JsonSerializer.Serialize(tokenResponse.Value);
@@ -90,7 +101,7 @@ namespace Services
                 var client = new CommunicationIdentityClient(connectionString);
 
                 var chatIdentity = new CommunicationUserIdentifier(user.ChatIdentityId);
-                TimeSpan tokenExpiresIn = TimeSpan.FromMinutes(5);
+                TimeSpan tokenExpiresIn = TimeSpan.FromHours(2);
 
                 var tokenResponse = await client.GetTokenAsync(chatIdentity, scopes: new[] { CommunicationTokenScope.Chat }, tokenExpiresIn);
 
@@ -106,9 +117,7 @@ namespace Services
         {
             try
             {
-                Uri endpoint = new Uri(_configuration.GetConnectionString("ChatEndpoint"));
-                CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(token.Token);
-                ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+                ChatClient chatClient = GetChatClient(token);
 
                 List<ChatParticipant> chatParticipants = new List<ChatParticipant>();
 
@@ -131,6 +140,53 @@ namespace Services
                 CreateChatThreadResult createChatThreadResult = await chatClient.CreateChatThreadAsync(chatTopic, chatParticipants);
 
                 return createChatThreadResult.ChatThread.Id;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<GetChatDTO> GetChatAsync(string chatId, int pageSize, AccessToken token)
+        {
+            try
+            {
+                ChatClient client = GetChatClient(token);
+
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                ChatThreadProperties chatThread = chatThreadClient.GetProperties();
+
+                AsyncPageable<ChatMessage> chatMessages = chatThreadClient.GetMessagesAsync();
+
+                List<Page<ChatMessage>> messagesPages = await chatMessages.AsPages(null, pageSize).ToListAsync();
+                Page<ChatMessage> messagesPage = messagesPages[0];
+
+                List<ChatMessageDTO> messages = new List<ChatMessageDTO>();
+
+                foreach (ChatMessage message in messagesPage.Values)
+                {
+                    ChatMessageDTO messageDTO = new ChatMessageDTO()
+                    {
+                        Id = message.Id,
+                        Message = message.Content.Message,
+                        CreatorId = message.Sender.RawId
+                    };
+                }
+
+                AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
+                List<ChatParticipant> chatParticipants = await participants.ToListAsync();
+
+                GetChatDTO result = new GetChatDTO()
+                {
+                    Id = chatThread.Id,
+                    Topic = chatThread.Topic,
+                    Participants = chatParticipants,
+                    Messages = messages,
+                    ContinuationToken = messagesPage.ContinuationToken
+                };
+
+                return result;
             }
             catch (Exception ex)
             {

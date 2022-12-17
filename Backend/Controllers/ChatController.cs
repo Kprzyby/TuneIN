@@ -1,7 +1,10 @@
 ﻿using Azure.Core;
 using Backend.ViewModels.Chat;
 using Common.CustomDataAttributes;
+using FastMember;
 using Microsoft.AspNetCore.Mvc;
+using Nancy.Json;
+using Newtonsoft.Json;
 using Services;
 using System.Text.Json;
 
@@ -27,30 +30,63 @@ namespace Backend.Controllers
 
         #region Methods
 
-        [HttpPost]
-        [Route("Chat/Create")]
-        [RequireRole("REGULAR_USER", "TUTOR")]
-        public async Task<IActionResult> CreateChat(CreateChatViewModel newChat)
+        private async Task<AccessToken> GetTokenAsync()
         {
-            AccessToken token = JsonSerializer.Deserialize<AccessToken>(Request.Cookies["ChatToken"]);
+            var tokenObject = new JavaScriptSerializer().Deserialize<object>(Request.Cookies["ChatToken"]);
+            Dictionary<string, object>.ValueCollection tokenValues = (Dictionary<string, object>.ValueCollection)tokenObject.GetType().GetProperty("Values").GetValue(tokenObject);
+            List<object> tokenValuesList = new List<object>(tokenValues);
+            string tokenValue = tokenValuesList[0].ToString();
+            string expireString = tokenValuesList[1].ToString();
+            DateTimeOffset expiresOn = DateTimeOffset.Parse(expireString);
 
-            if (token.ExpiresOn.Date.AddSeconds(10) > DateTime.Now)
+            AccessToken token = new AccessToken(tokenValue, expiresOn);
+
+            if (token.ExpiresOn.DateTime < DateTime.Now.AddMinutes(1))
             {
                 token = await _chatService.RefreshTokensAsync(GetUserId());
 
-                if (token.Token == "")
-                {
-                    return StatusCode(502, "Error while getting an access token");
-                }
-
-                Response.Cookies.Append("ChatToken", JsonSerializer.Serialize(token));
+                Response.Cookies.Append("ChatToken", System.Text.Json.JsonSerializer.Serialize(token));
             }
+
+            return token;
+        }
+
+        [HttpPost]
+        [Route("Chat/CreateChatAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> CreateChatAsync(CreateChatViewModel newChat)
+        {
+            var token = await GetTokenAsync();
+
+            if (token.Token == "")
+            {
+                return StatusCode(502, "Error while creating an access token!");
+            }
+
+            newChat.ParticipantsIds.Add(GetUserId());
 
             var result = await _chatService.CreateChatAsync(newChat.Topic, newChat.ParticipantsIds, token);
 
             if (result == null)
             {
                 return BadRequest("Error while creating the chat!");
+            }
+
+            return StatusCode(201, result);
+        }
+
+        [HttpGet]
+        [Route("Chat/GetChatAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> GetChatAsync(string chatId, int pageSize)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.GetChatAsync(chatId, pageSize, token);
+
+            if (result == null)
+            {
+                return BadRequest("Wrong chat id!");
             }
 
             return Ok(result);
