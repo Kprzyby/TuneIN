@@ -147,12 +147,41 @@ namespace Services
             }
         }
 
-        public async Task<GetChatDTO> GetChatAsync(string chatId, int pageSize, AccessToken token)
+        public async Task<string> SendMessageAsync(string chatId, string message, int userId, AccessToken token)
         {
             try
             {
-                ChatClient client = GetChatClient(token);
+                User user = await _authRepository.GetByIdAsync(userId);
 
+                ChatClient client = GetChatClient(token);
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                SendChatMessageOptions sendChatMessageOptions = new SendChatMessageOptions()
+                {
+                    Content = message,
+                    MessageType = ChatMessageType.Text,
+                    SenderDisplayName = user.UserName
+                };
+
+                SendChatMessageResult sendChatMessageResult = await chatThreadClient.SendMessageAsync(sendChatMessageOptions);
+
+                string messageId = sendChatMessageResult.Id;
+
+                return messageId;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<GetChatDTO> GetChatAsync(string chatId, int pageSize, int userId, AccessToken token)
+        {
+            try
+            {
+                User user = await _authRepository.GetByIdAsync(userId);
+
+                ChatClient client = GetChatClient(token);
                 ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
 
                 ChatThreadProperties chatThread = chatThreadClient.GetProperties();
@@ -166,12 +195,20 @@ namespace Services
 
                 foreach (ChatMessage message in messagesPage.Values)
                 {
+                    if (message.Content.Message == null)
+                    {
+                        continue;
+                    }
                     ChatMessageDTO messageDTO = new ChatMessageDTO()
                     {
                         Id = message.Id,
                         Message = message.Content.Message,
-                        CreatorId = message.Sender.RawId
+                        SenderId = message.Sender.RawId,
+                        SenderName = message.SenderDisplayName,
+                        UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
                     };
+
+                    messages.Add(messageDTO);
                 }
 
                 AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
@@ -182,6 +219,54 @@ namespace Services
                     Id = chatThread.Id,
                     Topic = chatThread.Topic,
                     Participants = chatParticipants,
+                    Messages = messages,
+                    ContinuationToken = messagesPage.ContinuationToken
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<GetMessagesDTO> GetChatMessagesAsync(string chatId, int userId, int pageSize, string continuationToken, AccessToken accessToken)
+        {
+            try
+            {
+                User user = await _authRepository.GetByIdAsync(userId);
+
+                ChatClient client = GetChatClient(accessToken);
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                AsyncPageable<ChatMessage> chatMessages = chatThreadClient.GetMessagesAsync();
+
+                List<Page<ChatMessage>> messagesPages = await chatMessages.AsPages(continuationToken, pageSize).ToListAsync();
+                Page<ChatMessage> messagesPage = messagesPages[0];
+
+                List<ChatMessageDTO> messages = new List<ChatMessageDTO>();
+
+                foreach (ChatMessage message in messagesPage.Values)
+                {
+                    if (message.Content.Message == null)
+                    {
+                        continue;
+                    }
+                    ChatMessageDTO messageDTO = new ChatMessageDTO()
+                    {
+                        Id = message.Id,
+                        Message = message.Content.Message,
+                        SenderId = message.Sender.RawId,
+                        SenderName = message.SenderDisplayName,
+                        UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
+                    };
+
+                    messages.Add(messageDTO);
+                }
+
+                GetMessagesDTO result = new GetMessagesDTO()
+                {
                     Messages = messages,
                     ContinuationToken = messagesPage.ContinuationToken
                 };

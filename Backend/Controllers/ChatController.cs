@@ -82,7 +82,7 @@ namespace Backend.Controllers
         {
             var token = await GetTokenAsync();
 
-            var result = await _chatService.GetChatAsync(chatId, pageSize, token);
+            var result = await _chatService.GetChatAsync(chatId, pageSize, GetUserId(), token);
 
             if (result == null)
             {
@@ -90,6 +90,40 @@ namespace Backend.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("Chat/GetMessagesAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> GetMessagesAsync(string chatId, int pageSize, string? continuationToken = null)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.GetChatMessagesAsync(chatId, GetUserId(), pageSize, continuationToken, token);
+
+            if (result == null)
+            {
+                return BadRequest("Error while getting the messages!");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("Chat/SendMessageAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> SendMessageAsync(SendMessageViewModel newMessage)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.SendMessageAsync(newMessage.ChatId, newMessage.Message, GetUserId(), token);
+
+            if (result == null)
+            {
+                return BadRequest("Wrong chat id!");
+            }
+
+            return StatusCode(201, result);
         }
 
         #endregion Methods
