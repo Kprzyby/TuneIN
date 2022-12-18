@@ -195,18 +195,29 @@ namespace Services
 
                 foreach (ChatMessage message in messagesPage.Values)
                 {
-                    if (message.Content.Message == null)
+                    ChatMessageDTO messageDTO;
+                    if (message.Type == ChatMessageType.Text)
                     {
-                        continue;
+                        messageDTO = new ChatMessageDTO()
+                        {
+                            Id = message.Id,
+                            Message = message.Content.Message,
+                            SenderId = message.Sender.RawId,
+                            SenderName = message.SenderDisplayName,
+                            UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
+                        };
                     }
-                    ChatMessageDTO messageDTO = new ChatMessageDTO()
+                    else
                     {
-                        Id = message.Id,
-                        Message = message.Content.Message,
-                        SenderId = message.Sender.RawId,
-                        SenderName = message.SenderDisplayName,
-                        UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
-                    };
+                        messageDTO = new ChatMessageDTO()
+                        {
+                            Id = message.Id,
+                            Message = message.Type.ToString(),
+                            SenderId = Guid.NewGuid().ToString(),
+                            SenderName = "System",
+                            UserIsSender = false
+                        };
+                    }
 
                     messages.Add(messageDTO);
                 }
@@ -283,18 +294,29 @@ namespace Services
 
                 foreach (ChatMessage message in messagesPage.Values)
                 {
-                    if (message.Content.Message == null)
+                    ChatMessageDTO messageDTO;
+                    if (message.Type == ChatMessageType.Text)
                     {
-                        continue;
+                        messageDTO = new ChatMessageDTO()
+                        {
+                            Id = message.Id,
+                            Message = message.Content.Message,
+                            SenderId = message.Sender.RawId,
+                            SenderName = message.SenderDisplayName,
+                            UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
+                        };
                     }
-                    ChatMessageDTO messageDTO = new ChatMessageDTO()
+                    else
                     {
-                        Id = message.Id,
-                        Message = message.Content.Message,
-                        SenderId = message.Sender.RawId,
-                        SenderName = message.SenderDisplayName,
-                        UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
-                    };
+                        messageDTO = new ChatMessageDTO()
+                        {
+                            Id = message.Id,
+                            Message = message.Type.ToString(),
+                            SenderId = Guid.NewGuid().ToString(),
+                            SenderName = "System",
+                            UserIsSender = false
+                        };
+                    }
 
                     messages.Add(messageDTO);
                 }
