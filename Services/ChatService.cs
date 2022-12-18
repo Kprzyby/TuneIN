@@ -231,6 +231,40 @@ namespace Services
             }
         }
 
+        public async Task<GetChatsDTO> GetChatListAsync(int pageSize, int messagePageSize, int userId, string continuationToken, AccessToken accessToken)
+        {
+            try
+            {
+                ChatClient client = GetChatClient(accessToken);
+
+                AsyncPageable<ChatThreadItem> chats = client.GetChatThreadsAsync();
+
+                List<Page<ChatThreadItem>> chatsPages = await chats.AsPages(continuationToken, pageSize).ToListAsync();
+                Page<ChatThreadItem> chatPage = chatsPages[0];
+
+                List<GetChatDTO> chatDTOs = new List<GetChatDTO>();
+
+                foreach (ChatThreadItem chat in chatPage.Values)
+                {
+                    GetChatDTO chatDTO = await GetChatAsync(chat.Id, messagePageSize, userId, accessToken);
+
+                    chatDTOs.Add(chatDTO);
+                }
+
+                GetChatsDTO result = new GetChatsDTO()
+                {
+                    Chats = chatDTOs,
+                    ContinuationToken = chatPage.ContinuationToken
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public async Task<GetMessagesDTO> GetChatMessagesAsync(string chatId, int userId, int pageSize, string continuationToken, AccessToken accessToken)
         {
             try

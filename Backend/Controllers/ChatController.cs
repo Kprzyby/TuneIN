@@ -93,6 +93,23 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Route("Chat/GetChatsAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> GetChatsAsync(int pageSize, int messagePageSize, string? continuationToken = null)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.GetChatListAsync(pageSize, messagePageSize, GetUserId(), continuationToken, token);
+
+            if (result == null)
+            {
+                return BadRequest("Error while getting chats!");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("Chat/GetMessagesAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         public async Task<IActionResult> GetMessagesAsync(string chatId, int pageSize, string? continuationToken = null)
