@@ -1,8 +1,12 @@
 import colors from "./colors";
+// import {Zen_Dots} from '@next/font/google';
+
+// const zenDots = Zen_Dots({ weight: ['400'] });
 
 export const fontFamilies = {
     header: "Prata",
-    body: "Helvetica"
+    body: "Helvetica",
+    logo: 'Zen Dots'
   };
   
 export const fontSizes = {
@@ -21,54 +25,64 @@ export const fontWeights = {
 
 export const textStyles = {
     h1: {
-        fontFamily: "header",
-        fontSize: "fontSize15",
+        fontFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize16,
         lineHeight: "1rem"
     },
     h2: {
-        fontFamilies: "body",
-        fontSizes: "fontSize10",
+        fontFamilies: fontFamilies.body,
+        fontSizes: fontSizes.fontSize10,
         lineHeight: "1rem"
     },
     profileTitleS: {
-        fontFamily: "header",
-        fontSize: "fontSize16",
+        fontFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize10,
         lineHeight: "1rem",
         color: "white"
     },
     profileTitleB: {
-        fonstFamily: "header",
-        fontSize: "fontSize48",
+        fonstFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize48,
         lineHeight: "1rem",
         color: "white"
     },
     profileName: {
-        fontFamily: "header",
-        fontSize: "fontSize96",
+        fontFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize96,
         lineHeight: "1rem",
         color: "white"
     },
     RegisterTitile: {
-        fontFamily: "header",
-        fontSize: "fontSize96",
+        fontFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize96,
         lineHeight: "1rem",
         color: colors.darkMainD
     },
     RegisterSuccess: {
-        fontFamily: "header",
-        fontSize: "fontSize48",
+        fontFamily: fontFamilies.header,
+        fontSize: fontSizes.fontSize48,
         color: colors.inputHint
     },
     PasswordTitile: {
-        fontFamily: "header",
-        fontSize: "fontSize96",
+        fontFamily:fontFamilies.header,
+        fontSize: fontSizes.fontSize96,
         lineHeight: "5rem",
         color: colors.darkMainD
     },
     PasswordTileTitle: {
-        fontFamily: "body",
-        fontSize: "fontSize16",
+        fontFamily: fontFamilies.body,
+        fontSize: fontSizes.fontSize16,
         color: colors.inputHint
+    },
+    Logo: {
+        fontFamily: fontFamilies.logo,
+        fontSize: fontSizes.fontSize48,
+        color: colors.darkMainL
+    },
+    Navigation: {
+        fontFamily: fontFamilies.logo,
+        fontSize: fontSizes.fontSize16,
+        color: colors.darkMainL
     }
 };
   
