@@ -1,12 +1,9 @@
 ﻿using Azure.Core;
 using Backend.ViewModels.Chat;
 using Common.CustomDataAttributes;
-using FastMember;
 using Microsoft.AspNetCore.Mvc;
 using Nancy.Json;
-using Newtonsoft.Json;
 using Services;
-using System.Text.Json;
 
 namespace Backend.Controllers
 {

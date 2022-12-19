@@ -1,5 +1,4 @@
-﻿using Azure.Communication;
-using Azure.Communication.Email;
+﻿using Azure.Communication.Email;
 using Azure.Communication.Email.Models;
 using Azure.Communication.Identity;
 using Common.Enums;
@@ -11,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text.Json;
 
 namespace Services
 {
