@@ -1,5 +1,6 @@
 ﻿using Azure.Communication.Email;
 using Azure.Communication.Email.Models;
+using Azure.Communication.Identity;
 using Common.Enums;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.User;
@@ -89,6 +90,12 @@ namespace Services
                 var salt = CreateSalt(8);
                 var hashedPassword = CreateHash(userDTO.Password, salt);
 
+                string connectionString = _configuration.GetConnectionString("AzureChatConnection");
+                var client = new CommunicationIdentityClient(connectionString);
+
+                var identityResponse = await client.CreateUserAsync();
+                var identity = identityResponse.Value;
+
                 User newUser = new User()
                 {
                     UserName = userDTO.UserName,
@@ -96,7 +103,8 @@ namespace Services
                     Password = hashedPassword,
                     Salt = salt,
                     UserRole = userDTO.UserRole,
-                    ConfirmationGUID = userDTO.ConfirmationGUID
+                    ConfirmationGUID = userDTO.ConfirmationGUID,
+                    ChatIdentityId = identity.Id
                 };
 
                 await _authRepository.AddAndSaveChangesAsync(newUser);
