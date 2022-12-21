@@ -1,5 +1,7 @@
 import { NextPage } from 'next'
 import App from './App'
+
+
 const Homepage: NextPage = () =>{
     return(
         <div>

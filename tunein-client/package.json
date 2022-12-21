@@ -13,6 +13,7 @@
     "graphql": "^16.6.0",
     "http-proxy-middleware": "^2.0.6",
     "next": "^13.0.2",
+    "peerjs": "^1.4.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "socket.io-client": "^4.5.3",
@@ -21,6 +22,7 @@
     "styled-reset": "^4.4.2",
     "styled-system": "^5.1.5",
     "typescript": "^4.8.4",
+    "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -28,6 +30,7 @@
     "build": "next build",
     "start": "next start",
     "dev": "next dev",
+    "dev-https": "local-ssl-proxy --key key.pem --cert cert.pem --source 4001 --target 3000",
     "lint": "next lint"
   },
   "eslintConfig": {
