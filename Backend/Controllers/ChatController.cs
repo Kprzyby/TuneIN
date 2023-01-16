@@ -140,6 +140,23 @@ namespace Backend.Controllers
             return StatusCode(201, result);
         }
 
+        [HttpPut]
+        [Route("Chat/AddParticipantsAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> AddParticipantsAsync(string chatId, List<int> participantsIds)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.AddParticipantsAsync(token, chatId, participantsIds);
+
+            if (result == false)
+            {
+                return BadRequest("Error while adding chat participants");
+            }
+
+            return Ok("Chat participants added successfully");
+        }
+
         #endregion Methods
     }
 }

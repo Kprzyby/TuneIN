@@ -330,6 +330,34 @@ namespace Services
             }
         }
 
+        public async Task<bool> AddParticipantsAsync(AccessToken token, string chatId, List<int> participantsIds)
+        {
+            try
+            {
+                ChatClient client = GetChatClient(token);
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                List<ChatParticipant> chatParticipants = new List<ChatParticipant>();
+
+                foreach (int participantId in participantsIds)
+                {
+                    User user = await _authRepository.GetByIdAsync(participantId);
+                    ChatParticipant chatParticipant = new ChatParticipant(new CommunicationUserIdentifier(user.ChatIdentityId));
+                    chatParticipant.DisplayName = user.UserName;
+
+                    chatParticipants.Add(chatParticipant);
+                }
+
+                await chatThreadClient.AddParticipantsAsync(chatParticipants);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #endregion Methods
     }
 }
