@@ -32,9 +32,31 @@ namespace Backend.Controllers
 
         #region Methods
 
+        /// <summary> Creates a new account </summary>
+        /// <param name="newUser">Object of the SignUpViewModel containing information about the user</param>
+        /// <returns>IActionResult</returns>
+        /// <remarks>
+        /// <h2>Example request</h2>
+        ///
+        ///     {
+        ///       "UserName": "Gosia123",
+        ///       "Email": "Gkowalska1@wp.pl",
+        ///       "Password": "GoodPassword12#",
+        ///       "RepeatPassword": "GoodPassword12#"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="201">string "User created successfully!" </response>
+        /// <response code="400">string "Error while sending confirmation email!"</response>
+        /// <response code="409">string "This email is already taken"</response>
+        /// <response code="500">string "Error while creating user!"</response>
         [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignUpAsync")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> SignUpAsync(SignUpViewModel newUser)
         {
             bool userExists = await _authService.CheckIfUserExistsAsync(newUser.Email);
@@ -121,9 +143,25 @@ namespace Backend.Controllers
             return Ok("Password changed succesfully!");
         }
 
+        /// <summary> Logs in to the user's account </summary>
+        /// <param name="logInCredentials">Object of the SignInViewModel class containing credentials</param>
+        /// <returns>IActionResult</returns>
+        /// <remarks>
+        /// <h2>Example request</h2>
+        ///
+        ///     {
+        ///       "Email": "Gkowalska1@wp.pl",
+        ///       "Password": "GoodPassword12#"
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">string "User signed in successfully!" </response>
+        /// <response code="400">string "Wrong credentials!"</response>
         [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignInAsync")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SignInAsync(SignInViewModel logInCredentials)
         {
             var claimsIdentity = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
@@ -141,9 +179,15 @@ namespace Backend.Controllers
             return Ok("User signed in successfully!");
         }
 
+        /// <summary> Logs the user out </summary>
+        /// <returns>IActionResult</returns>
+        /// <response code="200">string "User signed out successfully!" </response>
+        /// <response code="502">string "Error while logging out!"</response>
         [AllowAnonymous]
         [HttpGet]
         [Route("Auth/SignOutAsync")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status502BadGateway)]
         public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync("Cookies");
