@@ -358,6 +358,26 @@ namespace Services
             }
         }
 
+        public async Task<bool> RemoveParticipantAsync(AccessToken token, string chatId, int participantId)
+        {
+            try
+            {
+                ChatClient client = GetChatClient(token);
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                User user = await _authRepository.GetByIdAsync(participantId);
+                CommunicationUserIdentifier participantIdentifier = new CommunicationUserIdentifier(user.ChatIdentityId);
+
+                await chatThreadClient.RemoveParticipantAsync(participantIdentifier);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #endregion Methods
     }
 }

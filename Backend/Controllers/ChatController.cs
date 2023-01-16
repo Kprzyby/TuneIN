@@ -157,6 +157,23 @@ namespace Backend.Controllers
             return Ok("Chat participants added successfully");
         }
 
+        [HttpDelete]
+        [Route("Chat/RemoveParticipantAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> RemoveParticipantAsync(string chatId, int participantId)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.RemoveParticipantAsync(token, chatId, participantId);
+
+            if (result == false)
+            {
+                return BadRequest("Error while removing participant");
+            }
+
+            return Ok("Participant successfully removed");
+        }
+
         #endregion Methods
     }
 }
