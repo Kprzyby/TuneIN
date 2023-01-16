@@ -378,6 +378,23 @@ namespace Services
             }
         }
 
+        public async Task<bool> UpdateTopicAsync(AccessToken token, string chatId, string topic)
+        {
+            try
+            {
+                ChatClient client = GetChatClient(token);
+                ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+
+                await chatThreadClient.UpdateTopicAsync(topic);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #endregion Methods
     }
 }

@@ -174,6 +174,23 @@ namespace Backend.Controllers
             return Ok("Participant successfully removed");
         }
 
+        [HttpPut]
+        [Route("Chat/UpdateTopicAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> UpdateTopicAsync(string chatId, string topic)
+        {
+            var token = await GetTokenAsync();
+
+            var result = await _chatService.UpdateTopicAsync(token, chatId, topic);
+
+            if (result == false)
+            {
+                return BadRequest("Error while updating the topic");
+            }
+
+            return Ok("Topic updated successfully");
+        }
+
         #endregion Methods
     }
 }
