@@ -11,11 +11,12 @@ const fs = require('fs')
 app.use(cors())
 
 var sslOptions = {
-    key: fs.readFileSync('./chat+2-key.pem'),
-    cert: fs.readFileSync('./chat+2.pem')
+    key: fs.readFileSync('./chat+3-key.pem'),
+    cert: fs.readFileSync('./chat+3.pem')
   };
 
 const server = https.createServer(sslOptions, app)
+//const server = http.createServer(app)
 const io = new Server(server, {
     cors: 'http://localhost:3000'
 })
