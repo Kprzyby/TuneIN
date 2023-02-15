@@ -44,18 +44,22 @@ const UserRegister: React.FC = () => {
             <Styled.Title variant="RegisterTitile">Register</Styled.Title>
             {!success ? (
                 <Styled.Form onSubmit={formik.handleSubmit}>
+                    <Styled.TileTitle variant="PasswordTileTitle">Login</Styled.TileTitle>
                     <Styled.Input placeholder="Login" id="login"
                         value={formik.values.login} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.login}</Styled.Error>
+                    <Styled.TileTitle variant="PasswordTileTitle">Password</Styled.TileTitle>
                     <Styled.Input placeholder="Password" id="password"
                         value={formik.values.password} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.password}</Styled.Error>
+                    <Styled.TileTitle variant="PasswordTileTitle">Repeat Password</Styled.TileTitle>
                     <Styled.Input placeholder="Repeat Password" id="passwordre"
                         value={formik.values.passwordre} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.passwordre}</Styled.Error>
+                    <Styled.TileTitle variant="PasswordTileTitle">Email</Styled.TileTitle>
                     <Styled.Input placeholder="Email" id="email"
                         value={formik.values.email} 
                         onChange={formik.handleChange}/>
