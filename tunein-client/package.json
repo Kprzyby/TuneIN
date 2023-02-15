@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.1",
+    "@next-tools/dynamic": "^0.0.11",
     "@next/font": "^13.0.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -11,12 +12,14 @@
     "@types/jest": "^27.5.2",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
+    "draft-js": "^0.11.7",
     "formik": "^2.2.9",
     "graphql": "^16.6.0",
     "http-proxy-middleware": "^2.0.6",
     "next": "^13.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draft-wysiwyg": "^1.15.0",
     "socket.io-client": "^4.5.3",
     "styled-components": "^5.3.6",
     "styled-normalize": "^8.0.7",
@@ -53,7 +56,9 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^6.5.1",
+    "@types/draft-js": "^0.11.10",
     "@types/node": "^18.11.15",
+    "@types/react-draft-wysiwyg": "^1.13.4",
     "@types/styled-components": "^5.1.26",
     "@types/styled-system": "^5.1.15"
   }
