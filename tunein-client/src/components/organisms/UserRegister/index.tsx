@@ -4,7 +4,7 @@ import * as Yup from "yup"
 import * as Styled from "./styles";
 import RgbButton from "../../molecules/RgbButton"
 
-const Register: React.FC = () => {
+const UserRegister: React.FC = () => {
     // if form was submitted
     const [success, setSuccess] = useState(false);
     const formik = useFormik({
@@ -72,4 +72,4 @@ const Register: React.FC = () => {
     )
 };
 
-export default Register;
+export default UserRegister;
