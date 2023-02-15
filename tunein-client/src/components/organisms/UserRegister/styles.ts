@@ -54,16 +54,42 @@ export const SuccesText = styled(Typography)`
     line-height: default;
 `;
 export const Input = styled.input`
+    box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
     font-size: 2rem;
+    font-family: ${({theme}) => theme.fonts.body};
+    border: none;
     border-radius: 0.2rem;
-    box-shadow: 0.05rem 0.05rem;
     padding-left: 0.5rem;
+    /* Input security */
+    -webkit-text-security: disc;
+    /* Fix for background color change */
+    &:-internal-autofill-selected,
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active{
+        transition: background-color 600000s 0s, color 600000s 0s;
+    }
 `;
 export const Error = styled.p`
-    color: red;
-    animation-name: ${errorAnim};
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
+  /* Animation */
+  animation-name: ${errorAnim};
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  /* Color */
+  background-image: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+  background-size: 100%;
+  background-repeat: repeat;
+  background-clip: initial;/*idk, error doesn't show up this way*/
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+  text-shadow: rgba(151, 65, 252, 0.2) 0.063rem 0.063rem 0.063rem;
+`;
+export const TileTitle = styled(Typography)`
+    width: 100%;
+    margin-left: 3rem;
 `;
