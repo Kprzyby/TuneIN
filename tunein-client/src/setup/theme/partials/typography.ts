@@ -1,7 +1,4 @@
 import colors from "./colors";
-// import {Zen_Dots} from '@next/font/google';
-
-// const zenDots = Zen_Dots({ weight: ['400'] });
 
 export const fontFamilies = {
     header: "Prata",
@@ -77,12 +74,10 @@ export const textStyles = {
     Logo: {
         fontFamily: fontFamilies.logo,
         fontSize: fontSizes.fontSize48,
-        color: colors.darkMainL
     },
     Navigation: {
         fontFamily: fontFamilies.logo,
         fontSize: fontSizes.fontSize16,
-        color: colors.darkMainL
     }
 };
   

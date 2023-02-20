@@ -18,7 +18,7 @@ export const Title = styled(Typography)`
     font-size: 10rem;
     color: ${({theme})=> theme.colors.darkMain};
 `;
-export const Discription = styled(Typography)`
+export const Description = styled(Typography)`
     font-size: 3rem;
     margin: 2rem;
 `;

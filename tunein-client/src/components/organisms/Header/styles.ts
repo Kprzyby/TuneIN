@@ -1,11 +1,19 @@
 import styled from "styled-components";
+import { StyledHeaderProps } from "./types";
 
-export const Wrapper = styled.div`
-    position: sticky;
+export const Wrapper = styled.div<StyledHeaderProps>`
+    ${({ isLight, theme }) =>
+        isLight
+        ? ` position: fixed;
+            color: ${theme.colors.darkMainD};
+            background-color: transparent;`
+        : ` position: sticky;
+            color: ${theme.colors.darkMainL};
+            background-color: ${theme.colors.darkMain};`
+    };
     top: 0;
     height: auto;
     width: 100%;
-    background-color: ${({ theme }) => theme.colors.darkMain};
     display: flex;
     align-items: center;
     z-index: 2;
@@ -18,7 +26,6 @@ export const ItemsWrapper = styled.div`
     align-items: center;
 `;
 export const ListItem = styled.li`
-    color: ${({ theme }) => theme.colors.darkMainL};
     display: table;
     float: left;
     padding: 0 0.6rem;

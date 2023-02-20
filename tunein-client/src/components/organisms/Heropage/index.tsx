@@ -26,7 +26,7 @@ function Heropage() {
     <Styled.Wrapper ref={wrapRef} onWheel={(e)=>setScroll(e.deltaY)}>
         <Styled.Content>
             <Styled.Title variant="Logo">TuenIN</Styled.Title>
-            <Styled.Discription variant="Logo">Objectively your best place to learn and teach music</Styled.Discription>
+            <Styled.Description variant="Logo">Objectively your best place to learn and teach music</Styled.Description>
         </Styled.Content>
     </Styled.Wrapper>
   )
