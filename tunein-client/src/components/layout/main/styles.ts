@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-    background-color: ${({ theme }) => theme.colors.darkMain};
+    background-image : url(/assets/svg/background.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
 `;

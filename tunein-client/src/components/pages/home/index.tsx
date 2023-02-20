@@ -1,16 +1,16 @@
 import { NextPage } from 'next'
-import App from './App'
-import UserRegister from '@components/organisms/UserRegister';
-import Password from '@components/organisms/Password';
+// import UserRegister from '@components/organisms/UserRegister';
+// import Password from '@components/organisms/Password';
+// import TuitionRegister from '@components/organisms/TuitionRegister';
+import Heropage from '@components/organisms/Heropage';
 import TuitionRegister from '@components/organisms/TuitionRegister';
-//<App/>
 const Homepage: NextPage = () =>{
     return(
-        <div>
-            <TuitionRegister />
-            <Password />
-            <UserRegister />
-        </div>
+        <>
+            <Heropage/>
+            <TuitionRegister/>
+            <TuitionRegister/>
+        </>
     );
 }
 
