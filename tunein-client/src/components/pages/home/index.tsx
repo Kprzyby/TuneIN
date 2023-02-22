@@ -4,12 +4,14 @@ import Password from '@components/organisms/Password';
 import TuitionRegister from '@components/organisms/TuitionRegister';
 import Heropage from '@components/organisms/Heropage';
 import HomeRegister from '@components/organisms/HomeRegister';
+import HomeBrowse from '@components/organisms/HomeBrowse';
 //TODO: consider adding scrollIntoView here instead of event in a single section(heropage)
 const Homepage: NextPage = () =>{
     return(
         <>
             <Heropage/>
             <HomeRegister/>
+            <HomeBrowse/>
         </>
     );
 }

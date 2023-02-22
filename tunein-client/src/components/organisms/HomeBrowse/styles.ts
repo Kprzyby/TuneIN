@@ -1,6 +1,6 @@
-import { Typography } from "@components/styles/typography";
 import styled from "styled-components";
-import { Musician1 } from "../../../../public/assets/svg";
+import { Typography } from "@components/styles/typography";
+import { Musician3 } from "../../../../public/assets/svg";
 export const Wrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -27,7 +27,7 @@ export const Content = styled.div`
     @media (min-width: 0px) {  min-width: 100%; }
     @media (min-width: 1300px) { min-width: 1300px; }
 `;
-export const LeftSide = styled.div`
+export const RightSide = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -73,33 +73,33 @@ export const Text = styled(Typography)`
         max-width: 30rem;
     }
 `;
-export const Icon = styled(Musician1)`
+export const Icon = styled(Musician3)`
     min-height: 100%;
     @media (min-width: 0px) { 
-        max-width: 2.5rem; 
+        max-width: 2rem; 
     }
     @media (min-width: 220px) {
-        max-width: 3rem;
+        max-width: 2.5rem;
     }
     @media (min-width: 290px) {
-        max-width: 4rem;
+        max-width: 3rem;
     }
     @media (min-width: 360px) {
-        max-width: 4.5rem;
+        max-width: 3.5rem;
     }
     @media (min-width: 450px) {
-        max-width: 5rem;
+        max-width: 4rem;
     }
     @media (min-width: 520px) {
-        max-width: 6rem;
+        max-width: 5rem;
     }
     @media (min-width: 600px) {
-        max-width: 8rem;
+        max-width: 6rem;
     }
     @media (min-width: 720px) {
-        max-width: 10rem;
+        max-width: 8rem;
     }
     @media (min-width: 1100px) {
-        max-width: 15rem;
+        max-width: 13.5rem;
     }
 `;
