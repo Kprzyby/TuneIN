@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cloneElement, useEffect, useState } from 'react';
 import * as Styled from './styles';
 import * as Yup from "yup"
 import useRichText from '@components/molecules/RichText';
@@ -7,6 +7,9 @@ import RgbButton from '@components/molecules/RgbButton';
 import { convertToRaw, EditorState } from 'draft-js';
 
 const TuitionRegister: React.FC = () => {
+  const [boxSize, setBoxSize] = useState(0.4);
+  const [textSize, setTextSize] = useState(1);
+  const [borderSize, setBorderSize] = useState(0.188);
   const formik = useFormik({
       initialValues: {
         editorState: EditorState.createEmpty(),
@@ -25,6 +28,36 @@ const TuitionRegister: React.FC = () => {
       }
   })
   const {renderRichText, editorState} = useRichText();
+  const breakpoints = {
+    medium: {
+        width: 500,
+        boxSize: 0.4,
+        textSize: 1.2,
+        borderSize: 0.188
+    },
+    small: {
+        width: 200,
+        boxSize: 0.2,
+        textSize: 0.7,
+        borderSize: 0.1
+    }
+  }
+  const handleResize = () => {
+      let currentSize = window.outerWidth;
+      Object.values(breakpoints).map(e => {
+          if(currentSize >= e.width) return;
+          setBoxSize(e.boxSize);
+          setTextSize(e.textSize);
+          setBorderSize(e.borderSize);
+      })
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      return () => {
+          window.removeEventListener('resize', handleResize);
+      }
+  }, [])
   return (
     <Styled.Wrapper>
       <Styled.Form onSubmit={formik.handleSubmit}>
@@ -37,7 +70,11 @@ const TuitionRegister: React.FC = () => {
       {/*Description*/}
       <Styled.TileTitle variant="PasswordTileTitle">Opis</Styled.TileTitle>
       {renderRichText}
-      <RgbButton text="Publish" />
+      {cloneElement(
+        <RgbButton text="Publish" 
+            boxSize={boxSize} 
+            textSize={textSize}
+            borderSize={borderSize}/>)}
       </Styled.Form>
     </Styled.Wrapper>
   )

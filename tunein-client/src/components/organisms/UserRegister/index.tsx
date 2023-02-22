@@ -1,11 +1,13 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { cloneElement, useEffect, useState } from "react";
 import * as Yup from "yup"
 import * as Styled from "./styles";
 import RgbButton from "../../molecules/RgbButton"
 
 const UserRegister: React.FC = () => {
-    // if form was submitted
+    const [boxSize, setBoxSize] = useState(0.4);
+    const [textSize, setTextSize] = useState(1);
+    const [borderSize, setBorderSize] = useState(0.188);
     const [success, setSuccess] = useState(false);
     const formik = useFormik({
         initialValues: {
@@ -37,6 +39,36 @@ const UserRegister: React.FC = () => {
             setSuccess(true);
         }
     })
+    const breakpoints = {
+        medium: {
+            width: 500,
+            boxSize: 0.4,
+            textSize: 1.2,
+            borderSize: 0.188
+        },
+        small: {
+            width: 200,
+            boxSize: 0.2,
+            textSize: 0.7,
+            borderSize: 0.1
+        }
+      }
+      const handleResize = () => {
+          let currentSize = window.outerWidth;
+          Object.values(breakpoints).map(e => {
+              if(currentSize >= e.width) return;
+              setBoxSize(e.boxSize);
+              setTextSize(e.textSize);
+              setBorderSize(e.borderSize);
+          })
+      }
+      useEffect(() => {
+          window.addEventListener('resize', handleResize);
+          handleResize();
+          return () => {
+              window.removeEventListener('resize', handleResize);
+          }
+      }, [])
     // TODO: copying pasting values to inputes should not heve different colors than normal ones
     // TODO: more responsive
     return(
@@ -64,7 +96,11 @@ const UserRegister: React.FC = () => {
                         value={formik.values.email} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.email}</Styled.Error>
-                    <RgbButton text="Sign in"/>
+                    {cloneElement(
+                        <RgbButton text="Sign in" 
+                            boxSize={boxSize} 
+                            textSize={textSize}
+                            borderSize={borderSize}/>)}
                 </Styled.Form>
             ) : (
                 <Styled.Success>
