@@ -29,7 +29,7 @@ const HomeCounter: React.FC = () => {
             place for learning and teaching music</Styled.Text>
           <Styled.CounterWrapper>
             {counterList.map((list) => (
-                <Styled.CounterItem>
+                <Styled.CounterItem key={list.title}>
                   <Styled.CounterNumber>
                     <CountUp
                       end={list.number}
