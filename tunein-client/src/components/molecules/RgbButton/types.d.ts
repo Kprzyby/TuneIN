@@ -1,3 +1,6 @@
 export type Props = {
-    text: String
-  };
+    text: String,
+    boxSize: number,
+    textSize: number,
+    borderSize: number
+};

@@ -1,4 +1,6 @@
+import { Typography } from "@components/styles/typography";
 import styled from "styled-components";
+import { NavBar } from "../../../../public/assets/svg";
 import { StyledHeaderProps } from "./types";
 
 export const Wrapper = styled.div<StyledHeaderProps>`
@@ -27,6 +29,33 @@ export const ItemsWrapper = styled.div`
 `;
 export const ListItem = styled.li`
     display: table;
-    float: left;
-    padding: 0 0.6rem;
+    float: right;
+    @media (min-width: 0) {
+        font-size: 0.3rem;
+        padding: 0 0.1rem;
+    }
+    @media (min-width: 260px) {
+        font-size: 0.6rem;
+        padding: 0 0.3rem;
+    }
+    @media (min-width: 800px) {
+        font-size: 1rem;
+    }
+    @media (min-width: 1800px) {
+        font-size: 1.5rem;
+    }
+`;
+export const Logo = styled(Typography)`
+    @media (min-width: 0) {
+        font-size: 0.8rem;
+    }
+    @media (min-width: 260px) {
+        font-size: 2rem;
+    }
+    @media (min-width: 800px) {
+        font-size: 3rem;
+    }
+    @media (min-width: 1800px) {
+        font-size: 4rem;
+    }
 `;

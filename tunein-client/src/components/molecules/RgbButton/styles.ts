@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { Props } from "./types";
 
-export const Button = styled.button`
+export const Button = styled.button<Pick<Props, 'borderSize'>>`
     align-items: center;
     background-image: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
     border: 0;
@@ -8,19 +9,17 @@ export const Button = styled.button`
     box-shadow: rgba(151, 65, 252, 0.2) 0 0.938rem 1.875rem -0.313rem;
     box-sizing: border-box;
     display: flex;
-    font-size: 1.25rem;
     justify-content: center;
-    max-width: 100%;
-    min-width: 10rem;
-    padding: 0.188rem;
+    padding: ${props => props.borderSize}rem;
     text-decoration: none;
     user-select: none;
     white-space: nowrap;
     cursor: pointer;
 `;
-export const Text = styled.span`
+export const Text = styled.span<Pick<Props, 'boxSize' | 'textSize'>>`
     background-color: ${({ theme }) => theme.colors.darkMain};
-    padding: 1rem 1.5rem;
+    padding: ${props => props.boxSize}rem ${props => props.boxSize * 1.3}rem;
+    font-size: ${props => props.textSize}rem;
     border-radius: 0.765rem;
     color: lightgray;
     width: 100%;

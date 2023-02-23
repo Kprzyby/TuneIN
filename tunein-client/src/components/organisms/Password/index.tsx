@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useFormik } from "formik";
 import * as Yup from "yup"
-import React, { useState } from "react";
+import React, { cloneElement, useEffect, useState } from "react";
 import * as Styled from "./styles";
 import RgbButton from "../../molecules/RgbButton"
 
@@ -10,6 +10,9 @@ const Password: NextPage = () =>{
     const testPassword: string = "trudnehaslo";
     // 
     const [success, setSuccess] = useState(false);
+    const [boxSize, setBoxSize] = useState(0.4);
+    const [textSize, setTextSize] = useState(1);
+    const [borderSize, setBorderSize] = useState(0.188);
     const formik = useFormik({
         initialValues: {
             password:"",
@@ -37,6 +40,36 @@ const Password: NextPage = () =>{
             setSuccess(true);
         }
     })
+    const breakpoints = {
+        medium: {
+            width: 500,
+            boxSize: 0.4,
+            textSize: 1.2,
+            borderSize: 0.188
+        },
+        small: {
+            width: 200,
+            boxSize: 0.2,
+            textSize: 0.7,
+            borderSize: 0.1
+        }
+      }
+      const handleResize = () => {
+          let currentSize = window.outerWidth;
+          Object.values(breakpoints).map(e => {
+              if(currentSize >= e.width) return;
+              setBoxSize(e.boxSize);
+              setTextSize(e.textSize);
+              setBorderSize(e.borderSize);
+          })
+      }
+      useEffect(() => {
+          window.addEventListener('resize', handleResize);
+          handleResize();
+          return () => {
+              window.removeEventListener('resize', handleResize);
+          }
+      }, [])
     return(
         <Styled.Wrapper>
             <Styled.Title variant="PasswordTitile">Password Change</Styled.Title>
@@ -57,7 +90,11 @@ const Password: NextPage = () =>{
                         value={formik.values.newPasswordre} 
                         onChange={formik.handleChange}/>
                     <Styled.Error variant="PasswordTileTitle">{formik.errors.newPasswordre}</Styled.Error>
-                    <RgbButton text="Change password"/>
+                    {cloneElement(
+                        <RgbButton text="Change password" 
+                            boxSize={boxSize} 
+                            textSize={textSize}
+                            borderSize={borderSize}/>)}
                 </Styled.Form>
             ) : (
                 <Styled.Success>

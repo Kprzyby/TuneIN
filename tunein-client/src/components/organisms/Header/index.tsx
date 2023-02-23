@@ -13,15 +13,15 @@ const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
     <Styled.Wrapper {...{isLight}}>
         <Inner variant="wide">
             <Styled.ItemsWrapper>
-                <Typography variant='Logo'>
+                <Styled.Logo variant='Logo'>
                     <Link href="/">TuneIN</Link>
-                </Typography>
+                </Styled.Logo>
                 <ul>
                     {items.map(({ label, href }) => {
                         const isHighlighted = asPath.startsWith(href);
                         return (
                             <Styled.ListItem key={label} {...{isHighlighted}}>
-                                <Typography variant="Navigation">
+                                <Typography variant="Navigation" style={{fontSize: "inherit"}}>
                                     <Link {...{ href }}>{label}</Link>
                                 </Typography>
                             </Styled.ListItem>

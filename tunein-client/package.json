@@ -18,8 +18,10 @@
     "http-proxy-middleware": "^2.0.6",
     "next": "^13.0.2",
     "react": "^18.2.0",
+    "react-countup": "^6.4.1",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
+    "react-responsive": "^9.0.2",
     "socket.io-client": "^4.5.3",
     "styled-components": "^5.3.6",
     "styled-normalize": "^8.0.7",
@@ -39,7 +41,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:react-hooks/recommended"
     ]
   },
   "browserslist": {
@@ -60,6 +63,7 @@
     "@types/node": "^18.11.15",
     "@types/react-draft-wysiwyg": "^1.13.4",
     "@types/styled-components": "^5.1.26",
-    "@types/styled-system": "^5.1.15"
+    "@types/styled-system": "^5.1.15",
+    "eslint-plugin-react-hooks": "^4.6.0"
   }
 }
