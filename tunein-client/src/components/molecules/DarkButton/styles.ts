@@ -6,7 +6,7 @@ export const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
 `;
-export const Box = styled.button`
+export const Box = styled.div`
     width: auto;
     background-color: ${({ theme }) => theme.colors.darkMainL};
     opacity: 0.8;

@@ -19,15 +19,11 @@ const Library: React.FC = () => {
                     <Styled.UpRow>{renderSearchBar}</Styled.UpRow>
                     <Styled.DownRow>
                         <Styled.DownRowSide>
-                        <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
-                                <DarkButton/>
-                            </button>                            <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
-                                <DarkButton/>
-                            </button>
+
                         </Styled.DownRowSide>
                         <Styled.DownRowSide>
                             <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
-                                <DarkButton/>
+                                <DarkButton text="Edit"/>
                             </button>
                         </Styled.DownRowSide>
                     </Styled.DownRow>
