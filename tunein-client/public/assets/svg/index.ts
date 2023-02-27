@@ -8,9 +8,10 @@ import Musician4 from "./musicians/Musician4.svg";
 import Musician5 from "./musicians/Musician5.svg";
 import Musician6 from "./musicians/Musician6.svg";
 import NavBar from "./icons/Menu-Circles.svg";
+import MagnifyingGlass from "./icons/MagnifyingGlass.svg";
 
 export { 
     Twitter, Youtube, Instagram, 
     Musician1, Musician2, Musician3, Musician4, Musician5, Musician6,
-    NavBar
+    NavBar, MagnifyingGlass
 };

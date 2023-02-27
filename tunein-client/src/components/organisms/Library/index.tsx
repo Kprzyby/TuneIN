@@ -1,60 +1,43 @@
-import { Inner } from "@components/styles/inners";
-import { Typography } from "@components/styles/typography";
-import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Styled from "./styles";
+import useSearchBar from "@components/molecules/SearchBar";
+import DarkButton from "@components/molecules/DarkButton";
+// import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
-const Profile: React.FC = () => (
-    <Styled.Wrapper>
-        <Styled.LibraryName variant="profileName">Library</Styled.LibraryName>
-        <Styled.SectionsWrap>
-        </Styled.SectionsWrap>
-        <Styled.AboutCat>
-            <Typography variant="profileTitleS">Wszystkie kategorie</Typography>
-        </Styled.AboutCat>
-        <Styled.AboutSearch>
-            <Typography variant="profileTitleS">Enter artist name or a song title</Typography>
-        </Styled.AboutSearch>
-        <Styled.SongSection>
-            <Styled.ImageSection>
-                <Image
-                    src="/assets/images/nuta.jpg"
-                    alt="profile"
-                    height="1"
-                    width="1"
-                    layout="responsive"
-                />
-            </Styled.ImageSection>
-            <Styled.ArtistName variant="profileName">Artist name: song title</Styled.ArtistName>
-        </Styled.SongSection>
-        <Styled.SongSection2>
-            <Styled.ImageSection>
-                <Image
-                    src="/assets/images/nuta.jpg"
-                    alt="profile"
-                    height="1"
-                    width="1"
-                    layout="responsive"
-                />
-            </Styled.ImageSection>
-            <Styled.ArtistName variant="profileName">Artist name: song title</Styled.ArtistName>
-        </Styled.SongSection2>
-        <Styled.AddSection>
-            <Styled.ImageSection2>
-                <Image
-                    src="/assets/images/plus.jpg"
-                    alt="profile"
-                    height="1"
-                    width="1"
-                    layout="responsive"
-                />
-            </Styled.ImageSection2>
-            <Styled.ArtistName2 variant="profileName">ADD NEW TITLE</Styled.ArtistName2>
-        </Styled.AddSection>
+const Library: React.FC = () => {
+    const {renderSearchBar, searchInput} = useSearchBar();
+    const handleEditClick = () => {
+        console.log("edit");
+    }
+    useEffect(() => {
+        console.log(searchInput);
+    }, [searchInput]);
+    return (
+        <Styled.Wrapper>
+            <Styled.Content>
+                <Styled.ToolBox>
+                    <Styled.UpRow>{renderSearchBar}</Styled.UpRow>
+                    <Styled.DownRow>
+                        <Styled.DownRowSide>
+                        <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
+                                <DarkButton/>
+                            </button>                            <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
+                                <DarkButton/>
+                            </button>
+                        </Styled.DownRowSide>
+                        <Styled.DownRowSide>
+                            <button style={{backgroundColor: "transparent", border: "unset"}} onClick={handleEditClick}>
+                                <DarkButton/>
+                            </button>
+                        </Styled.DownRowSide>
+                    </Styled.DownRow>
+                </Styled.ToolBox>
+                <Styled.List>
 
+                </Styled.List>
+            </Styled.Content>
+        </Styled.Wrapper>
+    )
+}
 
-            
-    </Styled.Wrapper>
-)
-
-export default Profile;
+export default Library;
