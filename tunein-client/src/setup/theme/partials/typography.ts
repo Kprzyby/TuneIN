@@ -78,6 +78,12 @@ export const textStyles = {
     Navigation: {
         fontFamily: fontFamilies.logo,
         fontSize: fontSizes.fontSize16,
+    },
+    Buttons: {
+        fontFamily: fontFamilies.logo,
+    },
+    SongCard: {
+        fontFamily: fontFamilies.body
     }
 };
   

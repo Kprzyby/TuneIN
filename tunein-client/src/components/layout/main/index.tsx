@@ -1,6 +1,6 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
-import Header from '@components/organisms/Header'
-import * as Styled from "./styles"
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import Header from '@components/organisms/Header';
+import * as Styled from "./styles";
 import { navigation } from "./consts";
 import Footer from '@components/organisms/Footer/indes';
 import { useRouter } from 'next/router';
@@ -27,10 +27,12 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
           items={navigation}
           isLight={router.asPath === "/" && !isScrolled}
         />
-        {children}
+        <Styled.Main>
+          {children}
+        </Styled.Main>
         <Footer/>
     </Styled.Wrapper>
   )
 }
 
-export default Main
+export default Main;

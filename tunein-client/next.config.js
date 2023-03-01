@@ -9,5 +9,8 @@ module.exports = {
   },
   compiler: {
       styledComponents: true,
-    },
+  },
+  images: {
+    domains: ['encrypted-tbn0.gstatic.com'],
+  },
 }
