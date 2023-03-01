@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
 `;
 export const Content = styled.div`
     @media (min-width: 0px) {  min-width: 100%; }
-    @media (min-width: 1300px) { min-width: 1300px; }
+    @media (min-width: 900px) { min-width: 900px; }
 `;
 export const ToolBox = styled.div`
     @media (min-width: 0px) { padding-top: 0.1rem; }
@@ -16,6 +16,7 @@ export const ToolBox = styled.div`
     background: transparent;
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
 `; 
 export const UpRow = styled.div` flex: 1; `;
 export const DownRow = styled.div`
@@ -31,5 +32,13 @@ export const DownRowSide = styled.div`
     font-size: 0.7rem;
 `;
 export const List = styled.div`
+    @media (min-width: 0px) { margin-top: 0.1rem; }
+    @media (min-width: 600px) { margin-top: 0.5rem; }
     background-color: ${({theme})=>theme.colors.darkMain};
+    @media (min-height: 0px) {
+        min-height: 100vh;
+    }
+    @media (min-height: 300px) {
+        min-height: 15rem;
+    }
 `;

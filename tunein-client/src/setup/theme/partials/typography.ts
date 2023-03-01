@@ -81,6 +81,9 @@ export const textStyles = {
     },
     Buttons: {
         fontFamily: fontFamilies.logo,
+    },
+    SongCard: {
+        fontFamily: fontFamilies.body
     }
 };
   

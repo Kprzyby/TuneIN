@@ -8,8 +8,7 @@ export const Wrapper = styled.div<Pick<StyleProps, 'isCollapsed'>>`
         isCollapsed
         ? ` border-top-left-radius: 1rem;
             border-top-right-radius: 1rem;
-            background-color: ${theme.colors.darkMainL};
-            opacity: 0.8;`
+            background-color: ${theme.colors.darkMainL};`
         : ` border-radius: 1rem;`};
 `;
 export const Button = styled.button`
