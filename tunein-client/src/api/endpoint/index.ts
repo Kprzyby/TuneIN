@@ -37,4 +37,3 @@ export const createDBEndpoint = (endpoint: string) => {
             httpsAgent: httpsAgent})
     }
 }
-//.post(url, newRecord)

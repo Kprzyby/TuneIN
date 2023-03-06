@@ -10,4 +10,5 @@ export const Wrapper = styled.div`
 `;
 export const Main = styled.div`
     flex: 1;
+    display: grid;
 `;

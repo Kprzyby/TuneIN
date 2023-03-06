@@ -84,6 +84,16 @@ export const textStyles = {
     },
     SongCard: {
         fontFamily: fontFamilies.body
+    },
+    ConfirmationTitle: {
+        fontFamily: fontFamilies.logo,
+        fontSize: fontSizes.fontSize72,
+        color: colors.white
+    },
+    ConfirmationDesc: {
+        fontFamily: fontFamilies.body,
+        fontSize: fontSizes.fontSize48,
+        color: colors.white
     }
 };
   
