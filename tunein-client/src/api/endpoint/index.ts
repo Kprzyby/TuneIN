@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-export const BASE_URL = 'https://localhost:7074/';
+export const BASE_URL = 'https://localhost:44324/';
 
 export const ENDPOINTS = {
     auth: {
         signup: 'Auth/SignUpAsync',
-        signin: 'AUTH/SignInAsync',
+        signin: 'Auth/SignInAsync',
         signout: 'Auth/SignOutAsync',
         confirmaccount: 'Auth/ConfirmAccountAsync',
         recoverpassword: 'Auth/RecoverPasswordAsync',
@@ -20,6 +20,6 @@ export const createDBEndpoint = (endpoint: string) => {
     return {
         post: (newRecord: any) => axios.post(url, newRecord),
         put: (updatetRecord: any) => axios.put(url, updatetRecord),
-        get: () => axios.get(url)
+        get: (email:any, confirmationGUID:any) => axios.get(url, {email, confirmationGUID})
     }
 }
