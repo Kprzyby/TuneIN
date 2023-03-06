@@ -85,7 +85,7 @@ namespace Backend.Controllers
             return StatusCode(201, "User created successfully!");
         }
 
-        [HttpGet]
+        [HttpPut]
         [AllowAnonymous]
         [Route("Auth/ConfirmAccountAsync")]
         public async Task<IActionResult> ConfirmAccountAsync(string email, Guid confirmationGUID)

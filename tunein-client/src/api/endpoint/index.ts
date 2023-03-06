@@ -19,7 +19,7 @@ export const createDBEndpoint = (endpoint: string) => {
     let url = BASE_URL + endpoint + '/';
     return {
         post: (newRecord: any) => axios.post(url, newRecord),
-        put: (updatetRecord: any) => axios.put(url, updatetRecord),
-        get: (email:any, confirmationGUID:any) => axios.get(url, {email, confirmationGUID})
+        put: (updatetRecord: any) => axios.put(url, {params:[...updatetRecord]}),
+        get: () => axios.get(url)
     }
 }
