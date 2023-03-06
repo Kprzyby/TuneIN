@@ -1,5 +1,6 @@
 import { Typography } from "@components/styles/typography";
 import styled, { keyframes } from "styled-components";
+import { StyledProps } from "./types";
 
 const errorAnim = keyframes`
     0% { opacity: 1; }
@@ -51,7 +52,7 @@ export const Success = styled.div`
 export const SuccesText = styled(Typography)`
     line-height: default;
 `;
-export const Input = styled.input`
+export const Input = styled.input<StyledProps>`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
@@ -61,7 +62,12 @@ export const Input = styled.input`
     border-radius: 0.2rem;
     padding-left: 0.5rem;
     /* Input security */
-    -webkit-text-security: disc;
+    /* Input security */
+    ${({isSecure}) => 
+        isSecure
+        ? `-webkit-text-security: disc;`
+        : ``
+    }
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,
