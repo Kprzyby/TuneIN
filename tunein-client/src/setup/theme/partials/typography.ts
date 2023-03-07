@@ -50,7 +50,7 @@ export const textStyles = {
         color: "white"
     },
     RegisterTitile: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.logo,
         fontSize: fontSizes.fontSize96,
         lineHeight: "1rem",
         color: colors.darkMainD

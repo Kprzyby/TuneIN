@@ -5,7 +5,7 @@ import React, { cloneElement, useEffect, useState } from "react";
 import * as Styled from "./styles";
 import RgbButton from "../../molecules/RgbButton"
 
-const Password: NextPage = () =>{
+const ChangePassword: NextPage = () =>{
     // test password value
     const testPassword: string = "trudnehaslo";
     // 
@@ -105,4 +105,4 @@ const Password: NextPage = () =>{
         </Styled.Wrapper>
     )
 }
-export default Password;
+export default ChangePassword;
