@@ -1,7 +1,7 @@
 ﻿using DataAnnotationsExtensions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Backend.ViewModels.TutorshipAnnouncement
+namespace Backend.ViewModels.Tutorship
 {
     public class NewTutorshipViewModel
     {
