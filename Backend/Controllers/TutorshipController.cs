@@ -40,6 +40,18 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
+        ///
+        /// The "SortInfo" parameter's key has to be "Price" and its value either "asc" or "desc" depending on the desired sort order.
+        ///
+        /// Nullable - "SortInfo", "TitleFilterValue", "CategoryFilterValue"
+        /// </remarks>
+        /// <param name="pagingInfo"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Tutorship/GetTutorshipsAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
@@ -64,6 +76,15 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
+        /// </remarks>
+        /// <param name="userId"></param>
+        /// <param name="pagingInfo"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("Tutorship/GetTutorshipsForUserAsync/{userId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
