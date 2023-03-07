@@ -1,8 +1,11 @@
-﻿using Data.CustomDataAttributes.InjectionAttributes;
+﻿using Common.Enums;
+using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Services
 {
@@ -145,6 +148,32 @@ namespace Services
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        public List<string> GetCategories()
+        {
+            try
+            {
+                FieldInfo fieldInfo;
+                DescriptionAttribute[] describtionAttributes;
+                List<string> categories = new List<string>();
+
+                var enumValues = Enum.GetValues(typeof(TutorshipCategory));
+
+                foreach (var value in enumValues)
+                {
+                    fieldInfo = typeof(TutorshipCategory).GetField(value.ToString());
+                    describtionAttributes = (DescriptionAttribute[])fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                    categories.Add(describtionAttributes[0].Description);
+                }
+
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
         }
 

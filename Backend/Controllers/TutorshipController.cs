@@ -133,6 +133,20 @@ namespace Backend.Controllers
             return StatusCode(204);
         }
 
+        [HttpGet]
+        [Route("Tutorship/GetCategories")]
+        public IActionResult GetCategories()
+        {
+            var result = _tutorshipService.GetCategories();
+
+            if (result == null)
+            {
+                return StatusCode(500, "Error while loading possible categories");
+            }
+
+            return Ok(result);
+        }
+
         #endregion Methods
     }
 }
