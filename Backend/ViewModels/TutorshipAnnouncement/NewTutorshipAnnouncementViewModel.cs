@@ -4,15 +4,15 @@ namespace Backend.ViewModels.TutorshipAnnouncement
 {
     public class NewTutorshipAnnouncementViewModel
     {
-        [Required(ErrorMessage = "This field is required")]
+        [Required]
         public string Title { get; set; }
 
         public string Details { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
+        [Required]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
+        [Required]
         public string Category { get; set; }
     }
 }
