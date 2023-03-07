@@ -1,11 +1,6 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data.Repositories
 {
@@ -42,6 +37,11 @@ namespace Data.Repositories
                 .LoadAsync();
 
             return tutorship;
+        }
+
+        public async Task UpdateTutorshipAsync(Tutorship tutorship)
+        {
+            await UpdateAndSaveChangesAsync(tutorship);
         }
 
         #endregion Methods

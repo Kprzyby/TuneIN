@@ -3,11 +3,6 @@ using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
@@ -100,6 +95,33 @@ namespace Services
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public async Task<bool> UpdateTutorshipAsync(UpdateTutorshipDTO dto)
+        {
+            try
+            {
+                Tutorship oldTutorship = await _tutorshipRepo.GetTutorshipAsync(dto.Id);
+
+                if (oldTutorship == null)
+                {
+                    return false;
+                }
+
+                oldTutorship.Title = dto.Title;
+                oldTutorship.Details = dto.Details;
+                oldTutorship.Price = dto.Price;
+                oldTutorship.Category = dto.Category;
+                oldTutorship.UpdatedDate = DateTime.Now;
+
+                await _tutorshipRepo.UpdateTutorshipAsync(oldTutorship);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
