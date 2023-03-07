@@ -53,9 +53,10 @@ publicRooms.on('connection', (socket) => {
     })
 })
 
-app.get("/rooms", (req, res) => {
-    console.log(Array.from(io.of("/publicRooms").adapter.rooms.keys()))
-    res.status(200).send(io.sockets.adapter.rooms)
+app.get("/rooms", async (req, res) => {
+    //console.log(JSON.stringify(Array.from(io.of("/publicRooms").adapter.rooms.keys())))
+    let rooms = {rooms: Array.from(io.of("/publicRooms").adapter.rooms.keys())}
+    res.status(200).send(JSON.stringify(rooms))
 })
 
 server.listen(3001, () => {
