@@ -6,12 +6,10 @@ namespace Backend.ViewModels.Library
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string TrackName { get; set; }
         public string Band { get; set; }   
-
         public string Genre { get; set; }
-
-        public string CoverLink { get; set; }   
+        public string LinkToCover { get; set; }   
 
 
     }

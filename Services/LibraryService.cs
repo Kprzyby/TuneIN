@@ -11,7 +11,7 @@ namespace Services
 
         public async Task<JObject> GetTrackInfoAsync(string artist, string trackName)
         {
-
+            //var APIKEY = Environment.GetEnvironmentVariable("APIKEY");
             var httpClient = new HttpClient();
             var requestUri = $"http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&artist={artist}&track={trackName}&format=json";
             var response = await httpClient.GetAsync(requestUri);
@@ -33,6 +33,7 @@ namespace Services
         */
         public async Task<string> GetSearchListAsync(string trackName)
         {
+            //var APIKEY = Environment.GetEnvironmentVariable("APIKEY");
             var url = "http://ws.audioscrobbler.com/2.0/?method=track.search" +
                 "&api_key=" + APIKEY + "&track=" + trackName + "&limit=10" +
                 "&format=json";

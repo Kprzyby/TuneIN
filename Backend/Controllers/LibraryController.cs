@@ -49,10 +49,10 @@ namespace Backend.Controllers
             if ((string)trackInfo["message"] == "Track not found") return BadRequest("Not Found");
             TrackViewModel trackViewModel = new TrackViewModel
             {
-                Name = (string)trackInfo["track"]["name"],
+                TrackName = (string)trackInfo["track"]["name"],
                 Band = (string)trackInfo["track"]["artist"]["name"],
                 Genre = (string)trackInfo["track"]["toptags"]["tag"][0]["name"],
-                CoverLink = (string)trackInfo["track"]["album"]["image"][2]["#text"]
+                LinkToCover = (string)trackInfo["track"]["album"]["image"][2]["#text"]
             };
 
             return Ok(trackViewModel);
@@ -67,6 +67,16 @@ namespace Backend.Controllers
             if (trackList == null) return BadRequest("Error");
             return Ok(trackList);
         }
+
+        [HttpGet]
+        [Route("Library/AddNewTrack")]
+        public async Task<IActionResult> AddNewTrackAsync(TrackViewModel trackInfo)
+        {
+
+            return Ok("Track added successfully!");
+        }
+
+
 
         #endregion Methods
     }
