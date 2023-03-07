@@ -7,13 +7,13 @@ namespace Services
     [ScopedAttribute]
     public class LibraryService
     {
-        private const string APIKEY = "dde99a48aa1f6cbe1ec0d1122e3292cc";//TO HIDE
+        private const string APIKEY = "";//TO HIDE
 
-        public async Task<JObject> GetTrackInfoAsync(string artist, string track)
+        public async Task<JObject> GetTrackInfoAsync(string artist, string trackName)
         {
 
             var httpClient = new HttpClient();
-            var requestUri = $"http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&artist={artist}&track={track}&format=json";
+            var requestUri = $"http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key={APIKEY}&artist={artist}&track={trackName}&format=json";
             var response = await httpClient.GetAsync(requestUri);
             response.EnsureSuccessStatusCode();
             var responseContent = await response.Content.ReadAsStringAsync();

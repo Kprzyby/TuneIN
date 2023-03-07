@@ -41,10 +41,10 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("Library/GetTrackInfo")]
-        public async Task<IActionResult> GetTrackInfoAsync(string artist, string name)
+        public async Task<IActionResult> GetTrackInfoAsync(string artist, string trackName)
         {
             Console.WriteLine("Works");
-            var trackInfo = await _libraryService.GetTrackInfoAsync(artist, name);
+            var trackInfo = await _libraryService.GetTrackInfoAsync(artist, trackName);
             if (trackInfo == null) return BadRequest("Error");
             if ((string)trackInfo["message"] == "Track not found") return BadRequest("Not Found");
             TrackViewModel trackViewModel = new TrackViewModel
