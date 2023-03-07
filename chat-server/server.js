@@ -21,10 +21,13 @@ const io = new Server(server, {
     cors: 'http://localhost:3000'
 })
 
+const publicRooms = io.of("/publicRooms")
+
 io.on('connection', (socket) => {
     console.log('User Connected', socket.id);
 
     socket.on('join', (room, userId) => {
+        socket.leave(socket.id)
         socket.join(room)
         console.log(`User with ID: ${userId} joined room: ${room}`)
         socket.to(room).emit('user-connected', userId)
@@ -35,7 +38,25 @@ io.on('connection', (socket) => {
     })
 })
 
+publicRooms.on('connection', (socket) => {
+    console.log('User Connected', socket.id);
 
+    socket.on('join', (room, userId) => {
+        socket.leave(socket.id)
+        socket.join(room)
+        console.log(`User with ID: ${userId} joined room: ${room}`)
+        socket.to(room).emit('user-connected', userId)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('User Disconnected', socket.id)
+    })
+})
+
+app.get("/rooms", (req, res) => {
+    console.log(Array.from(io.of("/publicRooms").adapter.rooms.keys()))
+    res.status(200).send(io.sockets.adapter.rooms)
+})
 
 server.listen(3001, () => {
     console.log('Server running...')

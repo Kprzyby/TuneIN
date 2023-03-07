@@ -10,7 +10,7 @@ const Homepage: NextPage = () => {
     const socket = useRef<Socket>()
 
     useEffect(() => {
-        socket.current = io('https://192.168.43.80:3001');
+        socket.current = io('https://192.168.1.3:3001/publicRooms');
 
         if (socket.current) {
             socket.current.on("connect", () => {
