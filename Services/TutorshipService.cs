@@ -1,4 +1,5 @@
 ﻿using Common.Enums;
+using Common.Helpers;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
@@ -6,6 +7,7 @@ using Data.Entities;
 using Data.Repositories;
 using System.ComponentModel;
 using System.Reflection;
+using X.PagedList;
 
 namespace Services
 {
@@ -55,6 +57,74 @@ namespace Services
                 };
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<GetTutorshipsResponseDTO> GetTutorshipsAsync(GetTutorshipsDTO dto)
+        {
+            try
+            {
+                IQueryable<Tutorship> tutorships = _tutorshipRepo.GetTutorships();
+
+                if (!String.IsNullOrEmpty(dto.CategoryFilterValue))
+                {
+                    tutorships = tutorships.Where(t => t.Category.ToUpper() == dto.CategoryFilterValue.ToUpper());
+                }
+
+                if (!String.IsNullOrEmpty(dto.TitleFilterValue))
+                {
+                    tutorships = tutorships.Where(t => t.Title.
+                          ToUpper()
+                          .StartsWith(dto.TitleFilterValue.ToUpper()));
+                }
+
+                if (dto.UserIdFilterValue != null)
+                {
+                    tutorships = tutorships.Where(t => t.CreatedBy.Id == dto.UserIdFilterValue);
+                }
+
+                if (dto.SortInfo == null)
+                {
+                    tutorships = tutorships.OrderBy(t => t.Title);
+                }
+                else
+                {
+                    List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
+
+                    sortInfo.Add((KeyValuePair<string, string>)dto.SortInfo);
+
+                    tutorships = SortingHelper<Tutorship>.Sort(tutorships, sortInfo);
+                }
+
+                GetTutorshipsResponseDTO response = new GetTutorshipsResponseDTO();
+                response.TotalCount = tutorships.Count();
+                response.PageNumber = dto.PageNumber;
+                response.PageSize = dto.PageSize;
+                response.TitleFilterValue = dto.TitleFilterValue;
+                response.CategoryFilterValue = dto.CategoryFilterValue;
+                response.SortInfo = dto.SortInfo;
+
+                response.Tutorships = await tutorships.
+                    Select(t => new ReadTutorshipDTO()
+                    {
+                        Id = t.Id,
+                        Title = t.Title,
+                        Details = t.Details,
+                        Price = t.Price,
+                        Category = t.Category,
+                        Author = new ReadTutorshipAuthorDTO()
+                        {
+                            Id = t.CreatedBy.Id,
+                            Username = t.CreatedBy.UserName
+                        }
+                    })
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                return response;
             }
             catch (Exception ex)
             {

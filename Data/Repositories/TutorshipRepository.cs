@@ -27,6 +27,15 @@ namespace Data.Repositories
             return result;
         }
 
+        public IQueryable<Tutorship> GetTutorships()
+        {
+            var result = DataContext.Tutorships
+                .Include(t => t.CreatedBy)
+                .Where(t => !t.DeletedDate.HasValue);
+
+            return result;
+        }
+
         public async Task<Tutorship> AddTutorshipAsync(Tutorship tutorship)
         {
             await AddAndSaveChangesAsync(tutorship);

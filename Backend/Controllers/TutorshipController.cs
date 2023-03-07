@@ -41,6 +41,52 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Route("Tutorship/GetTutorshipsAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> GetTutorshipsAsync(GetTutorshipsViewModel pagingInfo)
+        {
+            GetTutorshipsDTO dto = new GetTutorshipsDTO()
+            {
+                PageNumber = pagingInfo.PageNumber,
+                PageSize = pagingInfo.PageSize,
+                SortInfo = pagingInfo.SortInfo,
+                TitleFilterValue = pagingInfo.TitleFilterValue,
+                CategoryFilterValue = pagingInfo.CategoryFilterValue,
+            };
+
+            var result = await _tutorshipService.GetTutorshipsAsync(dto);
+
+            if (result == null)
+            {
+                return StatusCode(500, "Error while loading tutorships");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("Tutorship/GetTutorshipsForUserAsync/{userId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> GetTutorshipsForUserAsync(int userId, GetTutorshipsForUserViewModel pagingInfo)
+        {
+            GetTutorshipsDTO dto = new GetTutorshipsDTO()
+            {
+                PageNumber = pagingInfo.PageNumber,
+                PageSize = pagingInfo.PageSize,
+                UserIdFilterValue = userId
+            };
+
+            var result = await _tutorshipService.GetTutorshipsAsync(dto);
+
+            if (result == null)
+            {
+                return StatusCode(500, "Error while loading tutorships");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [Route("Tutorship/AddTutorshipAsync")]
         public async Task<IActionResult> AddTutorshipAsync(NewTutorshipViewModel newTutorship)
