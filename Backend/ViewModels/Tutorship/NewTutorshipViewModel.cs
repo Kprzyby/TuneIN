@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAnnotationsExtensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.ViewModels.TutorshipAnnouncement
 {
-    public class NewTutorshipAnnouncementViewModel
+    public class NewTutorshipViewModel
     {
         [Required]
         public string Title { get; set; }
@@ -10,6 +11,7 @@ namespace Backend.ViewModels.TutorshipAnnouncement
         public string Details { get; set; }
 
         [Required]
+        [Min(0)]
         public decimal Price { get; set; }
 
         [Required]
