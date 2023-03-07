@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Backend.ViewModels.Library;
 using Services;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace Backend.Controllers
 {
@@ -61,10 +63,9 @@ namespace Backend.Controllers
         public async Task<IActionResult> GetSearchListAsync(string name)
         {
             Console.WriteLine("Works");
-            var trackList = await _libraryService.GetSearchList(name);
+            var trackList = await _libraryService.GetSearchListAsync(name);
             if (trackList == null) return BadRequest("Error");
-            var searchList = trackList["results"]["trackmatches"]["track"];
-            return Ok(searchList);
+            return Ok(trackList);
         }
 
         #endregion Methods
