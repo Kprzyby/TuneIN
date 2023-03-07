@@ -104,6 +104,35 @@ namespace Backend.Controllers
             return StatusCode(204);
         }
 
+        [HttpDelete]
+        [Route("Tutorship/DeleteTutorshipAsync/{tutorshipId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        public async Task<IActionResult> DeleteTutorshipAsync(int tutorshipId)
+        {
+            int userId = GetUserId();
+
+            ReadTutorshipDTO oldTutorship = await _tutorshipService.GetTutorshipAsync(tutorshipId);
+
+            if (oldTutorship == null)
+            {
+                return NotFound("There is no tutorship with that id");
+            }
+
+            if (userId != oldTutorship.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the tutorship that you don't own");
+            }
+
+            bool result = await _tutorshipService.DeleteTutorshipAsync(tutorshipId);
+
+            if (result == false)
+            {
+                return StatusCode(500, "Error while deleting the tutorship");
+            }
+
+            return StatusCode(204);
+        }
+
         #endregion Methods
     }
 }

@@ -125,6 +125,29 @@ namespace Services
             }
         }
 
+        public async Task<bool> DeleteTutorshipAsync(int id)
+        {
+            try
+            {
+                Tutorship tutorship = await _tutorshipRepo.GetTutorshipAsync(id);
+
+                if (tutorship == null)
+                {
+                    return false;
+                }
+
+                tutorship.DeletedDate = DateTime.Now;
+
+                await _tutorshipRepo.UpdateTutorshipAsync(tutorship);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         #endregion Methods
     }
 }
