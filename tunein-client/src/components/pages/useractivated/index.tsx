@@ -10,7 +10,7 @@ const Confirmation: NextPage = () => {
       <Styled.Content>
         <Styled.Title variant='ConfirmationTitle'>You have confirmed your email</Styled.Title>
         <Styled.Desc variant='ConfirmationDesc'>Please do login now and enjoy our services</Styled.Desc>
-        <Link href={"/"}>
+        <Link href={"/auth/login"}>
           <DarkButton text={"Logn In"}/>
         </Link>
       </Styled.Content>

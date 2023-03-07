@@ -26,5 +26,5 @@ export const Text = styled(Typography)`
     @media (min-width: 800px) { font-size: 1.4rem; };
     @media (min-width: 1000px) { font-size: 1.6rem; };
     @media (min-width: 1150px) { font-size: 1.8rem; };
-    @media (min-width: 1300px) { font-size: 2rem; };
+    @media (min-width: 1300px) { font-size: 2.5rem; };
 `;

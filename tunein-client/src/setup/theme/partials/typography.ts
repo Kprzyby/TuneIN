@@ -50,15 +50,16 @@ export const textStyles = {
         color: "white"
     },
     RegisterTitile: {
-        fontFamily: fontFamilies.logo,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize96,
+        fontWeight: fontWeights.bold,
         lineHeight: "1rem",
         color: colors.darkMainD
     },
     RegisterSuccess: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize48,
-        color: colors.inputHint
+        color: colors.darkMainD
     },
     PasswordTitile: {
         fontFamily:fontFamilies.header,
@@ -80,7 +81,8 @@ export const textStyles = {
         fontSize: fontSizes.fontSize16,
     },
     Buttons: {
-        fontFamily: fontFamilies.logo,
+        fontFamily: fontFamilies.body,
+        color: colors.darkMainD
     },
     SongCard: {
         fontFamily: fontFamilies.body

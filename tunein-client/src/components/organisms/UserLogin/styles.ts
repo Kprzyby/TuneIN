@@ -42,9 +42,9 @@ export const Form = styled.form`
 export const Input = styled.input<StyledProps>`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
-    color: white;
+    color: ${({theme}) => theme.colors.white};
     font-family: ${({theme}) => theme.fonts.body};
-    border: none;
+    border: unset;
     border-radius: 0.2rem;
     padding: 0.3rem;
     /* Input security */
@@ -94,4 +94,9 @@ export const InputTitle = styled(Typography)`
     @media (min-width: 800px) { font-size: 1.2rem; }
     @media (min-width: 1200px) { font-size: 1.6rem; }
     @media (min-width: 1500px) { font-size: 2rem; }
+`;
+export const Button = styled.button`
+    background-color: transparent;
+    border: unset;
+    padding: 0.5rem 2rem;
 `;

@@ -1,14 +1,11 @@
 import { useFormik } from "formik";
-import React, { cloneElement, useEffect, useState } from "react";
+import React, { useState } from "react";
 import * as Yup from "yup"
 import * as Styled from "./styles";
-import RgbButton from "../../molecules/RgbButton"
-import {createDBEndpoint, ENDPOINTS} from "../../../api/endpoint";
+import { createDBEndpoint, ENDPOINTS } from "../../../api/endpoint";
+import DarkButton from "@components/molecules/DarkButton";
 
 const UserRegister: React.FC = () => {
-    const [boxSize, setBoxSize] = useState(0.4);
-    const [textSize, setTextSize] = useState(1);
-    const [borderSize, setBorderSize] = useState(0.188);
     const [success, setSuccess] = useState(false);
     const formik = useFormik({
         initialValues: {
@@ -47,69 +44,37 @@ const UserRegister: React.FC = () => {
                 });
         }
     })
-    const breakpoints = {
-        medium: {
-            width: 500,
-            boxSize: 0.4,
-            textSize: 1.2,
-            borderSize: 0.188
-        },
-        small: {
-            width: 200,
-            boxSize: 0.2,
-            textSize: 0.7,
-            borderSize: 0.1
-        }
-    }
-    const handleResize = () => {
-        let currentSize = window.outerWidth;
-        Object.values(breakpoints).map(e => {
-            if(currentSize >= e.width) return;
-            setBoxSize(e.boxSize);
-            setTextSize(e.textSize);
-            setBorderSize(e.borderSize);
-        })
-    }
-    useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        }
-    }, [])
-    // TODO: copying pasting values to inputes should not heve different colors than normal ones
-    // TODO: more responsive
     return(
         <Styled.Wrapper>
-            <Styled.Title variant="RegisterTitile">Register</Styled.Title>
             {!success ? (
+                <>
+                <Styled.Title variant="RegisterTitile">Register</Styled.Title>
                 <Styled.Form onSubmit={formik.handleSubmit}>
-                    <Styled.TileTitle variant="PasswordTileTitle">Login</Styled.TileTitle>
+                    <Styled.InputTitle variant="PasswordTileTitle">Login</Styled.InputTitle>
                     <Styled.Input placeholder="Login" id="userName"
                         value={formik.values.userName} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.userName}</Styled.Error>
-                    <Styled.TileTitle variant="PasswordTileTitle">Password</Styled.TileTitle>
+                    <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
                     <Styled.Input isSecure placeholder="Password" id="password"
                         value={formik.values.password} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.password}</Styled.Error>
-                    <Styled.TileTitle variant="PasswordTileTitle">Repeat Password</Styled.TileTitle>
+                    <Styled.InputTitle variant="PasswordTileTitle">Repeat Password</Styled.InputTitle>
                     <Styled.Input isSecure placeholder="Repeat Password" id="repeatPassword"
                         value={formik.values.repeatPassword} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.repeatPassword}</Styled.Error>
-                    <Styled.TileTitle variant="PasswordTileTitle">Email</Styled.TileTitle>
+                    <Styled.InputTitle variant="PasswordTileTitle">Email</Styled.InputTitle>
                     <Styled.Input placeholder="Email" id="email"
                         value={formik.values.email} 
                         onChange={formik.handleChange}/>
                     <Styled.Error>{formik.errors.email}</Styled.Error>
-                    {cloneElement(
-                        <RgbButton text="Sign up" 
-                            boxSize={boxSize} 
-                            textSize={textSize}
-                            borderSize={borderSize}/>)}
+                    <Styled.Button type="submit">
+                        <DarkButton text={"Register"}/>
+                    </Styled.Button>
                 </Styled.Form>
+                </>
             ) : (
                 <Styled.Success>
                     <Styled.SuccesText variant="RegisterSuccess">Thank you</Styled.SuccesText>

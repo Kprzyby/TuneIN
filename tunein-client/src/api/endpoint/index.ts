@@ -20,16 +20,13 @@ export const createDBEndpoint = (endpoint: string) => {
     const https = require('https');
     //TODO: change temporary solution to permament one
     const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+    
     return {
-        post: (newRecord: any) => axios({
-            method: 'post', 
-            url: url, 
-            params: newRecord, 
-            httpsAgent: httpsAgent}),
+        post: (newRecord: any) => axios.post(url, newRecord),
         put: (updatedRecords: any) => axios({
             method: 'put', 
             url: url, 
-            params: updatedRecords, 
+            params:[...updatedRecords], 
             httpsAgent: httpsAgent}),
         get: () => axios({
             method: 'get', 
