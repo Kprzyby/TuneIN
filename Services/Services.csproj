@@ -17,6 +17,7 @@
 		<PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="107.0.5304.6200" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.5" />
 	</ItemGroup>
 
 	<ItemGroup>

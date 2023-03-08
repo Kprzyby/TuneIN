@@ -24,7 +24,8 @@ const TuitionRegister: React.FC = () => {
           .required("Title is required"),
       }),
       onSubmit: () => {
-        // convertToRaw(editorState.getCurrentContent()) returns json
+        //console.log(convertToRaw(editorState.getCurrentContent()));
+        //  returns json
       }
   })
   const {renderRichText, editorState} = useRichText();

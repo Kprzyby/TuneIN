@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using NWebsec.AspNetCore.Core.Web;
 using Services;
 using System.Security.Claims;
+using System.Web;
 
 namespace Backend.Controllers
 {
@@ -60,7 +63,17 @@ namespace Backend.Controllers
                 return StatusCode(500, "Error while creating user!");
             }
 
-            string confirmationURL = this.Url.Action("ConfirmAccountAsync", "Auth", new { Email = newUser.Email, ConfirmationGUID = userDTO.ConfirmationGUID }, protocol: "https");
+            string host = Request.Host.Host;
+
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/activate/user");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["email"] = newUser.Email;
+            parameters["confirmationGUID"] = userDTO.ConfirmationGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            string confirmationURL = finalUrl.AbsoluteUri.ToString();
 
             bool sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
 
@@ -75,9 +88,9 @@ namespace Backend.Controllers
         [HttpPut]
         [AllowAnonymous]
         [Route("Auth/ConfirmAccountAsync")]
-        public async Task<IActionResult> ConfirmAccountAsync(ConfirmUserViewModel confirmationData)
+        public async Task<IActionResult> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
-            bool result = await _authService.ConfirmAccountAsync(confirmationData.Email, confirmationData.ConfirmationGUID);
+            bool result = await _authService.ConfirmAccountAsync(email, confirmationGUID);
 
             if (result == false)
             {
@@ -94,7 +107,18 @@ namespace Backend.Controllers
         {
             Guid passwordRecoveryGUID = Guid.NewGuid();
 
-            string passwordRecoveryURL = this.Url.Action("ChangePasswordAsync", "Auth", new { email = email, passwordRecoveryGUID = passwordRecoveryGUID }, protocol: "https");
+            string host = Request.Host.Host;
+            string scheme = Request.Scheme;
+
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/recover/password");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["email"] = email;
+            parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            string passwordRecoveryURL = finalUrl.AbsoluteUri.ToString();
 
             bool result = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
 
