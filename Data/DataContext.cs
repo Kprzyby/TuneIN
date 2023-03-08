@@ -17,6 +17,7 @@ namespace Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<TutorshipAnnouncement> TutorshipAnnouncements { get; set; }
+        public DbSet<TrackInfo> TrackInfo { get; set; }
 
         #endregion Properties
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Data.Repositories
 {
     [ScopedAttribute]
-    public class LibraryRepository : BaseRepository<User>
+    public class LibraryRepository : BaseRepository<TrackInfo>
     {
         #region Constructors
         public LibraryRepository(DataContext dataContext) : base(dataContext)
@@ -20,7 +20,13 @@ namespace Data.Repositories
 
         #endregion Constructors
         #region Methods
-        
+        public async Task<bool> CheckIfTrackExists(string artist, string trackName)
+        {
+            var result = await DataContext.TrackInfo
+                .AnyAsync(e => e.Band == artist && e.TrackName == trackName);
+
+            return result;
+        }
 
         #endregion Methods
     }

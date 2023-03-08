@@ -4,6 +4,7 @@ using Backend.ViewModels.Library;
 using Services;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using Data.DTOs.Library;
 
 namespace Backend.Controllers
 {
@@ -29,7 +30,7 @@ namespace Backend.Controllers
 
         #region Methods
 
-        [RequireRole("REGULAR_USER", "TUTOR")]
+        //[RequireRole("REGULAR_USER", "TUTOR")]
         [HttpGet]
         [Route("Library/GetURL")]
         public async Task<IActionResult> GetURLAsync(string url)
@@ -68,12 +69,34 @@ namespace Backend.Controllers
             return Ok(trackList);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Library/AddNewTrack")]
-        public async Task<IActionResult> AddNewTrackAsync(TrackViewModel trackInfo)
+        public async Task<IActionResult> AddTrackAsync(TrackViewModel trackInfo)
         {
+            
+            bool trackExists = await _libraryService.CheckIfTrackExistsAsync(trackInfo.Band, trackInfo.TrackName);
 
-            return Ok("Track added successfully!");
+            if (trackExists == true)
+            {
+                return StatusCode(409, "This track already exists in library");
+            }
+            
+            TrackInfoDTO trackInfoDTO = new TrackInfoDTO()
+            {
+                TrackName = trackInfo.TrackName, 
+                Band = trackInfo.Band,
+                Genre = trackInfo.Genre,
+                LinkToCover= trackInfo.LinkToCover,
+            };
+
+            var createResult = await _libraryService.AddTrackAsync(trackInfoDTO);
+
+            if (createResult == false)
+            {
+                return StatusCode(500, "Error while adding new track!");
+            }
+
+            return StatusCode(201, "Track added successfully!");
         }
 
 

@@ -1,4 +1,8 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
+using Data.DTOs.Library;
+using Data.Repositories;
+using Microsoft.Identity.Client;
+using Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -7,7 +11,56 @@ namespace Services
     [ScopedAttribute]
     public class LibraryService
     {
+        #region Properties
+
         private const string APIKEY = "";//TO HIDE
+        private readonly LibraryRepository _libraryRepository;
+        private readonly FetchService _fetchService;
+
+        #endregion Properties
+        #region Constructors
+
+        public LibraryService(LibraryRepository libraryRepository, FetchService fetchService)
+        {
+            _libraryRepository = libraryRepository;
+            _fetchService = fetchService;
+        }
+
+        #endregion Constructors
+        #region Methods
+
+        public async Task<bool> CheckIfTrackExistsAsync(string artist, string trackName)
+        {
+            var trackExists = await _libraryRepository.CheckIfTrackExists(artist, trackName);
+
+            return trackExists;
+        }
+
+        public async Task<bool> AddTrackAsync(TrackInfoDTO trackInfoDTO)
+        {
+            try
+            {
+                var link = await _fetchService.GetURL(trackInfoDTO.TrackName);
+
+                TrackInfo trackInfo = new TrackInfo()
+                {
+                    TrackName = trackInfoDTO.TrackName,
+                    Band = trackInfoDTO.Band,
+                    Genre = trackInfoDTO.Genre,
+                    LinkToCover = trackInfoDTO.LinkToCover,
+                    LinkToTabs = link
+                };
+
+                await _libraryRepository.AddAndSaveChangesAsync(trackInfo);
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+
+        }
 
         public async Task<JObject> GetTrackInfoAsync(string artist, string trackName)
         {
@@ -57,6 +110,7 @@ namespace Services
                 return JsonConvert.SerializeObject(trackList);
             }
         }
+        #endregion Methods
 
     }
 }
