@@ -47,7 +47,7 @@ namespace Services
             IEnumerable<TrackInfo> result;
             try
             {
-                result = _libraryRepository.GetAll();
+                result = await Task.FromResult(_libraryRepository.GetAll());
             }
             catch(Exception ex) 
             {
@@ -55,14 +55,14 @@ namespace Services
             }
             return result;
         }
-        public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string trackName)
+        public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string toFilter)
         {
             IEnumerable<TrackInfo> result;
             try
             {
-                result = _libraryRepository.GetAll();
+                result = await Task.FromResult(_libraryRepository.GetAll());
                 result = result
-                    .Where(e => e.TrackName.ToLower().Contains(trackName.ToLower()))
+                    .Where(e => e.TrackName.ToLower().Contains(toFilter.ToLower()) || e.Band.ToLower().Contains(toFilter.ToLower()) || e.Genre.ToLower().Contains(toFilter.ToLower()))
                     .OrderBy(e => e.TrackName)
                     .Take(5);
             }
