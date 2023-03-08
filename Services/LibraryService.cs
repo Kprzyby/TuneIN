@@ -13,7 +13,7 @@ namespace Services
     {
         #region Properties
 
-        private const string APIKEY = "";//TO HIDE
+        private const string APIKEY = "dde99a48aa1f6cbe1ec0d1122e3292cc";//TO HIDE
         private readonly LibraryRepository _libraryRepository;
         private readonly FetchService _fetchService;
 
