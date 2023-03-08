@@ -58,7 +58,6 @@ export const Input = styled.input<StyledProps>`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: ${({theme}) => theme.colors.white};
-    font-size: 2rem;
     font-family: ${({theme}) => theme.fonts.body};
     border: unset;
     border-radius: 0.2rem;

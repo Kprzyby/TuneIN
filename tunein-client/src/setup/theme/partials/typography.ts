@@ -62,7 +62,7 @@ export const textStyles = {
         color: colors.darkMainD
     },
     PasswordTitile: {
-        fontFamily:fontFamilies.header,
+        fontFamily:fontFamilies.logo,
         fontSize: fontSizes.fontSize96,
         lineHeight: "5rem",
         color: colors.darkMainD

@@ -26,7 +26,7 @@ export const createDBEndpoint = (endpoint: string) => {
         put: (updatedRecords: any) => axios({
             method: 'put', 
             url: url, 
-            params:[...updatedRecords], 
+            params: updatedRecords, 
             httpsAgent: httpsAgent}),
         get: () => axios({
             method: 'get', 
