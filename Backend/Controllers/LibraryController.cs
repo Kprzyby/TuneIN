@@ -99,6 +99,26 @@ namespace Backend.Controllers
             return StatusCode(201, "Track added successfully!");
         }
 
+        [HttpDelete]
+        [Route("Library/RemoveTrack")]
+        public async Task<IActionResult> RemoveTrackById(int id)
+        {
+            bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(id);
+
+            if (trackExists == false)
+            {
+                return StatusCode(409, "This track doesn't exist in library");
+            }
+
+            var createResult = await _libraryService.RemoveTracksAsync(id);
+
+            if (createResult == false)
+            {
+                return StatusCode(500, "Error while removing track!");
+            }
+
+            return StatusCode(201, "Track removed successfully!");
+        }
 
 
         #endregion Methods

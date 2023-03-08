@@ -31,9 +31,27 @@ namespace Services
 
         public async Task<bool> CheckIfTrackExistsAsync(string artist, string trackName)
         {
-            var trackExists = await _libraryRepository.CheckIfTrackExists(artist, trackName);
+            var trackExists = await _libraryRepository.CheckIfTrackExistsAsync(artist, trackName);
 
             return trackExists;
+        }
+        public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
+        {
+            var trackExists = await _libraryRepository.CheckIfTrackExistsByIdAsync(id);
+
+            return trackExists;
+        }
+        public async Task<bool> RemoveTracksAsync(int id)
+        {
+            try
+            {
+                await _libraryRepository.RemoveByIdAndSaveChangesAsync(id);
+            }
+            catch (Exception ex) 
+            {
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> AddTrackAsync(TrackInfoDTO trackInfoDTO)

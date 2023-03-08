@@ -20,7 +20,14 @@ namespace Data.Repositories
 
         #endregion Constructors
         #region Methods
-        public async Task<bool> CheckIfTrackExists(string artist, string trackName)
+        public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
+        {
+            var result = await DataContext.TrackInfo
+                .AnyAsync(e => e.Id == id);
+
+            return result;
+        }
+        public async Task<bool> CheckIfTrackExistsAsync(string artist, string trackName)
         {
             var result = await DataContext.TrackInfo
                 .AnyAsync(e => e.Band == artist && e.TrackName == trackName);
