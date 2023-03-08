@@ -41,6 +41,39 @@ namespace Services
 
             return trackExists;
         }
+
+        public async Task<IEnumerable<TrackInfo>> GetTracksAsync()
+        {
+            IEnumerable<TrackInfo> result;
+            try
+            {
+                result = _libraryRepository.GetAll();
+            }
+            catch(Exception ex) 
+            {
+                return null;
+            }
+            return result;
+        }
+        public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string trackName)
+        {
+            IEnumerable<TrackInfo> result;
+            try
+            {
+                result = _libraryRepository.GetAll();
+                result = result
+                    .Where(e => e.TrackName.ToLower().Contains(trackName.ToLower()))
+                    .OrderBy(e => e.TrackName)
+                    .Take(5);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            return result;
+        }
+
+
         public async Task<bool> RemoveTracksAsync(int id)
         {
             try

@@ -39,6 +39,21 @@ namespace Backend.Controllers
             var link = await _fetchService.GetURL(url);
             return Ok(link);
         }
+        [HttpGet]
+        [Route("Library/GetTracks")]
+        public async Task<IActionResult> GetTracksAsync()
+        {
+            var tracks = _libraryService.GetTracksAsync();
+            return Ok(tracks);
+        }
+        [HttpGet]
+        [Route("Library/GetTracksFiltered")]
+        public async Task<IActionResult> GetTracksFilteredByTrackNameAsync(string trackName)
+        {
+            var tracks = _libraryService.GetTracksFilteredByTrackNameAsync(trackName);
+            return Ok(tracks);
+        }
+
 
         [HttpGet]
         [Route("Library/GetTrackInfo")]
