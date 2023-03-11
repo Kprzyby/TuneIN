@@ -15,15 +15,13 @@ namespace Services
 
         private const string APIKEY = "dde99a48aa1f6cbe1ec0d1122e3292cc";//TO HIDE
         private readonly LibraryRepository _libraryRepository;
-        private readonly FetchService _fetchService;
 
         #endregion Properties
         #region Constructors
 
-        public LibraryService(LibraryRepository libraryRepository, FetchService fetchService)
+        public LibraryService(LibraryRepository libraryRepository)
         {
             _libraryRepository = libraryRepository;
-            _fetchService = fetchService;
         }
 
         #endregion Constructors
@@ -91,7 +89,7 @@ namespace Services
         {
             try
             {
-                var link = await _fetchService.GetURL(trackInfoDTO.TrackName);
+                var link = "https://www.ultimate-guitar.com/search.php?search_type=title&value=" + trackInfoDTO.TrackName;
 
                 TrackInfo trackInfo = new TrackInfo()
                 {
