@@ -57,7 +57,7 @@ namespace Backend.Controllers
                 TrackName = (string)trackInfo["track"]["name"],
                 Band = (string)trackInfo["track"]["artist"]["name"],
                 Genre = (string)trackInfo["track"]["toptags"]["tag"][0]["name"],
-                LinkToCover = (string)trackInfo["track"]["album"]["image"][2]["#text"]
+                LinkToCover = (string)trackInfo["track"]["album"]["image"][3]["#text"]
             };
 
             return Ok(trackViewModel);

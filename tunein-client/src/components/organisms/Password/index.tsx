@@ -54,39 +54,39 @@ const Password: NextPage = () =>{
             borderSize: 0.1
         }
       }
-      const handleResize = () => {
-          let currentSize = window.outerWidth;
-          Object.values(breakpoints).map(e => {
-              if(currentSize >= e.width) return;
-              setBoxSize(e.boxSize);
-              setTextSize(e.textSize);
-              setBorderSize(e.borderSize);
-          })
-      }
-      useEffect(() => {
-          window.addEventListener('resize', handleResize);
-          handleResize();
-          return () => {
-              window.removeEventListener('resize', handleResize);
-          }
-      }, [])
-    return(
+    const handleResize = () => {
+        let currentSize = window.outerWidth;
+        Object.values(breakpoints).map(e => {
+            if(currentSize >= e.width) return;
+            setBoxSize(e.boxSize);
+            setTextSize(e.textSize);
+            setBorderSize(e.borderSize);
+        })
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [])
+    return (
         <Styled.Wrapper>
             <Styled.Title variant="PasswordTitile">Password Change</Styled.Title>
             {!success ? (
                 <Styled.Form onSubmit={formik.handleSubmit}>
                     <Styled.TileTitle variant="PasswordTileTitle">Old password</Styled.TileTitle>
-                    <Styled.Input placeholder="Password" id="password"
+                    <Styled.Input isSecure placeholder="Password" id="password"
                         value={formik.values.password} 
                         onChange={formik.handleChange}/>
                     <Styled.Error variant="PasswordTileTitle">{formik.errors.password}</Styled.Error>
                     <Styled.TileTitle variant="PasswordTileTitle">New password</Styled.TileTitle>
-                    <Styled.Input placeholder="New Password" id="newPassword"
+                    <Styled.Input isSecure placeholder="New Password" id="newPassword"
                         value={formik.values.newPassword} 
                         onChange={formik.handleChange}/>
                     <Styled.Error variant="PasswordTileTitle">{formik.errors.newPassword}</Styled.Error>
                     <Styled.TileTitle variant="PasswordTileTitle">Repeat new password</Styled.TileTitle>
-                    <Styled.Input placeholder="Repeat New Password" id="newPasswordre"
+                    <Styled.Input isSecure placeholder="Repeat New Password" id="newPasswordre"
                         value={formik.values.newPasswordre} 
                         onChange={formik.handleChange}/>
                     <Styled.Error variant="PasswordTileTitle">{formik.errors.newPasswordre}</Styled.Error>
