@@ -13,16 +13,14 @@ namespace Backend.Controllers
     {
         #region Properties
 
-        private readonly FetchService _fetchService;
         private readonly LibraryService _libraryService;
 
         #endregion Properties
 
         #region Constructors
 
-        public LibraryController(FetchService fetchService, LibraryService libraryService)
+        public LibraryController(LibraryService libraryService)
         {
-            _fetchService = fetchService;
             _libraryService = libraryService;
         }
 
@@ -30,15 +28,6 @@ namespace Backend.Controllers
 
         #region Methods
 
-        //[RequireRole("REGULAR_USER", "TUTOR")]
-        [HttpGet]
-        [Route("Library/GetURL")]
-        public async Task<IActionResult> GetURLAsync(string url)
-        {
-            Console.WriteLine("Works");
-            var link = await _fetchService.GetURL(url);
-            return Ok(link);
-        }
         [HttpGet]
         [Route("Library/GetTracks")]
         public async Task<IActionResult> GetTracksAsync()
