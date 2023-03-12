@@ -13,8 +13,7 @@ const UserLogin: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             email: "",
-            password:"",
-            repeatPassword: ""
+            password:""
         },
         validateOnBlur: false,
         validateOnChange: false,
@@ -23,19 +22,15 @@ const UserLogin: React.FC = () => {
                 .email("Email is not valid")
                 .required("Email is required"),
             password: Yup.string()
-                .required("Password is required"),
-            repeatPassword: Yup.string()
-                .oneOf([Yup.ref("password"), null], "Passwords must match")
                 .required("Password is required")
         }),
         onSubmit: (values) => {
-            const {email, password} = values;
-            const newValues = {email, password};
-            console.log(newValues);
             createDBEndpoint(ENDPOINTS.auth.signin)
-                .post(newValues)
+                .post(values)
                 .then((res) => {
-                    setUser(email);
+                    //setUser(values.email);
+                    
+                    // path to profile?
                     router.push("/");
                 })
                 .catch((error) => {
@@ -58,12 +53,6 @@ const UserLogin: React.FC = () => {
                     value={formik.values.password} 
                     onChange={formik.handleChange}/>
                 <Styled.Error>{formik.errors.password}</Styled.Error>
-
-                <Styled.InputTitle variant="PasswordTileTitle">Repeat Password</Styled.InputTitle>
-                <Styled.Input isSecure placeholder="Repeat Password" id="repeatPassword"
-                    value={formik.values.repeatPassword} 
-                    onChange={formik.handleChange}/>
-                <Styled.Error>{formik.errors.repeatPassword}</Styled.Error>
                 
                 <Styled.Button type="submit">
                     <DarkButton text={"Login"}/>

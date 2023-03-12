@@ -1,15 +1,17 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react';
+import React, { PropsWithChildren, useContext, useEffect, useState } from 'react';
 import Header from '@components/organisms/Header';
 import * as Styled from "./styles";
-import { navigation } from "./consts";
+import { authorizedNav, unauthorizedNav } from "./consts";
 import Footer from '@components/organisms/Footer/indes';
 import { useRouter } from 'next/router';
+import { User_data } from '@components/context/UserContext';
 
 const Main: React.FC<PropsWithChildren<unknown>> = ({
     children
   }) => {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user } = useContext(User_data);
   useEffect(() => {
     const changeHeader = () => {
       if (window.scrollY !== 0) {
@@ -24,7 +26,7 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
   return (
     <Styled.Wrapper>
         <Header 
-          items={navigation}
+          items={user === undefined ? unauthorizedNav : authorizedNav}
           isLight={router.asPath === "/" && !isScrolled}
         />
         <Styled.Main>

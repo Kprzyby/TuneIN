@@ -22,7 +22,7 @@ export const fontWeights = {
 
 export const textStyles = {
     h1: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize16,
         lineHeight: "1rem"
     },
@@ -96,6 +96,10 @@ export const textStyles = {
         fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize48,
         color: colors.white
+    },
+    HomepageText: {
+        fontFamily: fontFamilies.body,
+        color: colors.darkMainL
     }
 };
   
