@@ -1,4 +1,5 @@
 ﻿using Backend.ViewModels.User;
+using Common.CustomDataAttributes;
 using Common.Enums;
 using Data.DTOs.User;
 using Microsoft.AspNetCore.Authentication;
@@ -170,7 +171,7 @@ namespace Backend.Controllers
             return Ok(userDTO);
         }
 
-        [AllowAnonymous]
+        [RequireRole("REGULAR_USER", "TUTOR")]
         [HttpGet]
         [Route("Auth/SignOutAsync")]
         public async Task<IActionResult> SignOutAsync()
@@ -188,6 +189,23 @@ namespace Backend.Controllers
             }
 
             return Ok("User signed out successfully!");
+        }
+
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [HttpGet]
+        [Route("Auth/GetCurrentUserAsync")]
+        public async Task<IActionResult> GetCurrentUserAsync()
+        {
+            int userId = GetUserId();
+
+            var result = await _authService.GetUserAsync(null, userId);
+
+            if (result == null)
+            {
+                return StatusCode(500, "Error while loading the user from the database");
+            }
+
+            return Ok(result);
         }
 
         #endregion Methods
