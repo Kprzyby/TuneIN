@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using NWebsec.AspNetCore.Core.Web;
 using Services;
 using System.Security.Claims;
 using System.Web;
@@ -162,7 +160,14 @@ namespace Backend.Controllers
             Response.Cookies.Append("ChatToken", token);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            return Ok("User signed in successfully!");
+            var userDTO = await _authService.GetUserAsync(logInCredentials.Email, null);
+
+            if (userDTO == null)
+            {
+                return StatusCode(500, "Error while loading user from the database");
+            }
+
+            return Ok(userDTO);
         }
 
         [AllowAnonymous]

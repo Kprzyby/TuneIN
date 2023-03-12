@@ -284,6 +284,42 @@ namespace Services
             return true;
         }
 
+        public async Task<ReadUserDTO> GetUserAsync(string email, int? id)
+        {
+            try
+            {
+                User user;
+
+                if (id != null)
+                {
+                    user = await _authRepository.GetByIdAsync((int)id);
+                }
+                else
+                {
+                    user = await _authRepository.GetUserByEmailAsync(email);
+                }
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                ReadUserDTO result = new ReadUserDTO()
+                {
+                    Id = user.Id,
+                    UserRole = user.UserRole,
+                    UserName = user.UserName,
+                    Email = user.Email
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         #endregion Methods
     }
 }
