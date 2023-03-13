@@ -4,9 +4,12 @@ import * as Yup from "yup"
 import * as Styled from "./styles";
 import { createDBEndpoint, ENDPOINTS } from "../../../api/endpoint";
 import DarkButton from "@components/molecules/DarkButton";
+import Loader from "@components/atoms/Loader";
 
 const UserRegister: React.FC = () => {
     const [success, setSuccess] = useState(false);
+    const [err, setErr] = useState(false);
+    const [loading, setLoading] = useState(false);
     const formik = useFormik({
         initialValues: {
             userName:"",
@@ -33,55 +36,75 @@ const UserRegister: React.FC = () => {
                 .required("Password is required")
         }),
         onSubmit: (values) => {
+            setLoading(true);
+            setErr(false);
             createDBEndpoint(ENDPOINTS.auth.signup)
                 .post(values)
                 .then((res) => {
-                    console.log(res);
+                    setLoading(false);
                     setSuccess(true);
                 })
                 .catch((error) => {
+                    setErr(true);
+                    setLoading(false);
                     console.log(error);
                 });
         }
     })
     return(
-        <Styled.Wrapper>
+        <>
             {!success ? (
-                <>
-                <Styled.Title variant="RegisterTitile">Register</Styled.Title>
-                <Styled.Form onSubmit={formik.handleSubmit}>
-                    <Styled.InputTitle variant="PasswordTileTitle">Login</Styled.InputTitle>
-                    <Styled.Input placeholder="Login" id="userName"
-                        value={formik.values.userName} 
-                        onChange={formik.handleChange}/>
-                    <Styled.Error>{formik.errors.userName}</Styled.Error>
-                    <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
-                    <Styled.Input isSecure placeholder="Password" id="password"
-                        value={formik.values.password} 
-                        onChange={formik.handleChange}/>
-                    <Styled.Error>{formik.errors.password}</Styled.Error>
-                    <Styled.InputTitle variant="PasswordTileTitle">Repeat Password</Styled.InputTitle>
-                    <Styled.Input isSecure placeholder="Repeat Password" id="repeatPassword"
-                        value={formik.values.repeatPassword} 
-                        onChange={formik.handleChange}/>
-                    <Styled.Error>{formik.errors.repeatPassword}</Styled.Error>
-                    <Styled.InputTitle variant="PasswordTileTitle">Email</Styled.InputTitle>
-                    <Styled.Input placeholder="Email" id="email"
-                        value={formik.values.email} 
-                        onChange={formik.handleChange}/>
-                    <Styled.Error>{formik.errors.email}</Styled.Error>
-                    <Styled.Button type="submit">
-                        <DarkButton text={"Register"}/>
-                    </Styled.Button>
-                </Styled.Form>
-                </>
+                <Styled.FormWrapper>
+                    <Styled.Title variant="RegisterTitile">Register</Styled.Title>
+                    {loading ? (
+                        <Loader borderColor={`white transparent`}/>
+                    ) : (
+                        <Styled.Form onSubmit={formik.handleSubmit}>
+                            <Styled.InputTitle variant="PasswordTileTitle">Login</Styled.InputTitle>
+                            <Styled.Input placeholder="Login" id="userName"
+                                value={formik.values.userName} 
+                                onChange={formik.handleChange}/>
+                            <Styled.Error>{formik.errors.userName}</Styled.Error>
+
+                            <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
+                            <Styled.Input isSecure placeholder="Password" id="password"
+                                value={formik.values.password} 
+                                onChange={formik.handleChange}/>
+                            <Styled.Error>{formik.errors.password}</Styled.Error>
+
+                            <Styled.InputTitle variant="PasswordTileTitle">Repeat Password</Styled.InputTitle>
+                            <Styled.Input isSecure placeholder="Repeat Password" id="repeatPassword"
+                                value={formik.values.repeatPassword} 
+                                onChange={formik.handleChange}/>
+                            <Styled.Error>{formik.errors.repeatPassword}</Styled.Error>
+
+                            <Styled.InputTitle variant="PasswordTileTitle">Email</Styled.InputTitle>
+                            <Styled.Input placeholder="Email" id="email"
+                                value={formik.values.email} 
+                                onChange={formik.handleChange}/>
+                            <Styled.Error>{formik.errors.email}</Styled.Error>
+
+                            {err && (<Styled.Error>Wrong credentials</Styled.Error>)}
+
+                            <Styled.Button type="submit">
+                                <DarkButton text={"Register"}/>
+                            </Styled.Button>
+                        </Styled.Form>
+                    )}
+                </Styled.FormWrapper>
             ) : (
-                <Styled.Success>
-                    <Styled.SuccesText variant="RegisterSuccess">Thank you</Styled.SuccesText>
-                    <Styled.SuccesText variant="RegisterSuccess">Confirm your email</Styled.SuccesText>
-                </Styled.Success>
+                <Styled.ConfirmWrapper>
+                    <Styled.ConfirmContent>
+                        <Styled.ConfirmTitle variant='ConfirmationTitle'>
+                            Thank you for creating account
+                        </Styled.ConfirmTitle>
+                        <Styled.ConfirmDesc variant='ConfirmationDesc'>
+                            Activated link was sent to your email
+                        </Styled.ConfirmDesc>
+                    </Styled.ConfirmContent>
+                </Styled.ConfirmWrapper>
             )}
-        </Styled.Wrapper>
+        </>
     )
 };
 

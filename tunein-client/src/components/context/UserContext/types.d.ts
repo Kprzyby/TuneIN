@@ -1,6 +1,6 @@
 export type UserContextType = {
-    user: UserType;
-    setUser: (user: UserType) => void;
+    user: UserType | undefined;
+    setUser: (user: UserType | undefined) => void;
 }
 export interface UserType {
     email: string;
