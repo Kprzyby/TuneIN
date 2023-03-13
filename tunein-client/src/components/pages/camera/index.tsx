@@ -1,9 +1,9 @@
 import { NextPage } from 'next'
-import Camera from "../../organisms/Camera";
+import LocalCamera from '../../organisms/LocalCamera';
 
 const Homepage: NextPage = () =>{
     return(
-        <Camera/>
+        <LocalCamera/>
     );
 }
 
