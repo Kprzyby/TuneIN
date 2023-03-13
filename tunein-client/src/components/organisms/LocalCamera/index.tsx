@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react"
-import { Stream } from "stream";
+import * as Styled from "./styles"
 
 const LocalCamera: React.FC = () => {
 
@@ -13,10 +13,13 @@ const LocalCamera: React.FC = () => {
                     videoRef.current.play();
                 }
             })
+            .catch(error => {
+                console.log('Error getting user media: ', error);
+            });
     }, [])
 
     return (
-        <video ref={videoRef} width="320" height="240" autoPlay muted></video>
+        <Styled.LocalCamera ref={videoRef} autoPlay muted/>
     )
 }
 
