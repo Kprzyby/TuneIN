@@ -9,9 +9,10 @@ import { User_data } from '@components/context/UserContext';
 const Main: React.FC<PropsWithChildren<unknown>> = ({
     children
   }) => {
+  const { user } = useContext(User_data);
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user } = useContext(User_data);
+  const [isUser, setIsUser] = useState(false);
   useEffect(() => {
     const changeHeader = () => {
       if (window.scrollY !== 0) {
@@ -23,10 +24,13 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
     window.addEventListener("scroll", changeHeader);
     return () => window.removeEventListener("scroll", changeHeader);
   }, [isScrolled]);
+  useEffect(()=>{
+    setIsUser(user === undefined ? false : true);
+  }, [user]);
   return (
     <Styled.Wrapper>
         <Header 
-          items={user === undefined ? unauthorizedNav : authorizedNav}
+          items={isUser ? authorizedNav : unauthorizedNav}
           isLight={router.asPath === "/" && !isScrolled}
         />
         <Styled.Main>

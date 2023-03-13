@@ -3,6 +3,6 @@ export const unauthorizedNav = [
     { label: "Login", href: "/auth/login" }
 ];
 export const authorizedNav = [
-    { label: "Logout", href: "/" },
-    { label: "Profile", href: "/" }
+    { label: "Logout", href: "/auth/logout" },
+    { label: "Profile", href: "/profile" }
 ];

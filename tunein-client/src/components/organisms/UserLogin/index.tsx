@@ -8,7 +8,7 @@ import DarkButton from "@components/molecules/DarkButton";
 import { User_data } from "@components/context/UserContext";
 
 const UserLogin: React.FC = () => {
-    const { setUser } = useContext(User_data);
+    const {setUser} = useContext(User_data);
     const router = useRouter();
     const formik = useFormik({
         initialValues: {
@@ -28,10 +28,8 @@ const UserLogin: React.FC = () => {
             createDBEndpoint(ENDPOINTS.auth.signin)
                 .post(values)
                 .then((res) => {
-                    //setUser(values.email);
-                    
-                    // path to profile?
-                    router.push("/");
+                    setUser(res.data);
+                    router.push("/profile");
                 })
                 .catch((error) => {
                     console.log(error);
