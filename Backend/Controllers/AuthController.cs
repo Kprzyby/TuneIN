@@ -34,6 +34,32 @@ namespace Backend.Controllers
 
         #region Methods
 
+        private Uri CreatePasswordRecoveryURL(Guid passwordRecoveryGUID, string host, int userId)
+        {
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/recover/password");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["id"] = userId.ToString();
+            parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            return finalUrl;
+        }
+
+        private Uri CreateAccountConfirmationURL(string host, string email, Guid confirmationGUID)
+        {
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/activate/user");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["email"] = email;
+            parameters["confirmationGUID"] = confirmationGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            return finalUrl;
+        }
+
         [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignUpAsync")]
@@ -64,15 +90,9 @@ namespace Backend.Controllers
 
             string host = Request.Host.Host;
 
-            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/activate/user");
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["email"] = newUser.Email;
-            parameters["confirmationGUID"] = userDTO.ConfirmationGUID.ToString();
-            uriBuilder.Query = parameters.ToString();
+            Uri url = CreateAccountConfirmationURL(host, userDTO.Email, userDTO.ConfirmationGUID);
 
-            Uri finalUrl = uriBuilder.Uri;
-
-            string confirmationURL = finalUrl.AbsoluteUri.ToString();
+            string confirmationURL = url.AbsoluteUri.ToString();
 
             bool sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
 
@@ -104,20 +124,18 @@ namespace Backend.Controllers
         [Route("Auth/RecoverPasswordAsync")]
         public async Task<IActionResult> RecoverPasswordAsync(string email)
         {
-            Guid passwordRecoveryGUID = Guid.NewGuid();
-
             string host = Request.Host.Host;
-            string scheme = Request.Scheme;
+            Guid passwordRecoveryGUID = Guid.NewGuid();
+            var user = await _authService.GetUserAsync(email, null);
 
-            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/recover/password");
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["email"] = email;
-            parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
-            uriBuilder.Query = parameters.ToString();
+            if (user == null)
+            {
+                return NotFound("There is no user with such an email");
+            }
 
-            Uri finalUrl = uriBuilder.Uri;
+            Uri url = CreatePasswordRecoveryURL(passwordRecoveryGUID, host, user.Id);
 
-            string passwordRecoveryURL = finalUrl.AbsoluteUri.ToString();
+            string passwordRecoveryURL = url.AbsoluteUri.ToString();
 
             bool result = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
 
@@ -203,6 +221,21 @@ namespace Backend.Controllers
             if (result == null)
             {
                 return StatusCode(500, "Error while loading the user from the database");
+            }
+
+            return Ok(result);
+        }
+
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [HttpGet]
+        [Route("Auth/GetUserAsync/{userId}")]
+        public async Task<IActionResult> GetUserAsync(int userId)
+        {
+            var result = await _authService.GetUserAsync(null, userId);
+
+            if (result == null)
+            {
+                return NotFound("There is no user with such id");
             }
 
             return Ok(result);
