@@ -9,7 +9,8 @@ export const ENDPOINTS = {
         signout: 'Auth/SignOutAsync',
         confirmaccount: 'Auth/ConfirmAccountAsync',
         recoverpassword: 'Auth/RecoverPasswordAsync',
-        changepassword: 'Auth/ChangePasswordAsync'
+        changepassword: 'Auth/ChangePasswordAsync',
+        getuserbyid: 'Auth/GetUserAsync'
     },
     chat: 'CHAT',
     library: 'LIBRARY'

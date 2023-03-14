@@ -1,14 +1,21 @@
 import { NextPage } from "next";
 import { useFormik } from "formik";
 import * as Yup from "yup"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Styled from "./styles";
 import { createDBEndpoint, ENDPOINTS } from "../../../api/endpoint";
 import DarkButton from "@components/molecules/DarkButton";
+import { useRouter } from "next/router";
+import { getUserById } from "../../../api/user";
 
 const NewPassword: NextPage = () =>{
-    // test password value
-    const testPassword: string = "trudnehaslo";
+    const [user, setUser] = useState({id: 0, passwordRecoveryGUID: 0});
+    const router = useRouter();
+    useEffect(() => {
+        //@ts-ignore
+        const userId = parseInt(router.query.id, 10);
+        setUser(getUserById(userId));
+    }, []);
     const formik = useFormik({
         initialValues: {
             password:"",
@@ -19,18 +26,19 @@ const NewPassword: NextPage = () =>{
         validateOnChange: false,
         validationSchema: Yup.object({
             password: Yup.string()
-                .oneOf([testPassword, null], "Password's incorrect")
+                .oneOf(["aa", null], "Password's incorrect")
                 .required("Password is required"),
             newPassword: Yup.string()
                 .min(8,"Password needs to be longer than 8 characters long")
                 .max(20,"Password needs to be shorter than 15 characters long")
-                .notOneOf([testPassword, null], "Password can't be the same as the last one")
+                .notOneOf(["aa", null], "Password can't be the same as the last one")
                 .required("Password is required"),
             newPasswordre: Yup.string()
                 .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
                 .required("Password is required")
           }),
           onSubmit: (values) => {
+            console.log("udalo sie");
             // createDBEndpoint(ENDPOINTS.auth.changepassword)
             //     .post(values)
             //     .then((res) => {
