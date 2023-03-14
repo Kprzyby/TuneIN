@@ -9,7 +9,6 @@ import DarkButton from "@components/molecules/DarkButton";
 const NewPassword: NextPage = () =>{
     // test password value
     const testPassword: string = "trudnehaslo";
-    const [success, setSuccess] = useState(false);
     const formik = useFormik({
         initialValues: {
             password:"",
@@ -18,7 +17,6 @@ const NewPassword: NextPage = () =>{
         },
         validateOnBlur: false,
         validateOnChange: false,
-        // TODO: password validation, must be equal to real password
         validationSchema: Yup.object({
             password: Yup.string()
                 .oneOf([testPassword, null], "Password's incorrect")
@@ -37,7 +35,6 @@ const NewPassword: NextPage = () =>{
             //     .post(values)
             //     .then((res) => {
             //         console.log(res);
-            //         setSuccess(true);
             //     })
             //     .catch((error) => {
             //         console.log(error);
@@ -46,42 +43,33 @@ const NewPassword: NextPage = () =>{
     })
     return (
         <Styled.Wrapper>
-            {!success ? (
-                <>
-                <Styled.Title variant="RegisterTitile">New Password</Styled.Title>
-                <Styled.Form onSubmit={formik.handleSubmit}>
-                    <div>
-                    <Styled.TileTitle variant="PasswordTileTitle">Old password</Styled.TileTitle>
-                    <Styled.Input isSecure placeholder="Password" id="password"
-                        value={formik.values.password} 
-                        onChange={formik.handleChange}/>
-                    </div>
-                    <Styled.Error variant="PasswordTileTitle">{formik.errors.password}</Styled.Error>
-                    <div>
-                    <Styled.TileTitle variant="PasswordTileTitle">New password</Styled.TileTitle>
-                    <Styled.Input isSecure placeholder="New Password" id="newPassword"
-                        value={formik.values.newPassword} 
-                        onChange={formik.handleChange}/>
-                    </div>
-                    <Styled.Error variant="PasswordTileTitle">{formik.errors.newPassword}</Styled.Error>
-                    <div>
-                    <Styled.TileTitle variant="PasswordTileTitle">Repeat new password</Styled.TileTitle>
-                    <Styled.Input isSecure placeholder="Repeat New Password" id="newPasswordre"
-                        value={formik.values.newPasswordre} 
-                        onChange={formik.handleChange}/>
-                    </div>
-                    <Styled.Error variant="PasswordTileTitle">{formik.errors.newPasswordre}</Styled.Error>
-                    <Styled.Button type="submit">
-                        <DarkButton text={"Change password"}/>
-                    </Styled.Button>
-                 </Styled.Form>
-                 </>
-            ) : (
-                <Styled.Success>
-                    <Styled.SuccesText variant="RegisterSuccess">You've changed</Styled.SuccesText>
-                    <Styled.SuccesText variant="RegisterSuccess">your password</Styled.SuccesText>
-                </Styled.Success>
-            )}
+            <Styled.Title variant="RegisterTitile">New Password</Styled.Title>
+            <Styled.Form onSubmit={formik.handleSubmit}>
+                <div>
+                <Styled.TileTitle variant="PasswordTileTitle">Old password</Styled.TileTitle>
+                <Styled.Input isSecure placeholder="Password" id="password"
+                    value={formik.values.password} 
+                    onChange={formik.handleChange}/>
+                </div>
+                <Styled.Error variant="PasswordTileTitle">{formik.errors.password}</Styled.Error>
+                <div>
+                <Styled.TileTitle variant="PasswordTileTitle">New password</Styled.TileTitle>
+                <Styled.Input isSecure placeholder="New Password" id="newPassword"
+                    value={formik.values.newPassword} 
+                    onChange={formik.handleChange}/>
+                </div>
+                <Styled.Error variant="PasswordTileTitle">{formik.errors.newPassword}</Styled.Error>
+                <div>
+                <Styled.TileTitle variant="PasswordTileTitle">Repeat new password</Styled.TileTitle>
+                <Styled.Input isSecure placeholder="Repeat New Password" id="newPasswordre"
+                    value={formik.values.newPasswordre} 
+                    onChange={formik.handleChange}/>
+                </div>
+                <Styled.Error variant="PasswordTileTitle">{formik.errors.newPasswordre}</Styled.Error>
+                <Styled.Button type="submit">
+                    <DarkButton text={"Change password"}/>
+                </Styled.Button>
+                </Styled.Form>
         </Styled.Wrapper>
     )
 }

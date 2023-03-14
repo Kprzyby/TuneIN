@@ -28,9 +28,10 @@ export const createDBEndpoint = (endpoint: string) => {
             url: url, 
             params: updatedRecords, 
             httpsAgent: httpsAgent}),
-        get: () => axios({
+        get: (record: any) => axios({
             method: 'get', 
             url: url,
+            params: record,
             httpsAgent: httpsAgent})
     }
 }

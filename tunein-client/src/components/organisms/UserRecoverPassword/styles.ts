@@ -1,6 +1,5 @@
 import { Typography } from "@components/styles/typography";
 import styled, { keyframes } from "styled-components";
-import { StyledProps } from "./types";
 
 const errorAnim = keyframes`
     0% { opacity: 1; }
@@ -15,7 +14,7 @@ const errorAnim = keyframes`
     90% { opacity: 0.9; }
     100% { opacity: 1; }
 `
-export const Wrapper = styled.div`
+export const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -39,7 +38,7 @@ export const Form = styled.form`
     justify-content: center;
     align-items: center;
 `;
-export const Input = styled.input<StyledProps>`
+export const Input = styled.input`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: ${({theme}) => theme.colors.white};
@@ -47,8 +46,6 @@ export const Input = styled.input<StyledProps>`
     border: unset;
     border-radius: 0.2rem;
     padding: 0.3rem;
-    /* Input security */
-    ${({isSecure}) => isSecure ? `-webkit-text-security: disc;` : `` }
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,
@@ -100,7 +97,30 @@ export const Button = styled.button`
     border: unset;
     padding: 0.5rem 2rem;
 `;
-export const RecoveryText = styled(Error)`
-    font-family: ${({theme}) => theme.fonts.body};
-    animation-name: none;
+export const ConfirmWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+`;
+export const ConfirmContent = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    background-color: ${({theme})=>theme.colors.darkMain};
+    @media (min-width: 0px) {  min-width: 100%; }
+    @media (min-width: 1500px) { min-width: 1500px; }
+    @media (min-width: 1800px) { min-width: 1800px; }
+    @media (min-width: 0px) { row-gap: 1rem; }
+    @media (min-width: 1500px) { row-gap: 3rem; }
+`;
+export const ConfirmTitle = styled(Typography)`
+    @media (min-width: 0px) { font-size: 0.7rem; }
+    @media (min-width: 350px) { font-size: 1.2rem; }
+    @media (min-width: 800px) { font-size: 1.5rem; }
+    @media (min-width: 1150px) { font-size: 1.9rem; }
+    @media (min-width: 1500px) { font-size: 2rem; }
 `;

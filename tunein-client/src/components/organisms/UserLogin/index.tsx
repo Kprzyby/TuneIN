@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import DarkButton from "@components/molecules/DarkButton";
 import { User_data } from "@components/context/UserContext";
 import Loader from "@components/atoms/Loader";
+import Link from "next/link";
 
 const UserLogin: React.FC = () => {
     const {setUser} = useContext(User_data);
@@ -66,6 +67,9 @@ const UserLogin: React.FC = () => {
 
                     {err && (<Styled.Error>Wrong credentials</Styled.Error>)}
                     
+                    <Styled.Button style={{paddingRight: "0", marginLeft: "auto"}} type="button">
+                        <Link href={"/auth/recoverpassword"}><Styled.RecoveryText>Recover Password</Styled.RecoveryText></Link>
+                    </Styled.Button>
                     <Styled.Button type="submit">
                         <DarkButton text={"Login"}/>
                     </Styled.Button>
