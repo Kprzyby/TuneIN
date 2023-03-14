@@ -226,7 +226,7 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
-        [RequireRole("REGULAR_USER", "TUTOR")]
+        [AllowAnonymous]
         [HttpGet]
         [Route("Auth/GetUserAsync/{userId}")]
         public async Task<IActionResult> GetUserAsync(int userId)
