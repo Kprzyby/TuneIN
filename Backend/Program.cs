@@ -74,6 +74,9 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+//apply migrations
+DBPrep.ApplyMigrations(app);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
