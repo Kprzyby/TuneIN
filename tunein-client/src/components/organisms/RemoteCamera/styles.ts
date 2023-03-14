@@ -8,6 +8,6 @@ export const RemoteCamera = styled.video`
 export const CameraWrapper = styled.div`
     display: block;
     background: darkgrey;
-    width: 500px;
+    width: 350px;
     height: auto;
 `;

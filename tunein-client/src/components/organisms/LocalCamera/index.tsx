@@ -25,10 +25,14 @@ const LocalCamera: React.FC = () => {
     }, [])
 
     return (
-        <Styled.CameraWrapper>
-            <Styled.LocalCamera ref={videoRef} autoPlay muted poster='https://www.tutorialspoint.com/assets/questions/media/426142-1668760872.png' />
-            <audio ref={audioRef} autoPlay />
-        </Styled.CameraWrapper>
+        <Styled.CameraWithButtons>
+            <Styled.CameraWrapper>
+                <Styled.LocalCamera ref={videoRef} autoPlay muted poster='https://www.tutorialspoint.com/assets/questions/media/426142-1668760872.png' />
+                <audio ref={audioRef} autoPlay />
+            </Styled.CameraWrapper>
+            <button>Audio toggle</button>
+            <button>Video toggle</button>
+        </Styled.CameraWithButtons>
     )
 }
 
