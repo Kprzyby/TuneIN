@@ -208,6 +208,21 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [HttpGet]
+        [Route("Auth/GetUserAsync/{userId}")]
+        public async Task<IActionResult> GetUserAsync(int userId)
+        {
+            var result = await _authService.GetUserAsync(null, userId);
+
+            if (result == null)
+            {
+                return NotFound("There is no user with such id");
+            }
+
+            return Ok(result);
+        }
+
         #endregion Methods
     }
 }
