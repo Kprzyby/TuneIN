@@ -22,7 +22,7 @@ export const fontWeights = {
 
 export const textStyles = {
     h1: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize16,
         lineHeight: "1rem"
     },
@@ -50,18 +50,19 @@ export const textStyles = {
         color: "white"
     },
     RegisterTitile: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize96,
+        fontWeight: fontWeights.bold,
         lineHeight: "1rem",
         color: colors.darkMainD
     },
     RegisterSuccess: {
-        fontFamily: fontFamilies.header,
+        fontFamily: fontFamilies.body,
         fontSize: fontSizes.fontSize48,
-        color: colors.inputHint
+        color: colors.darkMainD
     },
     PasswordTitile: {
-        fontFamily:fontFamilies.header,
+        fontFamily:fontFamilies.logo,
         fontSize: fontSizes.fontSize96,
         lineHeight: "5rem",
         color: colors.darkMainD
@@ -80,10 +81,25 @@ export const textStyles = {
         fontSize: fontSizes.fontSize16,
     },
     Buttons: {
-        fontFamily: fontFamilies.logo,
+        fontFamily: fontFamilies.body,
+        color: colors.darkMainD
     },
     SongCard: {
         fontFamily: fontFamilies.body
+    },
+    ConfirmationTitle: {
+        fontFamily: fontFamilies.logo,
+        fontSize: fontSizes.fontSize72,
+        color: colors.white
+    },
+    ConfirmationDesc: {
+        fontFamily: fontFamilies.body,
+        fontSize: fontSizes.fontSize48,
+        color: colors.white
+    },
+    HomepageText: {
+        fontFamily: fontFamilies.body,
+        color: colors.darkMainL
     }
 };
   

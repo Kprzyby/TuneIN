@@ -71,7 +71,7 @@ const HomeBrowse: React.FC = () => {
             <Styled.Content>
                 <Styled.Icon/>
                 <Styled.RightSide>
-                    <Styled.Text>Browse for your desired lessons and achieve your goals</Styled.Text>
+                    <Styled.Text variant='HomepageText'>Browse for your desired lessons and achieve your goals</Styled.Text>
                     <div onClick={(e) => handleClick(e)}>
                         {cloneElement(
                             <RgbButton text="Browse" 
