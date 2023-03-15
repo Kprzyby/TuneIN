@@ -21,3 +21,9 @@ export const CameraWithButtons = styled.div`
     height: auto;
     margin: auto;
 `;
+
+export const CameraButtons = styled.div`
+    display: flex;
+    justify-content: space-around;
+    height: fit-content;
+`;
