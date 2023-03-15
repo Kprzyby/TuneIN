@@ -6,8 +6,12 @@ export default async (req: NextApiRequest , res: NextApiResponse): Promise<void>
     if(!email || !confirmationGUID) {
         return res.status(401).json({message: "Cannot Validate User"});
     }
+    const putValue = {
+        email: email,
+        confirmationGUID: confirmationGUID
+    }
     createDBEndpoint(ENDPOINTS.auth.confirmaccount)
-        .put({email, confirmationGUID})
+        .put(putValue)
         .then(() => {
             res.writeHead(307, { Location: '/auth/useractivated' });
             res.end();
