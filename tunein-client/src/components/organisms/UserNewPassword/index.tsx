@@ -50,11 +50,10 @@ const NewPassword: NextPage = () =>{
                 repeatPassword: values.repeatPassword,
                 passwordRecoveryGUID: guid
             }
-            console.log(postValues);
             createDBEndpoint(ENDPOINTS.auth.changepassword)
                 .put(postValues)
-                .then((res) => {
-                    console.log(res.data);
+                .then(() => {
+                    router.push("/auth/login");
                 })
                 .catch((error) => {
                     console.log(error);

@@ -228,7 +228,7 @@ namespace Backend.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        [Route("Auth/GetUserAsync/{userId}")]
+        [Route("Auth/GetUserAsync")]
         public async Task<IActionResult> GetUserAsync(int userId)
         {
             var result = await _authService.GetUserAsync(null, userId);
