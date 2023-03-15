@@ -1,35 +1,70 @@
 import React, { useEffect, useRef, useState } from "react"
 import * as Styled from "./styles"
-import DarkButton from "../../molecules/DarkButton"
+import ToggleButton from "../../molecules/ToggleButton"
 
 const LocalCamera: React.FC = () => {
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
-    const audioRef = useRef<HTMLAudioElement>(null);
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+    const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+
+    const [stream, setStream] = useState<MediaStream | null>(null);
 
     useEffect(() => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        navigator.mediaDevices.getUserMedia({ video: isAudioEnabled, audio: isAudioEnabled })
             .then(stream => {
-                if (videoRef.current && stream) {
+                setStream(stream);
+                if (videoRef.current && stream && isVideoEnabled) {
                     videoRef.current.srcObject = stream;
                 }
-                if (audioRef.current && stream) {
+                if (audioRef.current && stream && isAudioEnabled) {
                     audioRef.current.srcObject = stream;
                 }
             })
             .catch(error => {
                 console.log('Error getting user media: ', error);
             });
+            return () => {
+                if (stream) {
+                    stream.getTracks().forEach(track => {
+                        track.stop();
+                    });
+                }
+            }
     }, [])
+
+    const handleAudioToggle = () => {
+        if (stream) {
+            const audioTrack = stream.getAudioTracks()[0];
+            setIsAudioEnabled(!isAudioEnabled);
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+            }
+        }
+    }
+
+    const handleVideoToggle = () => {
+        if (stream) {
+            const videoTrack = stream.getVideoTracks()[0];
+            setIsVideoEnabled(!isVideoEnabled);
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+            }
+        }
+    }
 
     return (
         <Styled.CameraWithButtons>
             <Styled.CameraWrapper>
-                <Styled.LocalCamera ref={videoRef} autoPlay muted poster='https://www.tutorialspoint.com/assets/questions/media/426142-1668760872.png' />
+                <Styled.LocalCamera ref={videoRef} style={{display: isVideoEnabled ? 'block' : 'none'}} autoPlay muted />
                 <audio ref={audioRef} autoPlay />
             </Styled.CameraWrapper>
-            <DarkButton text={"Audio toggle"}/>
-            <DarkButton text={"Video toggle"}/>
+            <Styled.CameraButtons>
+                <ToggleButton text={"Audio toggle"} toggleState={isAudioEnabled} onClick={handleAudioToggle} />
+                <ToggleButton text={"Video toggle"} toggleState={isVideoEnabled} onClick={handleVideoToggle} />
+            </Styled.CameraButtons>
         </Styled.CameraWithButtons>
     )
 }

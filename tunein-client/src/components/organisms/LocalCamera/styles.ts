@@ -11,7 +11,7 @@ export const CameraWrapper = styled.div`
     display: block;
     background: black;
     width: 500px;
-    height: auto;
+    aspect-ratio: 16 / 9;
     margin: auto;
 `;
 
