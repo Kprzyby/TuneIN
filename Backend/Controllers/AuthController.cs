@@ -83,9 +83,9 @@ namespace Backend.Controllers
 
             var createResult = await _authService.AddUserAsync(userDTO);
 
-            if (createResult == false)
+            if (createResult.IsSuccess == false)
             {
-                return StatusCode(500, "Error while creating user!");
+                return StatusCode(createResult.StatusCode, createResult.Message);
             }
 
             string host = Request.Host.Host;
@@ -94,14 +94,14 @@ namespace Backend.Controllers
 
             string confirmationURL = url.AbsoluteUri.ToString();
 
-            bool sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
+            var sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
 
-            if (sendEmailResult == false)
+            if (sendEmailResult.IsSuccess == false)
             {
-                return BadRequest("Error while sending confirmation email!");
+                return StatusCode(sendEmailResult.StatusCode, sendEmailResult.Message);
             }
 
-            return StatusCode(201, "User created successfully!");
+            return StatusCode(createResult.StatusCode, createResult.Message);
         }
 
         [HttpPut]
@@ -109,14 +109,9 @@ namespace Backend.Controllers
         [Route("Auth/ConfirmAccountAsync")]
         public async Task<IActionResult> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
-            bool result = await _authService.ConfirmAccountAsync(email, confirmationGUID);
+            var result = await _authService.ConfirmAccountAsync(email, confirmationGUID);
 
-            if (result == false)
-            {
-                return BadRequest("Error while confirming the account!");
-            }
-
-            return Ok("Account confirmed successfully!");
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpGet]
@@ -126,25 +121,22 @@ namespace Backend.Controllers
         {
             string host = Request.Host.Host;
             Guid passwordRecoveryGUID = Guid.NewGuid();
-            var user = await _authService.GetUserAsync(email, null);
+            var getResult = await _authService.GetUserAsync(email, null);
 
-            if (user == null)
+            if (getResult.IsSuccess == false)
             {
-                return NotFound("There is no user with such an email");
+                return StatusCode(getResult.StatusCode, getResult.Message);
             }
 
-            Uri url = CreatePasswordRecoveryURL(passwordRecoveryGUID, host, user.Id);
+            ReadUserDTO userDTO = (ReadUserDTO)getResult.Result;
+
+            Uri url = CreatePasswordRecoveryURL(passwordRecoveryGUID, host, userDTO.Id);
 
             string passwordRecoveryURL = url.AbsoluteUri.ToString();
 
-            bool result = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
+            var emailResult = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
 
-            if (result == false)
-            {
-                return StatusCode(404, "There is no user with such an email!");
-            }
-
-            return Ok("Password recovery email has been successfully sent!");
+            return StatusCode(emailResult.StatusCode, emailResult.Message);
         }
 
         [HttpPut]
@@ -152,14 +144,9 @@ namespace Backend.Controllers
         [Route("Auth/ChangePasswordAsync")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel newPassword)
         {
-            bool result = await _authService.ChangePasswordAsync(newPassword.Email, newPassword.Password, newPassword.PasswordRecoveryGUID);
+            var result = await _authService.ChangePasswordAsync(newPassword.Email, newPassword.Password, newPassword.PasswordRecoveryGUID);
 
-            if (result == false)
-            {
-                return BadRequest("Error while changing password!");
-            }
-
-            return Ok("Password changed succesfully!");
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [AllowAnonymous]
@@ -167,24 +154,34 @@ namespace Backend.Controllers
         [Route("Auth/SignInAsync")]
         public async Task<IActionResult> SignInAsync(SignInViewModel logInCredentials)
         {
-            var claimsIdentity = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
+            var claimsResult = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
 
-            if (claimsIdentity == null)
+            if (claimsResult.IsSuccess == false)
             {
-                return BadRequest("Wrong credentials!");
+                return StatusCode(claimsResult.StatusCode, claimsResult.Message);
             }
 
-            var token = await _chatService.GenerateChatAccessTokenAsync(logInCredentials.Email);
+            var tokenResponse = await _chatService.GenerateChatAccessTokenAsync(logInCredentials.Email);
 
-            Response.Cookies.Append("ChatToken", token);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-            var userDTO = await _authService.GetUserAsync(logInCredentials.Email, null);
-
-            if (userDTO == null)
+            if (tokenResponse.IsSuccess == false)
             {
-                return StatusCode(500, "Error while loading user from the database");
+                return StatusCode(tokenResponse.StatusCode, tokenResponse.Message);
             }
+
+            ClaimsIdentity identity = (ClaimsIdentity)claimsResult.Result;
+            string chatToken = (string)tokenResponse.Result;
+
+            Response.Cookies.Append("ChatToken", chatToken);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            var userResult = await _authService.GetUserAsync(logInCredentials.Email, null);
+
+            if (userResult.IsSuccess == false)
+            {
+                return StatusCode(userResult.StatusCode, userResult.Message);
+            }
+
+            ReadUserDTO userDTO = (ReadUserDTO)userResult.Result;
 
             return Ok(userDTO);
         }
@@ -199,11 +196,11 @@ namespace Backend.Controllers
             int userId = GetUserId();
 
             Response.Cookies.Append("ChatToken", "");
-            var success = await _chatService.RemoveAllTokensAsync(userId);
+            var tokensResult = await _chatService.RemoveAllTokensAsync(userId);
 
-            if (success == false)
+            if (tokensResult.IsSuccess == false)
             {
-                return StatusCode(502, "Error while logging out!");
+                return StatusCode(tokensResult.StatusCode, tokensResult.Message);
             }
 
             return Ok("User signed out successfully!");
@@ -218,12 +215,14 @@ namespace Backend.Controllers
 
             var result = await _authService.GetUserAsync(null, userId);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
                 return StatusCode(500, "Error while loading the user from the database");
             }
 
-            return Ok(result);
+            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
+
+            return Ok(userDTO);
         }
 
         [AllowAnonymous]
@@ -233,12 +232,14 @@ namespace Backend.Controllers
         {
             var result = await _authService.GetUserAsync(null, userId);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return NotFound("There is no user with such id");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
+
+            return Ok(userDTO);
         }
 
         #endregion Methods

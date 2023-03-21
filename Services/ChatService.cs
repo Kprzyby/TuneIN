@@ -5,6 +5,7 @@ using Azure.Communication.Identity;
 using Azure.Core;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Chat;
+using Data.DTOs.Response;
 using Data.Entities;
 using Data.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -43,11 +44,16 @@ namespace Services
             return chatClient;
         }
 
-        public async Task<string> GenerateChatAccessTokenAsync(string email)
+        public async Task<ServiceResponseDTO> GenerateChatAccessTokenAsync(string email)
         {
             try
             {
                 User user = await _authRepository.GetUserByEmailAsync(email);
+
+                if (user == null)
+                {
+                    return CreateFailureResponse(404, "User with such an email was not found");
+                }
 
                 string connectionString = _configuration.GetConnectionString("AzureChatConnection");
                 var client = new CommunicationIdentityClient(connectionString);
@@ -58,19 +64,24 @@ namespace Services
 
                 var token = JsonSerializer.Serialize(tokenResponse.Value);
 
-                return token;
+                return CreateSuccessResponse(200, "Chat token generated successfully", token);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(502, "External server error while generating chat token");
             }
         }
 
-        public async Task<bool> RemoveAllTokensAsync(int id)
+        public async Task<ServiceResponseDTO> RemoveAllTokensAsync(int id)
         {
             try
             {
                 User? user = await _authRepository.GetByIdAsync(id);
+
+                if (user == null)
+                {
+                    return CreateFailureResponse(404, "User with such an id was not found");
+                }
 
                 string connectionString = _configuration.GetConnectionString("AzureChatConnection");
                 var client = new CommunicationIdentityClient(connectionString);
@@ -78,11 +89,11 @@ namespace Services
                 var chatIdentity = new CommunicationUserIdentifier(user.ChatIdentityId);
                 await client.RevokeTokensAsync(chatIdentity);
 
-                return true;
+                return CreateSuccessResponse(200, "All user's chat token were successfully removed");
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(502, "External server error while removing the user's chat tokens");
             }
         }
 

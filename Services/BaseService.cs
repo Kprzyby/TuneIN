@@ -17,6 +17,19 @@ namespace Services
             return response;
         }
 
+        protected ServiceResponseDTO CreateSuccessResponse(int statusCode, string message)
+        {
+            ServiceResponseDTO response = new ServiceResponseDTO()
+            {
+                StatusCode = statusCode,
+                Message = message,
+                IsSuccess = true,
+                Result = null
+            };
+
+            return response;
+        }
+
         protected ServiceResponseDTO CreateFailureResponse(int statusCode, string message)
         {
             ServiceResponseDTO response = new ServiceResponseDTO()
