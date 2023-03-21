@@ -1,6 +1,7 @@
 ﻿using Common.Enums;
 using Common.Helpers;
 using Data.CustomDataAttributes.InjectionAttributes;
+using Data.DTOs.Response;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using Data.Entities;
@@ -31,7 +32,7 @@ namespace Services
 
         #region Methods
 
-        public async Task<ReadTutorshipDTO> GetTutorshipAsync(int id)
+        public async Task<ServiceResponseDTO> GetTutorshipAsync(int id)
         {
             try
             {
@@ -39,7 +40,7 @@ namespace Services
 
                 if (tutorship == null)
                 {
-                    return null;
+                    return CreateFailureResponse(404, "Tutorship with such an id was not found");
                 }
 
                 ReadTutorshipDTO result = new ReadTutorshipDTO()
@@ -56,15 +57,15 @@ namespace Services
                     }
                 };
 
-                return result;
+                return CreateSuccessResponse(200, "Tutorship retrieved successfully", result);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while retrieving the tutorship");
             }
         }
 
-        public async Task<GetTutorshipsResponseDTO> GetTutorshipsAsync(GetTutorshipsDTO dto)
+        public async Task<ServiceResponseDTO> GetTutorshipsAsync(GetTutorshipsDTO dto)
         {
             try
             {
@@ -124,15 +125,15 @@ namespace Services
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
-                return response;
+                return CreateSuccessResponse(200, "Tutorships retrieved successfully", response);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while retrieving the tutorships");
             }
         }
 
-        public async Task<ReadTutorshipDTO> AddTutorshipAsync(CreateTutorshipDTO dto)
+        public async Task<ServiceResponseDTO> AddTutorshipAsync(CreateTutorshipDTO dto)
         {
             try
             {
@@ -163,15 +164,15 @@ namespace Services
                     }
                 };
 
-                return newTutorship;
+                return CreateSuccessResponse(201, "Tutorship created successfully", newTutorship);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while creating the tutorship");
             }
         }
 
-        public async Task<bool> UpdateTutorshipAsync(UpdateTutorshipDTO dto)
+        public async Task<ServiceResponseDTO> UpdateTutorshipAsync(UpdateTutorshipDTO dto)
         {
             try
             {
@@ -179,7 +180,7 @@ namespace Services
 
                 if (oldTutorship == null)
                 {
-                    return false;
+                    return CreateFailureResponse(404, "Tutorship with such an id was not found");
                 }
 
                 oldTutorship.Title = dto.Title;
@@ -190,15 +191,15 @@ namespace Services
 
                 await _tutorshipRepo.UpdateTutorshipAsync(oldTutorship);
 
-                return true;
+                return CreateSuccessResponse(204, "");
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while updating the tutorship");
             }
         }
 
-        public async Task<bool> DeleteTutorshipAsync(int id)
+        public async Task<ServiceResponseDTO> DeleteTutorshipAsync(int id)
         {
             try
             {
@@ -206,22 +207,22 @@ namespace Services
 
                 if (tutorship == null)
                 {
-                    return false;
+                    return CreateFailureResponse(404, "Tutorship with such a response was not found");
                 }
 
                 tutorship.DeletedDate = DateTime.Now;
 
                 await _tutorshipRepo.UpdateTutorshipAsync(tutorship);
 
-                return true;
+                return CreateSuccessResponse(204, "");
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while deleting the tutorship");
             }
         }
 
-        public List<string> GetCategories()
+        public ServiceResponseDTO GetCategories()
         {
             try
             {
@@ -239,11 +240,11 @@ namespace Services
                     categories.Add(describtionAttributes[0].Description);
                 }
 
-                return categories;
+                return CreateSuccessResponse(200, "Categories retrieved successfully", categories);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while retrieving the categories");
             }
         }
 
