@@ -34,6 +34,7 @@ export const Title = styled(Typography)`
     }
 `;
 export const Description = styled(Typography)`
+    text-align: center;
     margin: 2rem;
     @media (min-width: 0px) {
         font-size: 0.5rem;

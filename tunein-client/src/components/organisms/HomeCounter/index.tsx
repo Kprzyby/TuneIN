@@ -25,7 +25,7 @@ const HomeCounter: React.FC = () => {
   return (
     <Styled.Wrapper>
         <Styled.Content>
-          <Styled.Text>We are trying to create safe and intuitive 
+          <Styled.Text variant='HomepageText'>We are trying to create safe and intuitive 
             place for learning and teaching music</Styled.Text>
           <Styled.CounterWrapper>
             {counterList.map((list) => (

@@ -66,7 +66,7 @@ const Library: React.FC = () => {
                 <Styled.List>
                     {musicCollection.map((i)=>{
                         return(
-                            <div 
+                            <div key={i.id}
                                 onClick={() => handleSongClicked(i.id)}>
                                 <SongCard
                                     name={i.name}

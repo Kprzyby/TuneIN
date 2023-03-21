@@ -15,60 +15,55 @@ const errorAnim = keyframes`
     90% { opacity: 0.9; }
     100% { opacity: 1; }
 `
-export const Wrapper = styled.div`
+export const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5rem;
-    padding: 4rem;
+    padding: 1rem;
 `;
 export const Title = styled(Typography)`
     text-align: center;
+    font-weight: 700;
+    padding: 3rem;
+    @media (min-width: 0px) { font-size: 1.6rem; }
+    @media (min-width: 400px) { font-size: 2rem; }
+    @media (min-width: 600px) { font-size: 2.5rem; }
+    @media (min-width: 800px) { font-size: 4rem; }
+    @media (min-width: 1200px) { font-size: 6rem; }
+    @media (min-width: 1500px) { font-size: 7rem; }
 `;
 export const Form = styled.form`
-    min-width: 30rem;
-    min-height: 27rem;
-    background-color: ${({ theme }) => theme.colors.darkMainD};
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    padding: 2rem;
-    border-radius: 0.2rem;
-    box-shadow: 0.1rem 0.1rem;
 `;
 export const Success = styled.div`
-    min-width: 30rem;
-    min-height: 27rem;
-    background-color: ${({ theme }) => theme.colors.darkMainD};
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    border-radius: 0.2rem;
-    box-shadow: 0.1rem 0.1rem;
 `;
 export const SuccesText = styled(Typography)`
-    line-height: default;
+    @media (min-width: 0px) { font-size: 1.6rem; }
+    @media (min-width: 400px) { font-size: 2rem; }
+    @media (min-width: 600px) { font-size: 2.5rem; }
+    @media (min-width: 800px) { font-size: 4rem; }
+    @media (min-width: 1200px) { font-size: 6rem; }
+    @media (min-width: 1500px) { font-size: 7rem; }
 `;
 export const Input = styled.input<StyledProps>`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
-    color: white;
-    font-size: 2rem;
+    color: ${({theme}) => theme.colors.white};
     font-family: ${({theme}) => theme.fonts.body};
-    border: none;
+    border: unset;
     border-radius: 0.2rem;
-    padding-left: 0.5rem;
+    padding: 0.3rem;
     /* Input security */
-    ${({isSecure}) => 
-        isSecure
-        ? `-webkit-text-security: disc;`
-        : ``
-    }
+    ${({isSecure}) => isSecure ? `-webkit-text-security: disc;` : `` }
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,
@@ -77,6 +72,12 @@ export const Input = styled.input<StyledProps>`
     &:-webkit-autofill:active{
         transition: background-color 600000s 0s, color 600000s 0s;
     }
+    @media (min-width: 0px) { font-size: 0.7rem; }
+    @media (min-width: 400px) { font-size: 1rem; }
+    @media (min-width: 600px) { font-size: 1.3rem; }
+    @media (min-width: 800px) { font-size: 2rem; }
+    @media (min-width: 1200px) { font-size: 2.6rem; }
+    @media (min-width: 1500px) { font-size: 3rem; }
 `;
 export const Error = styled.p`
   /* Animation */
@@ -93,8 +94,58 @@ export const Error = styled.p`
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
   text-shadow: rgba(151, 65, 252, 0.2) 0.063rem 0.063rem 0.063rem;
+  padding-bottom: 0.5rem;
+  @media (min-width: 0px) { font-size: 0.8rem; }
+  @media (min-width: 800px) { font-size: 1.2rem; }
+  @media (min-width: 1200px) { font-size: 1.6rem; }
+  @media (min-width: 1500px) { font-size: 2rem; }
 `;
-export const TileTitle = styled(Typography)`
+export const InputTitle = styled(Typography)`
     width: 100%;
-    margin-left: 3rem;
+    color: ${({ theme }) => theme.colors.darkMainD};
+    font-weight: 700;
+    @media (min-width: 0px) { font-size: 0.6rem; }
+    @media (min-width: 400px) { font-size: 0.8rem; }
+    @media (min-width: 800px) { font-size: 1.2rem; }
+    @media (min-width: 1200px) { font-size: 1.6rem; }
+    @media (min-width: 1500px) { font-size: 2rem; }
+`;
+export const Button = styled.button`
+    background-color: transparent;
+    border: unset;
+    padding: 0.5rem 2rem;
+`;
+export const ConfirmWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+`;
+export const ConfirmContent = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    background-color: ${({theme})=>theme.colors.darkMain};
+    @media (min-width: 0px) {  min-width: 100%; }
+    @media (min-width: 1500px) { min-width: 1500px; }
+    @media (min-width: 1800px) { min-width: 1800px; }
+    @media (min-width: 0px) { row-gap: 1rem; }
+    @media (min-width: 1500px) { row-gap: 3rem; }
+`;
+export const ConfirmTitle = styled(Typography)`
+    @media (min-width: 0px) { font-size: 1rem; }
+    @media (min-width: 350px) { font-size: 1.7rem; }
+    @media (min-width: 800px) { font-size: 2rem; }
+    @media (min-width: 1150px) { font-size: 2.5rem; }
+    @media (min-width: 1500px) { font-size: 4rem; }
+`;
+export const ConfirmDesc = styled(Typography)`
+    @media (min-width: 0px) { font-size: 0.7rem; }
+    @media (min-width: 350px) { font-size: 1.2rem; }
+    @media (min-width: 800px) { font-size: 1.5rem; }
+    @media (min-width: 1150px) { font-size: 1.9rem; }
+    @media (min-width: 1500px) { font-size: 2rem; }
 `;

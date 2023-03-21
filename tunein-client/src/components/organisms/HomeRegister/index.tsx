@@ -69,7 +69,7 @@ const HomeRegister: React.FC = () => {
         <Styled.Wrapper>
             <Styled.Content>
                 <Styled.LeftSide>
-                    <Styled.Text>Register your account and start teaching or learning NOW</Styled.Text>
+                    <Styled.Text variant='HomepageText'>Register your account and start teaching or learning NOW</Styled.Text>
                     <div onClick={(e) => handleClick(e)}>
                         {cloneElement(
                             <RgbButton text="Register" 

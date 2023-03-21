@@ -34,7 +34,6 @@ export const RightSide = styled.div`
     justify-content: space-evenly;
 `;
 export const Text = styled(Typography)`
-    color: ${({theme})=> theme.colors.darkMainL};
     text-align: center;
     @media (min-width: 0) { 
         font-size: 0.6rem;

@@ -83,6 +83,7 @@ export const CounterItem = styled.div`
     flex-direction: column;
 `;
 export const CounterNumber = styled.span`
+    font-family: ${({theme}) => theme.fonts.body};
     @media (min-width: 0px) { font-size: 0.6rem; }
     @media (min-width: 230px) { font-size: 0.85rem; }
     @media (min-width: 300px) { font-size: 1rem; }
@@ -93,6 +94,7 @@ export const CounterNumber = styled.span`
 `;
 export const CounterLabel = styled(Typography)`
     text-align: center;
+    font-family: ${({theme}) => theme.fonts.body};
     @media (min-width: 0px) { font-size: 0.22rem; }
     @media (min-width: 230px) { font-size: 0.3rem; }
     @media (min-width: 300px) { font-size: 0.4rem; }
