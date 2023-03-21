@@ -1,8 +1,7 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Library;
-using Data.Repositories;
-using Microsoft.Identity.Client;
 using Data.Entities;
+using Data.Repositories;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -16,6 +15,7 @@ namespace Services
         private readonly LibraryRepository _libraryRepository;
 
         #endregion Properties
+
         #region Constructors
 
         public LibraryService(LibraryRepository libraryRepository)
@@ -24,6 +24,7 @@ namespace Services
         }
 
         #endregion Constructors
+
         #region Methods
 
         public async Task<bool> CheckIfTrackExistsAsync(string artist, string trackName)
@@ -32,6 +33,7 @@ namespace Services
 
             return trackExists;
         }
+
         public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
         {
             var trackExists = await _libraryRepository.CheckIfTrackExistsByIdAsync(id);
@@ -46,12 +48,13 @@ namespace Services
             {
                 result = await Task.FromResult(_libraryRepository.GetAll());
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return null;
             }
             return result;
         }
+
         public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string toFilter)
         {
             IEnumerable<TrackInfo> result;
@@ -70,14 +73,13 @@ namespace Services
             return result;
         }
 
-
         public async Task<bool> RemoveTracksAsync(int id)
         {
             try
             {
                 await _libraryRepository.RemoveByIdAndSaveChangesAsync(id);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return false;
             }
@@ -101,18 +103,15 @@ namespace Services
                 };
 
                 await _libraryRepository.AddAndSaveChangesAsync(trackInfo);
-
             }
             catch (Exception ex)
             {
                 return false;
             }
             return true;
-
         }
 
         
         #endregion Methods
-
     }
 }
