@@ -1,1 +1,1 @@
-export { default } from "../../src/components/pages/camera";
+export { default } from '../../src/components/pages/camera';

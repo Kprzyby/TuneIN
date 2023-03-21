@@ -1,18 +1,16 @@
-import { Typography } from "@components/styles/typography";
-import styled from "styled-components";
-import { NavBar } from "../../../../public/assets/svg";
-import { StyledHeaderProps } from "./types";
+import { Typography } from '@components/styles/typography';
+import styled from 'styled-components';
+import { StyledHeaderProps } from './types';
 
 export const Wrapper = styled.div<StyledHeaderProps>`
-    ${({ isLight, theme }) =>
-        isLight
-        ? ` position: fixed;
+    ${({ isLight, theme }) => (isLight
+    ? ` position: fixed;
             color: ${theme.colors.darkMainD};
             background-color: transparent;`
-        : ` position: sticky;
+    : ` position: sticky;
             color: ${theme.colors.darkMainL};
-            background-color: ${theme.colors.darkMain};`
-    };
+            background-color: ${theme.colors.darkMain};`)
+};
     top: 0;
     height: auto;
     width: 100%;
@@ -21,7 +19,7 @@ export const Wrapper = styled.div<StyledHeaderProps>`
     z-index: 2;
     padding-top: 1rem;
     padding-bottom: 0.5rem;
-`; 
+`;
 export const ItemsWrapper = styled.div`
     display: flex;
     justify-content: space-between;

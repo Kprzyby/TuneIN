@@ -1,3 +1,3 @@
 export interface StyledProps {
-    isSecure?: boolean;
+  isSecure?: boolean;
 }

@@ -1,5 +1,5 @@
-import { Typography } from "@components/styles/typography";
-import styled from "styled-components";
+import { Typography } from '@components/styles/typography';
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     display: flex;

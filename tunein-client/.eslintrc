@@ -1,0 +1,25 @@
+{
+  "extends": [
+      "next",
+      "airbnb",
+      "airbnb-typescript"
+  ],
+  "parserOptions": {
+    "sourceType": "module",
+    "tsconfigRootDir": "tunein-client",
+    "project": "tsconfig.json"
+  },
+  "rules": {
+    "react/jsx-props-no-spreading": "off",
+    "import/prefer-default-export": "off",
+    "react/function-component-definition": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/jsx-no-useless-fragment": "off",
+    "jsx-a11y/media-has-caption": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-restricted-exports": "off",
+    "react/jsx-no-constructed-context-values": "off",
+    "import/no-extraneous-dependencies": "off"
+  }
+}

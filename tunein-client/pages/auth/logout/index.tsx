@@ -1,1 +1,1 @@
-export { default } from "../../../src/components/pages/userlogout";
+export { default } from '../../../src/components/pages/userlogout';

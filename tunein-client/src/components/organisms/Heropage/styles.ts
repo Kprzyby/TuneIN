@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Typography } from "@components/styles/typography";
+import styled from 'styled-components';
+import { Typography } from '@components/styles/typography';
 
 export const Wrapper = styled.div`
     position: relative;
@@ -16,7 +16,7 @@ export const Content = styled.div`
 `;
 export const Title = styled(Typography)`
     font-size: 10rem;
-    color: ${({theme})=> theme.colors.darkMain};
+    color: ${({ theme }) => theme.colors.darkMain};
     @media (min-width: 0px) {
         font-size: 1rem;
     }

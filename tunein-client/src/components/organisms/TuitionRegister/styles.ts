@@ -1,5 +1,5 @@
-import { Typography } from "@components/styles/typography";
-import styled, { keyframes } from "styled-components";
+import { Typography } from '@components/styles/typography';
+import styled, { keyframes } from 'styled-components';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -37,7 +37,7 @@ const errorAnim = keyframes`
     80% { opacity: 0.5; }
     90% { opacity: 0.9; }
     100% { opacity: 1; }
-`
+`;
 export const Error = styled(Typography)`
   /* Animation */
   animation-name: ${errorAnim};
@@ -60,7 +60,7 @@ export const Input = styled.textarea`
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
     font-size: 2rem;
-    font-family: ${({theme}) => theme.fonts.body};
+    font-family: ${({ theme }) => theme.fonts.body};
     border: none;
     border-radius: 0.2rem;
     padding-left: 0.5rem;
