@@ -12,7 +12,7 @@ using X.PagedList;
 namespace Services
 {
     [ScopedAttribute]
-    public class TutorshipService
+    public class TutorshipService : BaseService
     {
         #region Constructors
 

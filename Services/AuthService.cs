@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 namespace Services
 {
     [ScopedAttribute]
-    public class AuthService
+    public class AuthService : BaseService
     {
         #region Properties
 

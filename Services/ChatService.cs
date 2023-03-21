@@ -13,7 +13,7 @@ using System.Text.Json;
 namespace Services
 {
     [ScopedAttribute]
-    public class ChatService
+    public class ChatService : BaseService
     {
         #region Properties
 
