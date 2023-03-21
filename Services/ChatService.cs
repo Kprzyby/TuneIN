@@ -103,6 +103,11 @@ namespace Services
             {
                 User? user = await _authRepository.GetByIdAsync(id);
 
+                if (user == null)
+                {
+                    CreateFailureResponse(500, "Error while loading the current user");
+                }
+
                 string connectionString = _configuration.GetConnectionString("AzureChatConnection");
                 var client = new CommunicationIdentityClient(connectionString);
 
@@ -119,7 +124,7 @@ namespace Services
             }
         }
 
-        public async Task<string> CreateChatAsync(string? topic, List<int> participantsIds, AccessToken token)
+        public async Task<ServiceResponseDTO> CreateChatAsync(string? topic, List<int> participantsIds, AccessToken token)
         {
             try
             {
@@ -145,19 +150,24 @@ namespace Services
 
                 CreateChatThreadResult createChatThreadResult = await chatClient.CreateChatThreadAsync(chatTopic, chatParticipants);
 
-                return createChatThreadResult.ChatThread.Id;
+                return CreateSuccessResponse(201, "Chat created successfully", createChatThreadResult.ChatThread.Id);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "External server error while creating the chat");
             }
         }
 
-        public async Task<string> SendMessageAsync(string chatId, string message, int userId, AccessToken token)
+        public async Task<ServiceResponseDTO> SendMessageAsync(string chatId, string message, int userId, AccessToken token)
         {
             try
             {
                 User user = await _authRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    CreateFailureResponse(500, "Error while loading the current user");
+                }
 
                 ChatClient client = GetChatClient(token);
                 ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
@@ -173,19 +183,24 @@ namespace Services
 
                 string messageId = sendChatMessageResult.Id;
 
-                return messageId;
+                return CreateSuccessResponse(201, "Message successfully sent", messageId);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while sending the message to the chat");
             }
         }
 
-        public async Task<GetChatDTO> GetChatAsync(string chatId, int pageSize, int userId, AccessToken token)
+        public async Task<ServiceResponseDTO> GetChatAsync(string chatId, int pageSize, int userId, AccessToken token)
         {
             try
             {
                 User user = await _authRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    CreateFailureResponse(500, "Error while loading the current user");
+                }
 
                 ChatClient client = GetChatClient(token);
                 ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
@@ -240,15 +255,15 @@ namespace Services
                     ContinuationToken = messagesPage.ContinuationToken
                 };
 
-                return result;
+                return CreateSuccessResponse(200, "Chat successfully retrieved", result);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while retrieving the chat");
             }
         }
 
-        public async Task<GetChatsDTO> GetChatListAsync(int pageSize, int messagePageSize, int userId, string continuationToken, AccessToken accessToken)
+        public async Task<ServiceResponseDTO> GetChatListAsync(int pageSize, int messagePageSize, int userId, string continuationToken, AccessToken accessToken)
         {
             try
             {
@@ -263,7 +278,14 @@ namespace Services
 
                 foreach (ChatThreadItem chat in chatPage.Values)
                 {
-                    GetChatDTO chatDTO = await GetChatAsync(chat.Id, messagePageSize, userId, accessToken);
+                    var getResponse = await GetChatAsync(chat.Id, messagePageSize, userId, accessToken);
+
+                    if (getResponse.IsSuccess == false)
+                    {
+                        return CreateFailureResponse(500, "Error while retrieving one of the chats");
+                    }
+
+                    GetChatDTO chatDTO = (GetChatDTO)getResponse.Result;
 
                     chatDTOs.Add(chatDTO);
                 }
@@ -274,19 +296,24 @@ namespace Services
                     ContinuationToken = chatPage.ContinuationToken
                 };
 
-                return result;
+                return CreateSuccessResponse(200, "Chats successfully loaded", result);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while loading chats");
             }
         }
 
-        public async Task<GetMessagesDTO> GetChatMessagesAsync(string chatId, int userId, int pageSize, string continuationToken, AccessToken accessToken)
+        public async Task<ServiceResponseDTO> GetChatMessagesAsync(string chatId, int userId, int pageSize, string continuationToken, AccessToken accessToken)
         {
             try
             {
                 User user = await _authRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    CreateFailureResponse(500, "Error while loading the current user");
+                }
 
                 ChatClient client = GetChatClient(accessToken);
                 ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
@@ -333,11 +360,11 @@ namespace Services
                     ContinuationToken = messagesPage.ContinuationToken
                 };
 
-                return result;
+                return CreateSuccessResponse(200, "Messages successfully retrieved", result);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while loading the messages");
             }
         }
 
