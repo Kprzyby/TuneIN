@@ -19,6 +19,7 @@
     "http-proxy-middleware": "^2.0.6",
     "js-cookie": "^3.0.1",
     "next": "^13.0.2",
+    "peerjs": "^1.4.7",
     "react": "^18.2.0",
     "react-collapse": "^5.1.1",
     "react-countup": "^6.4.1",
@@ -37,6 +38,7 @@
     "build": "next build",
     "start": "next start",
     "dev": "next dev",
+    "dev-https": "local-ssl-proxy --key ./tuneinCert+3-key.pem --cert ./tuneinCert+3.pem --source 4001 --target 3000",
     "lint": "next lint"
   },
   "browserslist": {

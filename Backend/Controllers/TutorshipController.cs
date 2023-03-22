@@ -32,12 +32,14 @@ namespace Backend.Controllers
         {
             var result = await _tutorshipService.GetTutorshipAsync(tutorshipId);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return NotFound("There is no tutorship with that id");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            ReadTutorshipDTO tutorshipDTO = (ReadTutorshipDTO)result.Result;
+
+            return Ok(tutorshipDTO);
         }
 
         /// <summary>
@@ -68,12 +70,14 @@ namespace Backend.Controllers
 
             var result = await _tutorshipService.GetTutorshipsAsync(dto);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while loading tutorships");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            GetTutorshipsResponseDTO tutorships = (GetTutorshipsResponseDTO)result.Result;
+
+            return Ok(tutorships);
         }
 
         /// <summary>
@@ -99,12 +103,14 @@ namespace Backend.Controllers
 
             var result = await _tutorshipService.GetTutorshipsAsync(dto);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while loading tutorships");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            GetTutorshipsResponseDTO tutorships = (GetTutorshipsResponseDTO)result.Result;
+
+            return Ok(tutorships);
         }
 
         [HttpPost]
@@ -125,12 +131,14 @@ namespace Backend.Controllers
 
             var result = await _tutorshipService.AddTutorshipAsync(dto);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while creating the tutorship");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return CreatedAtRoute("GetTutorshipAsync", new { tutorshipId = result.Id }, result);
+            ReadTutorshipDTO tutorshipDTO = (ReadTutorshipDTO)result.Result;
+
+            return CreatedAtRoute("GetTutorshipAsync", new { tutorshipId = tutorshipDTO.Id }, tutorshipDTO);
         }
 
         [HttpPut]
@@ -140,14 +148,16 @@ namespace Backend.Controllers
         {
             int userId = GetUserId();
 
-            ReadTutorshipDTO oldTutorship = await _tutorshipService.GetTutorshipAsync(tutorshipId);
+            var oldTutorshipResponse = await _tutorshipService.GetTutorshipAsync(tutorshipId);
 
-            if (oldTutorship == null)
+            if (oldTutorshipResponse.IsSuccess == false)
             {
-                return NotFound("There is no tutorship with that id");
+                return StatusCode(oldTutorshipResponse.StatusCode, oldTutorshipResponse.Message);
             }
 
-            if (userId != oldTutorship.Author.Id)
+            ReadTutorshipDTO oldTutorshipDTO = (ReadTutorshipDTO)oldTutorshipResponse.Result;
+
+            if (userId != oldTutorshipDTO.Author.Id)
             {
                 return StatusCode(403, "You can't modify the tutorship that you don't own");
             }
@@ -163,9 +173,9 @@ namespace Backend.Controllers
 
             var result = await _tutorshipService.UpdateTutorshipAsync(dto);
 
-            if (result == false)
+            if (result.IsSuccess == false)
             {
-                StatusCode(500, "Error while updating the tutorship");
+                StatusCode(result.StatusCode, result.Message);
             }
 
             return StatusCode(204);
@@ -178,23 +188,25 @@ namespace Backend.Controllers
         {
             int userId = GetUserId();
 
-            ReadTutorshipDTO oldTutorship = await _tutorshipService.GetTutorshipAsync(tutorshipId);
+            var oldTutorshipResponse = await _tutorshipService.GetTutorshipAsync(tutorshipId);
 
-            if (oldTutorship == null)
+            if (oldTutorshipResponse.IsSuccess == false)
             {
-                return NotFound("There is no tutorship with that id");
+                return StatusCode(oldTutorshipResponse.StatusCode, oldTutorshipResponse.Message);
             }
 
-            if (userId != oldTutorship.Author.Id)
+            ReadTutorshipDTO oldTutorshipDTO = (ReadTutorshipDTO)oldTutorshipResponse.Result;
+
+            if (userId != oldTutorshipDTO.Author.Id)
             {
                 return StatusCode(403, "You can't modify the tutorship that you don't own");
             }
 
-            bool result = await _tutorshipService.DeleteTutorshipAsync(tutorshipId);
+            var result = await _tutorshipService.DeleteTutorshipAsync(tutorshipId);
 
-            if (result == false)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while deleting the tutorship");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
             return StatusCode(204);
@@ -206,12 +218,14 @@ namespace Backend.Controllers
         {
             var result = _tutorshipService.GetCategories();
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while loading possible categories");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            List<string> categories = (List<string>)result.Result;
+
+            return Ok(categories);
         }
 
         #endregion Methods

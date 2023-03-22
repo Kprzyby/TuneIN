@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using Backend.ViewModels.Chat;
 using Common.CustomDataAttributes;
+using Data.DTOs.Chat;
 using Microsoft.AspNetCore.Mvc;
 using Nancy.Json;
 using Services;
@@ -64,12 +65,14 @@ namespace Backend.Controllers
 
             var result = await _chatService.CreateChatAsync(newChat.Topic, newChat.ParticipantsIds, token);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Error while creating the chat!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return StatusCode(201, result);
+            string newChatId = (string)result.Result;
+
+            return StatusCode(result.StatusCode, newChatId);
         }
 
         [HttpGet]
@@ -81,12 +84,14 @@ namespace Backend.Controllers
 
             var result = await _chatService.GetChatAsync(chatId, pageSize, GetUserId(), token);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Wrong chat id!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            GetChatDTO chatDTO = (GetChatDTO)result.Result;
+
+            return Ok(chatDTO);
         }
 
         [HttpGet]
@@ -96,14 +101,21 @@ namespace Backend.Controllers
         {
             var token = await GetTokenAsync();
 
-            var result = await _chatService.GetChatListAsync(pageSize, messagePageSize, GetUserId(), continuationToken, token);
-
-            if (result == null)
+            if (token.Token == "")
             {
-                return BadRequest("Error while getting chats!");
+                return StatusCode(502, "Error while creating an access token!");
             }
 
-            return Ok(result);
+            var result = await _chatService.GetChatListAsync(pageSize, messagePageSize, GetUserId(), continuationToken, token);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            GetChatsDTO chatsDTO = (GetChatsDTO)result.Result;
+
+            return Ok(chatsDTO);
         }
 
         [HttpGet]
@@ -115,12 +127,14 @@ namespace Backend.Controllers
 
             var result = await _chatService.GetChatMessagesAsync(chatId, GetUserId(), pageSize, continuationToken, token);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Error while getting the messages!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return Ok(result);
+            GetMessagesDTO messagesDTO = (GetMessagesDTO)result.Result;
+
+            return Ok(messagesDTO);
         }
 
         [HttpPost]
@@ -132,12 +146,14 @@ namespace Backend.Controllers
 
             var result = await _chatService.SendMessageAsync(newMessage.ChatId, newMessage.Message, GetUserId(), token);
 
-            if (result == null)
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Wrong chat id!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return StatusCode(201, result);
+            string messageId = (string)result.Result;
+
+            return StatusCode(201, messageId);
         }
 
         #endregion Methods
