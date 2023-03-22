@@ -1,10 +1,10 @@
 import { NextPage } from 'next'
-import Profile from "../../organisms/Profile";
+import Profile from '@components/organisms/Profile';
 
-const Homepage: NextPage = () =>{
+const ProfilePage: NextPage = () =>{
     return(
         <Profile/>
     );
 }
 
-export default Homepage;
+export default ProfilePage;

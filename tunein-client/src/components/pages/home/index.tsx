@@ -1,14 +1,18 @@
 import { NextPage } from 'next'
-import App from './App'
-
+import Heropage from '@components/organisms/Heropage';
+import HomeRegister from '@components/organisms/HomeRegister';
+import HomeBrowse from '@components/organisms/HomeBrowse';
+import HomeCounter from '@components/organisms/HomeCounter';
+//TODO: consider adding scrollIntoView here instead of event in a single section(heropage)
 
 const Homepage: NextPage = () =>{
     return(
-        <div>
-            <h1>Welcome to TuneIN</h1>
-            <h2>web design trudny ehh</h2>
-            <App/>
-        </div>
+        <>
+            <Heropage/>
+            <HomeBrowse/>
+            <HomeRegister/>
+            <HomeCounter/>
+        </>
     );
 }
 

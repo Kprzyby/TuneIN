@@ -1,7 +1,9 @@
 ﻿using Azure.Communication.Email;
 using Azure.Communication.Email.Models;
+using Azure.Communication.Identity;
 using Common.Enums;
 using Data.CustomDataAttributes.InjectionAttributes;
+using Data.DTOs.Response;
 using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
@@ -13,7 +15,7 @@ using System.Security.Cryptography;
 namespace Services
 {
     [ScopedAttribute]
-    public class AuthService
+    public class AuthService : BaseService
     {
         #region Properties
 
@@ -82,12 +84,18 @@ namespace Services
             return userExists;
         }
 
-        public async Task<bool> AddUserAsync(NewUserDTO userDTO)
+        public async Task<ServiceResponseDTO> AddUserAsync(NewUserDTO userDTO)
         {
             try
             {
                 var salt = CreateSalt(8);
                 var hashedPassword = CreateHash(userDTO.Password, salt);
+
+                string connectionString = _configuration.GetConnectionString("AzureChatConnection");
+                var client = new CommunicationIdentityClient(connectionString);
+
+                var identityResponse = await client.CreateUserAsync();
+                var identity = identityResponse.Value;
 
                 User newUser = new User()
                 {
@@ -96,20 +104,21 @@ namespace Services
                     Password = hashedPassword,
                     Salt = salt,
                     UserRole = userDTO.UserRole,
-                    ConfirmationGUID = userDTO.ConfirmationGUID
+                    ConfirmationGUID = userDTO.ConfirmationGUID,
+                    ChatIdentityId = identity.Id
                 };
 
                 await _authRepository.AddAndSaveChangesAsync(newUser);
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Internal server error while adding the user");
             }
 
-            return true;
+            return CreateSuccessResponse(201, "User added successfully");
         }
 
-        public async Task<bool> ConfirmAccountAsync(string email, Guid confirmationGUID)
+        public async Task<ServiceResponseDTO> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
             try
             {
@@ -117,12 +126,12 @@ namespace Services
 
                 if (user == default)
                 {
-                    return false;
+                    return CreateFailureResponse(404, "User with such an email was not found");
                 }
 
                 if (user.ConfirmationGUID != confirmationGUID)
                 {
-                    return false;
+                    return CreateFailureResponse(403, "This action was not reached by the link that was provided in the confirmation email");
                 }
 
                 user.UserRole = UserRole.REGULAR_USER.ToString();
@@ -131,13 +140,13 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while confirming the user's account");
             }
 
-            return true;
+            return CreateSuccessResponse(200, "Account confirmed successfully");
         }
 
-        public async Task<bool> SendPasswordRecoveryEmailAsync(string email, string URL, Guid passwordRecoveryGUID)
+        public async Task<ServiceResponseDTO> SendPasswordRecoveryEmailAsync(string email, string URL, Guid passwordRecoveryGUID)
         {
             try
             {
@@ -145,7 +154,7 @@ namespace Services
 
                 if (user == default)
                 {
-                    return false;
+                    return CreateFailureResponse(404, "User with such an email was not found");
                 }
 
                 user.PasswordRecoveryGUID = passwordRecoveryGUID;
@@ -173,13 +182,13 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while sending password recovery email");
             }
 
-            return true;
+            return CreateSuccessResponse(200, "Password recovery email successfully sent");
         }
 
-        public async Task<bool> ChangePasswordAsync(string email, string password, Guid passwordRecoveryGUID)
+        public async Task<ServiceResponseDTO> ChangePasswordAsync(string email, string password, Guid passwordRecoveryGUID)
         {
             try
             {
@@ -187,12 +196,12 @@ namespace Services
 
                 if (user == default)
                 {
-                    return false;
+                    return CreateFailureResponse(404, "User with such an email was not found");
                 }
 
                 if (user.PasswordRecoveryGUID != passwordRecoveryGUID)
                 {
-                    return false;
+                    return CreateFailureResponse(403, "This action was not reached by the link that was provided in the password recovery email");
                 }
 
                 byte[] salt = CreateSalt(8);
@@ -205,13 +214,13 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while changing the user's password");
             }
 
-            return true;
+            return CreateSuccessResponse(200, "Password successfully changed");
         }
 
-        public async Task<ClaimsIdentity?> ValidateUserAndCreateClaimsAsync(string email, string password)
+        public async Task<ServiceResponseDTO> ValidateUserAndCreateClaimsAsync(string email, string password)
         {
             try
             {
@@ -219,14 +228,14 @@ namespace Services
 
                 if (user == default)
                 {
-                    return null;
+                    return CreateFailureResponse(404, "User with such an email was not found");
                 }
 
                 var hashedPassword = CreateHash(password, user.Salt);
 
                 if (hashedPassword != user.Password)
                 {
-                    return null;
+                    return CreateFailureResponse(401, "Wrong password or email");
                 }
 
                 List<Claim> claims = new List<Claim>()
@@ -237,15 +246,15 @@ namespace Services
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                return claimsIdentity;
+                return CreateSuccessResponse(200, "Authorization credentials validated", claimsIdentity);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while validating the authorization credentials");
             }
         }
 
-        public async Task<bool> SendConfirmationEmailAsync(string email, string userName, string confirmationURL)
+        public async Task<ServiceResponseDTO> SendConfirmationEmailAsync(string email, string userName, string confirmationURL)
         {
             string connectionString = _configuration.GetConnectionString("AzureEmailConnection");
 
@@ -270,10 +279,46 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(502, "External server error while sending the confirmation email");
             }
 
-            return true;
+            return CreateSuccessResponse(200, "Confirmation email successfully sent");
+        }
+
+        public async Task<ServiceResponseDTO> GetUserAsync(string email, int? id)
+        {
+            try
+            {
+                User user;
+
+                if (id != null)
+                {
+                    user = await _authRepository.GetByIdAsync((int)id);
+                }
+                else
+                {
+                    user = await _authRepository.GetUserByEmailAsync(email);
+                }
+
+                if (user == null)
+                {
+                    return CreateFailureResponse(404, "User was not found");
+                }
+
+                ReadUserDTO result = new ReadUserDTO()
+                {
+                    Id = user.Id,
+                    UserRole = user.UserRole,
+                    UserName = user.UserName,
+                    Email = user.Email
+                };
+
+                return CreateSuccessResponse(200, "User found", result);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while loading the user");
+            }
         }
 
         #endregion Methods

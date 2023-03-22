@@ -1,6 +1,8 @@
 export default {
-    darkMain: "#819CA9",
-    darkMainL: "#B1CDDB",
-    darkMainD:"#546E7A"
+    darkMain: "#27273d",
+    darkMainL: "#504f68",
+    darkMainD:"#000018",
+    inputHint: "#cccccc",
+    white: "#Faf8f2"
 };
   

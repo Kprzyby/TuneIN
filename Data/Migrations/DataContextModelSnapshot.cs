@@ -22,7 +22,40 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Data.Entities.TutorshipAnnouncement", b =>
+            modelBuilder.Entity("Data.Entities.TrackInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Band")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkToCover")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkToTabs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrackName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TrackInfo");
+                });
+
+            modelBuilder.Entity("Data.Entities.Tutorship", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,6 +73,9 @@ namespace Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Details")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -51,11 +87,14 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
 
-                    b.ToTable("TutorshipAnnouncement");
+                    b.ToTable("Tutorship");
                 });
 
             modelBuilder.Entity("Data.Entities.User", b =>
@@ -65,6 +104,10 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ChatIdentityId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("ConfirmationGUID")
                         .HasColumnType("uniqueidentifier");
@@ -97,7 +140,7 @@ namespace Data.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Data.Entities.TutorshipAnnouncement", b =>
+            modelBuilder.Entity("Data.Entities.Tutorship", b =>
                 {
                     b.HasOne("Data.Entities.User", "CreatedBy")
                         .WithMany()

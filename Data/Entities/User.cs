@@ -18,5 +18,7 @@ namespace Data.Entities
         public string UserRole { get; set; }
         public Guid ConfirmationGUID { get; set; }
         public Guid? PasswordRecoveryGUID { get; set; }
+        public string ChatIdentityId { get; set; }
+        public virtual ICollection<TrackInfo>? TrackInfos { get; set;}
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Backend.ViewModels.User;
+using Common.CustomDataAttributes;
 using Common.Enums;
 using Data.DTOs.User;
 using Microsoft.AspNetCore.Authentication;
@@ -7,28 +8,57 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 using System.Security.Claims;
+using System.Web;
 
 namespace Backend.Controllers
 {
     [ApiController]
-    public class AuthController : Controller
+    public class AuthController : BaseController
     {
         #region Properties
 
         private readonly AuthService _authService;
+        private readonly ChatService _chatService;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, ChatService chatService)
         {
             _authService = authService;
+            _chatService = chatService;
         }
 
         #endregion Constructors
 
         #region Methods
+
+        private Uri CreatePasswordRecoveryURL(Guid passwordRecoveryGUID, string host, int userId)
+        {
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/recover/password");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["id"] = userId.ToString();
+            parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            return finalUrl;
+        }
+
+        private Uri CreateAccountConfirmationURL(string host, string email, Guid confirmationGUID)
+        {
+            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/activate/user");
+            var parameters = HttpUtility.ParseQueryString(string.Empty);
+            parameters["email"] = email;
+            parameters["confirmationGUID"] = confirmationGUID.ToString();
+            uriBuilder.Query = parameters.ToString();
+
+            Uri finalUrl = uriBuilder.Uri;
+
+            return finalUrl;
+        }
 
         [AllowAnonymous]
         [HttpPost]
@@ -53,36 +83,35 @@ namespace Backend.Controllers
 
             var createResult = await _authService.AddUserAsync(userDTO);
 
-            if (createResult == false)
+            if (createResult.IsSuccess == false)
             {
-                return StatusCode(500, "Error while creating user!");
+                return StatusCode(createResult.StatusCode, createResult.Message);
             }
 
-            string confirmationURL = this.Url.Action("ConfirmAccountAsync", "Auth", new { Email = newUser.Email, ConfirmationGUID = userDTO.ConfirmationGUID }, protocol: "https");
+            string host = Request.Host.Host;
 
-            bool sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
+            Uri url = CreateAccountConfirmationURL(host, userDTO.Email, userDTO.ConfirmationGUID);
 
-            if (sendEmailResult == false)
+            string confirmationURL = url.AbsoluteUri.ToString();
+
+            var sendEmailResult = await _authService.SendConfirmationEmailAsync(newUser.Email, newUser.UserName, confirmationURL);
+
+            if (sendEmailResult.IsSuccess == false)
             {
-                return BadRequest("Error while sending confirmation email!");
+                return StatusCode(sendEmailResult.StatusCode, sendEmailResult.Message);
             }
 
-            return StatusCode(201, "User created successfully!");
+            return StatusCode(createResult.StatusCode, createResult.Message);
         }
 
         [HttpPut]
         [AllowAnonymous]
         [Route("Auth/ConfirmAccountAsync")]
-        public async Task<IActionResult> ConfirmAccountAsync(ConfirmUserViewModel confirmationData)
+        public async Task<IActionResult> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
-            bool result = await _authService.ConfirmAccountAsync(confirmationData.Email, confirmationData.ConfirmationGUID);
+            var result = await _authService.ConfirmAccountAsync(email, confirmationGUID);
 
-            if (result == false)
-            {
-                return BadRequest("Error while confirming the account!");
-            }
-
-            return Ok("Account confirmed successfully!");
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpGet]
@@ -90,18 +119,24 @@ namespace Backend.Controllers
         [Route("Auth/RecoverPasswordAsync")]
         public async Task<IActionResult> RecoverPasswordAsync(string email)
         {
+            string host = Request.Host.Host;
             Guid passwordRecoveryGUID = Guid.NewGuid();
+            var getResult = await _authService.GetUserAsync(email, null);
 
-            string passwordRecoveryURL = this.Url.Action("ChangePasswordAsync", "Auth", new { email = email, passwordRecoveryGUID = passwordRecoveryGUID }, protocol: "https");
-
-            bool result = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
-
-            if (result == false)
+            if (getResult.IsSuccess == false)
             {
-                return StatusCode(404, "There is no user with such an email!");
+                return StatusCode(getResult.StatusCode, getResult.Message);
             }
 
-            return Ok("Password recovery email has been successfully sent!");
+            ReadUserDTO userDTO = (ReadUserDTO)getResult.Result;
+
+            Uri url = CreatePasswordRecoveryURL(passwordRecoveryGUID, host, userDTO.Id);
+
+            string passwordRecoveryURL = url.AbsoluteUri.ToString();
+
+            var emailResult = await _authService.SendPasswordRecoveryEmailAsync(email, passwordRecoveryURL, passwordRecoveryGUID);
+
+            return StatusCode(emailResult.StatusCode, emailResult.Message);
         }
 
         [HttpPut]
@@ -109,14 +144,9 @@ namespace Backend.Controllers
         [Route("Auth/ChangePasswordAsync")]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel newPassword)
         {
-            bool result = await _authService.ChangePasswordAsync(newPassword.Email, newPassword.Password, newPassword.PasswordRecoveryGUID);
+            var result = await _authService.ChangePasswordAsync(newPassword.Email, newPassword.Password, newPassword.PasswordRecoveryGUID);
 
-            if (result == false)
-            {
-                return BadRequest("Error while changing password!");
-            }
-
-            return Ok("Password changed succesfully!");
+            return StatusCode(result.StatusCode, result.Message);
         }
 
         [AllowAnonymous]
@@ -124,26 +154,92 @@ namespace Backend.Controllers
         [Route("Auth/SignInAsync")]
         public async Task<IActionResult> SignInAsync(SignInViewModel logInCredentials)
         {
-            var claimsIdentity = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
+            var claimsResult = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
 
-            if (claimsIdentity == null)
+            if (claimsResult.IsSuccess == false)
             {
-                return BadRequest("Wrong credentials!");
+                return StatusCode(claimsResult.StatusCode, claimsResult.Message);
             }
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            var tokenResponse = await _chatService.GenerateChatAccessTokenAsync(logInCredentials.Email);
 
-            return Ok("User signed in successfully!");
+            if (tokenResponse.IsSuccess == false)
+            {
+                return StatusCode(tokenResponse.StatusCode, tokenResponse.Message);
+            }
+
+            ClaimsIdentity identity = (ClaimsIdentity)claimsResult.Result;
+            string chatToken = (string)tokenResponse.Result;
+
+            Response.Cookies.Append("ChatToken", chatToken);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            var userResult = await _authService.GetUserAsync(logInCredentials.Email, null);
+
+            if (userResult.IsSuccess == false)
+            {
+                return StatusCode(userResult.StatusCode, userResult.Message);
+            }
+
+            ReadUserDTO userDTO = (ReadUserDTO)userResult.Result;
+
+            return Ok(userDTO);
         }
 
-        [AllowAnonymous]
+        [RequireRole("REGULAR_USER", "TUTOR")]
         [HttpGet]
         [Route("Auth/SignOutAsync")]
         public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync("Cookies");
 
+            int userId = GetUserId();
+
+            Response.Cookies.Append("ChatToken", "");
+            var tokensResult = await _chatService.RemoveAllTokensAsync(userId);
+
+            if (tokensResult.IsSuccess == false)
+            {
+                return StatusCode(tokensResult.StatusCode, tokensResult.Message);
+            }
+
             return Ok("User signed out successfully!");
+        }
+
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [HttpGet]
+        [Route("Auth/GetCurrentUserAsync")]
+        public async Task<IActionResult> GetCurrentUserAsync()
+        {
+            int userId = GetUserId();
+
+            var result = await _authService.GetUserAsync(null, userId);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(500, "Error while loading the user from the database");
+            }
+
+            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
+
+            return Ok(userDTO);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("Auth/GetUserAsync")]
+        public async Task<IActionResult> GetUserAsync(int userId)
+        {
+            var result = await _authService.GetUserAsync(null, userId);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
+
+            return Ok(userDTO);
         }
 
         #endregion Methods
