@@ -30,7 +30,7 @@
     "build": "next build",
     "start": "next start",
     "dev": "next dev",
-    "dev-https": "local-ssl-proxy --key ../chat-server/chat+3-key.pem --cert ../chat-server/chat+3.pem --source 4001 --target 3000",
+    "dev-https": "local-ssl-proxy --key ./tuneinCert+3-key.pem --cert ./tuneinCert+3.pem --source 4001 --target 3000",
     "lint": "next lint"
   },
   "eslintConfig": {
