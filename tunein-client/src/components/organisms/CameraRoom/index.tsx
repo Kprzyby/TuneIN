@@ -4,7 +4,7 @@ import RemoteCamera from "../RemoteCamera"
 import * as Styled from "./styles"
 
 const CameraRoom: React.FC = () => {
-
+    
     //var testStream: MediaStream = new MediaStream();
 
     return (
