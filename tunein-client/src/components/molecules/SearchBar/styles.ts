@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { MagnifyingGlass } from "../../../../public/assets/svg";
+import styled from 'styled-components';
+import { MagnifyingGlass } from '../../../../public/assets/svg';
 
 export const Wrapper = styled.div`
     width: 100%;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -17,7 +17,7 @@ export const ToolBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-`; 
+`;
 export const UpRow = styled.div` flex: 1; `;
 export const DownRow = styled.div`
     flex: 1;
@@ -34,7 +34,7 @@ export const DownRowSide = styled.div`
 export const List = styled.div`
     @media (min-width: 0px) { margin-top: 0.1rem; }
     @media (min-width: 600px) { margin-top: 0.5rem; }
-    background-color: ${({theme})=>theme.colors.darkMain};
+    background-color: ${({ theme }) => theme.colors.darkMain};
     @media (min-height: 0px) {
         min-height: 100vh;
     }

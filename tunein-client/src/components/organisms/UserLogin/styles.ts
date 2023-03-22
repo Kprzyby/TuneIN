@@ -1,6 +1,6 @@
-import { Typography } from "@components/styles/typography";
-import styled, { keyframes } from "styled-components";
-import { StyledProps } from "./types";
+import { Typography } from '@components/styles/typography';
+import styled, { keyframes } from 'styled-components';
+import { StyledProps } from './types';
 
 const errorAnim = keyframes`
     0% { opacity: 1; }
@@ -14,7 +14,7 @@ const errorAnim = keyframes`
     80% { opacity: 0.5; }
     90% { opacity: 0.9; }
     100% { opacity: 1; }
-`
+`;
 export const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -42,13 +42,13 @@ export const Form = styled.form`
 export const Input = styled.input<StyledProps>`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
-    color: ${({theme}) => theme.colors.white};
-    font-family: ${({theme}) => theme.fonts.body};
+    color: ${({ theme }) => theme.colors.white};
+    font-family: ${({ theme }) => theme.fonts.body};
     border: unset;
     border-radius: 0.2rem;
     padding: 0.3rem;
     /* Input security */
-    ${({isSecure}) => isSecure ? `-webkit-text-security: disc;` : `` }
+    ${({ isSecure }) => (isSecure ? '-webkit-text-security: disc;' : '')}
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,
@@ -101,6 +101,6 @@ export const Button = styled.button`
     padding: 0.5rem 2rem;
 `;
 export const RecoveryText = styled(Error)`
-    font-family: ${({theme}) => theme.fonts.body};
+    font-family: ${({ theme }) => theme.fonts.body};
     animation-name: none;
 `;

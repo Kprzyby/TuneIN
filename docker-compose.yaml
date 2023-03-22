@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  frontend:
+    container_name: frontend
+    build: ./tunein-client
+    ports: 
+      - '3000:3000'
+    volumes:
+      - ./tunein-client:/app
+    networks:
+      - app-network
+  socketio-server:
+    container_name: chat-server
+    build: ./chat-server
+    ports:
+      - '3001:3001'
+      - '3002:433'
+    volumes:
+      - ./chat-server:/app
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
