@@ -28,6 +28,9 @@ namespace Backend.Controllers
 
         [HttpGet("Tutorship/GetTutorshipAsync/{tutorshipId}", Name = "GetTutorshipAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(ReadTutorshipDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTutorshipAsync(int tutorshipId)
         {
             var result = await _tutorshipService.GetTutorshipAsync(tutorshipId);
@@ -57,6 +60,8 @@ namespace Backend.Controllers
         [HttpPost]
         [Route("Tutorship/GetTutorshipsAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(GetTutorshipsResponseDTO), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTutorshipsAsync(GetTutorshipsViewModel pagingInfo)
         {
             GetTutorshipsDTO dto = new GetTutorshipsDTO()
@@ -92,6 +97,8 @@ namespace Backend.Controllers
         [HttpPost]
         [Route("Tutorship/GetTutorshipsForUserAsync/{userId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(GetTutorshipsResponseDTO), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTutorshipsForUserAsync(int userId, GetTutorshipsForUserViewModel pagingInfo)
         {
             GetTutorshipsDTO dto = new GetTutorshipsDTO()
@@ -116,6 +123,8 @@ namespace Backend.Controllers
         [HttpPost]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [Route("Tutorship/AddTutorshipAsync")]
+        [ProducesResponseType(typeof(ReadTutorshipDTO), 201)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> AddTutorshipAsync(NewTutorshipViewModel newTutorship)
         {
             int userId = GetUserId();
@@ -144,6 +153,10 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("Tutorship/UpdateTutorshipAsync/{tutorshipId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> UpdateTutorshipAsync(int tutorshipId, UpdateTutorshipViewModel updatedTutorship)
         {
             int userId = GetUserId();
@@ -184,6 +197,10 @@ namespace Backend.Controllers
         [HttpDelete]
         [Route("Tutorship/DeleteTutorshipAsync/{tutorshipId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> DeleteTutorshipAsync(int tutorshipId)
         {
             int userId = GetUserId();
@@ -214,6 +231,8 @@ namespace Backend.Controllers
 
         [HttpGet]
         [Route("Tutorship/GetCategories")]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 500)]
         public IActionResult GetCategories()
         {
             var result = _tutorshipService.GetCategories();
