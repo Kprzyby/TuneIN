@@ -9,20 +9,22 @@ export const Wrapper = styled.div`
 `;
 
 export const Form = styled.form`
-    min-height: 27rem;
-    background-color: ${({ theme }) => theme.colors.darkMainD};
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    padding: 2rem;
-    border-radius: 0.2rem;
 `;
 
-export const TileTitle = styled(Typography)`
+export const InputTitle = styled(Typography)`
+    margin-top: 1rem;
     width: 100%;
-    margin-left: 3rem;
+    color: ${({ theme }) => theme.colors.darkMainD};
+    font-weight: 700;
+    @media (min-width: 0px) { font-size: 0.6rem; }
+    @media (min-width: 400px) { font-size: 0.8rem; }
+    @media (min-width: 800px) { font-size: 1.2rem; }
+    @media (min-width: 1200px) { font-size: 1.6rem; }
+    @media (min-width: 1500px) { font-size: 2rem; }
 `;
 
 const errorAnim = keyframes`
@@ -53,9 +55,14 @@ export const Error = styled(Typography)`
   -moz-background-clip: text;
   -moz-text-fill-color: transparent;
   text-shadow: rgba(151, 65, 252, 0.2) 0.063rem 0.063rem 0.063rem;
+  padding-bottom: 0.5rem;
+  @media (min-width: 0px) { font-size: 0.8rem; }
+  @media (min-width: 800px) { font-size: 1.2rem; }
+  @media (min-width: 1200px) { font-size: 1.6rem; }
+  @media (min-width: 1500px) { font-size: 2rem; }
 `;
 
-export const Input = styled.textarea`
+export const Input = styled.input`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: white;
@@ -67,8 +74,10 @@ export const Input = styled.textarea`
     resize: none;
     box-sizing: border-box;
     display: flex;
-    overflow:hidden;
-    min-height:100%;
+    overflow: hidden;
+    min-height: 100%;
+    width: 100%;
+    padding: 0.4rem;
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,
@@ -77,4 +86,9 @@ export const Input = styled.textarea`
     &:-webkit-autofill:active{
         transition: background-color 600000s 0s, color 600000s 0s;
     }
+`;
+export const Button = styled.button`
+    background-color: transparent;
+    border: unset;
+    padding: 0.5rem 2rem;
 `;
