@@ -1,6 +1,6 @@
-import { Inner } from "@components/styles/inners";
-import { Typography } from "@components/styles/typography";
-import styled from "styled-components";
+import { Inner } from '@components/styles/inners';
+import { Typography } from '@components/styles/typography';
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     width: 100%;
@@ -14,7 +14,7 @@ export const Center = styled(Inner)`
     justify-content: center;
     align-items: center;
 `;
-export const copyRight = styled(Typography)`
+export const CopyRight = styled(Typography)`
     padding-top: 1rem;
     @media (min-width: 0px) { font-size: 1rem; }
     @media (min-width: 600px) { font-size: 1.3rem; }

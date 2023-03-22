@@ -1,18 +1,18 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     background: #fff;
-    border: 1px solid #ddd;
+    border: 0.2rem solid ${({ theme }) => theme.colors.darkMainD};
     font-family: 'Georgia', serif;
-    font-size: 14px;
-    padding: 15px;
+    font-size: 1rem;
+    padding: 1rem;
     max-width: 25rem;
     min-width: 20rem;
     border-radius: 0.2rem;
     .DraftEditor-root{
-        border-top: 1px solid #ddd;
+        border-top: 0.1rem solid ${({ theme }) => theme.colors.darkMainD};
         font-size: 1rem;
-        margin-top: 10px;
+        margin-top: 0.8rem;
         min-height: 15rem;
     }
 `;

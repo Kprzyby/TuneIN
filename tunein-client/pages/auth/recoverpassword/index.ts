@@ -1,1 +1,1 @@
-export { default } from "../../../src/components/pages/userrecoverpassword";
+export { default } from '../../../src/components/pages/userrecoverpassword';
