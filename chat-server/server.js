@@ -11,8 +11,8 @@ const fs = require('fs')
 app.use(cors())
 
 var sslOptions = {
-    key: fs.readFileSync('./chat+3-key.pem'),
-    cert: fs.readFileSync('./chat+3.pem')
+    key: fs.readFileSync('../tunein-client/tuneinCert+3-key.pem'),
+    cert: fs.readFileSync('../tunein-client/tuneinCert+3.pem')
   };
 
 const server = https.createServer(sslOptions, app)
