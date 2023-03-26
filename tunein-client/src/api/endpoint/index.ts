@@ -12,6 +12,15 @@ export const ENDPOINTS = {
     changepassword: 'Auth/ChangePasswordAsync',
     getuserbyid: 'Auth/GetUserAsync',
   },
+  tutorship: {
+    gettutorshipbyid: 'Tutorship/GetTutorshipAsync/{tutorshipID}',
+    getcategories: 'Tutorship/GetCategories',
+    gettutorships: '/Tutorship/GetTutorshipsAsync',
+    getusertutorships: '/Tutorship/GetTutorshipsForUserAsync/{userId}',
+    addTutorship: 'Tutorship/AddTutorshipAsync',
+    updateTutorship: 'Tutorship/UpdateTutorshipAsync/{tutorshipId}',
+    removeTutorship: '/Tutorship/DeleteTutorshipAsync/{tutorshipId}',
+  },
   chat: 'CHAT',
   library: 'LIBRARY',
 };
@@ -33,10 +42,17 @@ export const createDBEndpoint = (endpoint: string) => {
       params: updatedRecords,
       httpsAgent,
     }),
-    get: (record: any) => axios({
+    get: (record?: any) => axios({
       method: 'get',
       url,
       params: record,
+      httpsAgent,
+    }),
+    delete: (deletedRecords: any) => axios({
+      method: 'delete',
+      url,
+      data: deletedRecords,
+      params: deletedRecords,
       httpsAgent,
     }),
   };
