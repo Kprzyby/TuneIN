@@ -1,11 +1,10 @@
 import styled from "styled-components";
+import { AnnouncementProperties } from "./types";
 
-export const Announcement = styled.div<{ imageURL: string }>`
+export const Announcement = styled.div<AnnouncementProperties>`
   position: relative;
   aspect-ratio: 16 / 9;
-  /* background-image: url(${(props) => props.imageUrl}); */
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: ${({ img }) => img ? `url(${img}) no-repeat center/cover` : '#ccc'};
 `;
 
 export const SeeTrough = styled.div`
