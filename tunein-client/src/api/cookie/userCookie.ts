@@ -4,7 +4,7 @@ export const setUserCookie = (user: any): void => {
   Cookies.remove('user');
   Cookies.set('user', JSON.stringify(user), { expires: 12 });
 };
-export const getUserCookie: any = () => {
+export const getUserCookie = (): any => {
   const userCookie = Cookies.get('user');
   if (userCookie === undefined) {
     return undefined;

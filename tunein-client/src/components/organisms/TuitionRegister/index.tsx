@@ -49,13 +49,13 @@ const TuitionRegister: React.FC = () => {
       createDBEndpoint(ENDPOINTS.tutorship.addTutorship)
         .post({
           title: values.title,
-          details: convertToRaw(editorState.getCurrentContent()),
+          details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
           price: values.price,
           category: values.category,
         })
         .then(() => {
           setLoading(false);
-          router.push('/profile');
+          router.back();
         })
         .catch(() => {
           setErr(true);

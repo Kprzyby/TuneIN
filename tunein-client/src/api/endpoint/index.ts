@@ -32,9 +32,16 @@ export const createDBEndpoint = (endpoint: string) => {
   /* eslint-enable global-require */
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+  axios.defaults.withCredentials = true;
 
   return {
-    post: (newRecord: any) => axios.post(url, newRecord),
+    post: (newRecord: any) => axios({
+      method: 'post',
+      url,
+      data: newRecord,
+      params: newRecord,
+      httpsAgent,
+    }),
     put: (updatedRecords: any) => axios({
       method: 'put',
       url,
