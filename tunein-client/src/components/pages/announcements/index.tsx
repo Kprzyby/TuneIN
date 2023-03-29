@@ -4,7 +4,7 @@ import { NextPage } from 'next'
 
 const Homepage: NextPage = () =>{
     return(
-        <Announcement title='SumTitle'/>
+        <Announcements/>
     );
 }
 
