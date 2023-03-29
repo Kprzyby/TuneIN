@@ -10,16 +10,6 @@ const Announcements: React.FC = () => {
 
     return (
         <Styled.AnnouncementsPage>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
-            <Announcement title='Some Title' interested={3}/>
         </Styled.AnnouncementsPage>
     )
 }
