@@ -13,13 +13,13 @@ export const ENDPOINTS = {
     getuserbyid: 'Auth/GetUserAsync',
   },
   tutorship: {
-    gettutorshipbyid: 'Tutorship/GetTutorshipAsync/{tutorshipID}',
+    gettutorshipbyid: 'Tutorship/GetTutorshipAsync/',
     getcategories: 'Tutorship/GetCategories',
-    gettutorships: '/Tutorship/GetTutorshipsAsync',
-    getusertutorships: '/Tutorship/GetTutorshipsForUserAsync/{userId}',
+    gettutorships: 'Tutorship/GetTutorshipsAsync',
+    getusertutorships: 'Tutorship/GetTutorshipsForUserAsync/',
     addTutorship: 'Tutorship/AddTutorshipAsync',
-    updateTutorship: 'Tutorship/UpdateTutorshipAsync/{tutorshipId}',
-    removeTutorship: '/Tutorship/DeleteTutorshipAsync/{tutorshipId}',
+    updateTutorship: 'Tutorship/UpdateTutorshipAsync/',
+    removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
   },
   chat: 'CHAT',
   library: 'LIBRARY',
@@ -33,7 +33,7 @@ export const createDBEndpoint = (endpoint: string) => {
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
   axios.defaults.withCredentials = true;
-
+  console.log(endpoint);
   return {
     post: (newRecord: any) => axios({
       method: 'post',

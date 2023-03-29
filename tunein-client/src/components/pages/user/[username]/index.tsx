@@ -12,8 +12,8 @@ export default ProfilePage;
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
   // TODO: get all users from the db
   const users: UserType[] = [
-    { username: 'milos', id: 7 },
-    { username: 'accuse', id: 6 },
+    { username: 'milos', id: 6 },
+    { username: 'accuse', id: 7 },
     { username: 'string', id: 5 },
     { username: 'string', id: 3 },
     { username: 'string', id: 1 }];
