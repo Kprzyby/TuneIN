@@ -37,7 +37,7 @@ const UserLogin: React.FC = () => {
         .then((res) => {
           setLoading(false);
           setUser(res.data);
-          router.push('/profile');
+          router.back();
         })
         .catch(() => {
           // TODO: more precise validation error from backend

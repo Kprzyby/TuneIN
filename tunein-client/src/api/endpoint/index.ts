@@ -12,6 +12,15 @@ export const ENDPOINTS = {
     changepassword: 'Auth/ChangePasswordAsync',
     getuserbyid: 'Auth/GetUserAsync',
   },
+  tutorship: {
+    gettutorshipbyid: 'Tutorship/GetTutorshipAsync/',
+    getcategories: 'Tutorship/GetCategories',
+    gettutorships: 'Tutorship/GetTutorshipsAsync',
+    getusertutorships: 'Tutorship/GetTutorshipsForUserAsync/',
+    addTutorship: 'Tutorship/AddTutorshipAsync',
+    updateTutorship: 'Tutorship/UpdateTutorshipAsync/',
+    removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
+  },
   chat: 'CHAT',
   library: 'LIBRARY',
 };
@@ -23,9 +32,16 @@ export const createDBEndpoint = (endpoint: string) => {
   /* eslint-enable global-require */
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-
+  axios.defaults.withCredentials = true;
+  console.log(endpoint);
   return {
-    post: (newRecord: any) => axios.post(url, newRecord),
+    post: (newRecord: any) => axios({
+      method: 'post',
+      url,
+      data: newRecord,
+      params: newRecord,
+      httpsAgent,
+    }),
     put: (updatedRecords: any) => axios({
       method: 'put',
       url,
@@ -33,10 +49,17 @@ export const createDBEndpoint = (endpoint: string) => {
       params: updatedRecords,
       httpsAgent,
     }),
-    get: (record: any) => axios({
+    get: (record?: any) => axios({
       method: 'get',
       url,
       params: record,
+      httpsAgent,
+    }),
+    delete: (deletedRecords: any) => axios({
+      method: 'delete',
+      url,
+      data: deletedRecords,
+      params: deletedRecords,
       httpsAgent,
     }),
   };

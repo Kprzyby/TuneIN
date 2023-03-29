@@ -1,4 +1,5 @@
 import { Typography } from '@components/styles/typography';
+import Select from 'react-select';
 import styled, { keyframes } from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -13,6 +14,18 @@ export const Form = styled.form`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+`;
+
+export const Title = styled(Typography)`
+    text-align: center;
+    font-weight: 700;
+    padding: 3rem;
+    @media (min-width: 0px) { font-size: 1.6rem; }
+    @media (min-width: 400px) { font-size: 2rem; }
+    @media (min-width: 600px) { font-size: 2.5rem; }
+    @media (min-width: 800px) { font-size: 4rem; }
+    @media (min-width: 1200px) { font-size: 6rem; }
+    @media (min-width: 1500px) { font-size: 7rem; }
 `;
 
 export const InputTitle = styled(Typography)`
@@ -68,7 +81,7 @@ export const Input = styled.input`
     color: white;
     font-size: 2rem;
     font-family: ${({ theme }) => theme.fonts.body};
-    border: none;
+    border: unset;
     border-radius: 0.2rem;
     padding-left: 0.5rem;
     resize: none;
@@ -91,4 +104,32 @@ export const Button = styled.button`
     background-color: transparent;
     border: unset;
     padding: 0.5rem 2rem;
+`;
+export const Category = styled(Select)`
+    width: 100%;
+    //TODO: fix it
+    .css-13cymwt-control {
+        box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
+        background-color: ${({ theme }) => theme.colors.darkMain};
+        font-family: ${({ theme }) => theme.fonts.body};
+        font-size: 2rem;
+        border: unset;
+    }
+    .css-t3ipsp-control {
+        box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
+        background-color: ${({ theme }) => theme.colors.darkMain};
+        font-family: ${({ theme }) => theme.fonts.body};
+        font-size: 2rem;
+        border-color: unset;
+    }
+    .css-1nmdiq5-menu {
+        box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
+        background-color: ${({ theme }) => theme.colors.darkMain};
+        font-family: ${({ theme }) => theme.fonts.body};
+        color: white;
+    }
+    .css-1dimb5e-singleValue {
+        color: white;
+        font-size: 2rem;
+    }
 `;

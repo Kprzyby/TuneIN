@@ -39,7 +39,7 @@ const NewPassword: NextPage = () => {
         .max(20, 'Password needs to be shorter than 15 characters long')
         .required('Password is required'),
       repeatPassword: Yup.string()
-        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .oneOf([Yup.ref('password')], 'Passwords must match')
         .required('Password is required'),
     }),
     onSubmit: (values) => {
