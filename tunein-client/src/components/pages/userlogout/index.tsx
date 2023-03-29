@@ -1,9 +1,9 @@
 import { Typography } from '@components/styles/typography';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect } from 'react'
-import Loader from "../../atoms/Loader";
+import React, { useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import { User_data } from '@components/context/UserContext';
+import { UserData } from '@components/context/UserContext';
+import Loader from '../../atoms/Loader';
 
 const Title = styled(Typography)`
     text-align: center;
@@ -17,19 +17,23 @@ const Title = styled(Typography)`
     @media (min-width: 1500px) { font-size: 7rem; }
 `;
 const Logout: React.FC = () => {
-    const { setUser } = useContext(User_data);
-    const router = useRouter();
-    useEffect(() => {
-        setUser(undefined);
-        router.push("/")
-    }, []);
+  const { setUser } = useContext(UserData);
+  const router = useRouter();
+  useEffect(() => {
+    setUser(undefined);
+    router.push('/');
+  }, []);
   return (
     <div style={{
-        width: "100%", height: "100%", 
-        display: "flex", alignItems: "center", justifyContent: "center"
-        }}>
-        <Title variant="RegisterTitile">Logging out</Title>
-        <Loader borderColor={`white transparent`}/>
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    >
+      <Title variant="RegisterTitile">Logging out</Title>
+      <Loader borderColor="white transparent" />
     </div>
   );
 };

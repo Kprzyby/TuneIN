@@ -1,11 +1,9 @@
+import React from 'react';
 import CameraRoom from '@components/organisms/CameraRoom';
-import { NextPage } from 'next'
-import LocalCamera from '../../organisms/LocalCamera';
+import { NextPage } from 'next';
 
-const Homepage: NextPage = () =>{
-    return(
-        <CameraRoom/>
-    );
-}
+const Homepage: NextPage = () => (
+  <CameraRoom />
+);
 
 export default Homepage;

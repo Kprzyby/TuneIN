@@ -1,3 +1,3 @@
 export type Props = {
-    text: String
+  text: String
 };
