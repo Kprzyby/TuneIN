@@ -1,6 +1,6 @@
-import { Typography } from "@components/styles/typography";
-import styled from "styled-components";
-import { MusicNote } from "../../../../public/assets/svg";
+import { Typography } from '@components/styles/typography';
+import styled from 'styled-components';
+import { MusicNote } from '../../../../public/assets/svg';
 
 export const Wrapper = styled.div`
     width: 100%;
@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
     align-items: center;
 `;
 export const DefaultImg = styled(MusicNote)`
-    fill: ${({theme}) => theme.colors.darkMainL};
+    fill: ${({ theme }) => theme.colors.darkMainL};
     width: 100%;
     height: 100%;
 `;
@@ -35,7 +35,7 @@ export const Name = styled(Typography)`
 `;
 export const Band = styled(Typography)`
     padding-left: 0.3rem;
-    color: ${({theme}) => theme.colors.darkMainL};
+    color: ${({ theme }) => theme.colors.darkMainL};
     @media (min-width: 0px) { font-size: 0.5rem; }
     @media (min-width: 360px) { font-size: 0.6rem; }
     @media (min-width: 550px) { font-size: 0.8rem; }
@@ -45,7 +45,7 @@ export const Genre = styled(Typography)`
     display: block;
     margin-left: auto;
     margin-right: 1rem;
-    color: ${({theme}) => theme.colors.darkMainL};
+    color: ${({ theme }) => theme.colors.darkMainL};
     @media (min-width: 0px) { font-size: 0.4rem; }
     @media (min-width: 360px) { font-size: 0.6rem; }
     @media (min-width: 650px) { font-size: 0.9rem; }

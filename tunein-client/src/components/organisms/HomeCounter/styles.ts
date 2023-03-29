@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { Typography } from "@components/styles/typography";
-import CountUp from "react-countup";
+import styled from 'styled-components';
+import { Typography } from '@components/styles/typography';
+
 export const Wrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -23,12 +23,12 @@ export const Content = styled.div`
     justify-content: space-evenly;
     flex-direction: row;
     align-items: center;
-    background-color: ${({theme})=>theme.colors.darkMain};
+    background-color: ${({ theme }) => theme.colors.darkMain};
     @media (min-width: 0px) {  min-width: 100%; }
     @media (min-width: 1300px) { min-width: 1300px; }
 `;
 export const Text = styled(Typography)`
-    color: ${({theme})=> theme.colors.darkMainL};
+    color: ${({ theme }) => theme.colors.darkMainL};
     text-align: center;
     @media (min-width: 0) { 
         font-size: 0.6rem;
@@ -83,7 +83,7 @@ export const CounterItem = styled.div`
     flex-direction: column;
 `;
 export const CounterNumber = styled.span`
-    font-family: ${({theme}) => theme.fonts.body};
+    font-family: ${({ theme }) => theme.fonts.body};
     @media (min-width: 0px) { font-size: 0.6rem; }
     @media (min-width: 230px) { font-size: 0.85rem; }
     @media (min-width: 300px) { font-size: 1rem; }
@@ -94,7 +94,7 @@ export const CounterNumber = styled.span`
 `;
 export const CounterLabel = styled(Typography)`
     text-align: center;
-    font-family: ${({theme}) => theme.fonts.body};
+    font-family: ${({ theme }) => theme.fonts.body};
     @media (min-width: 0px) { font-size: 0.22rem; }
     @media (min-width: 230px) { font-size: 0.3rem; }
     @media (min-width: 300px) { font-size: 0.4rem; }

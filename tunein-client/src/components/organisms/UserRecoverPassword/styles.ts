@@ -1,5 +1,5 @@
-import { Typography } from "@components/styles/typography";
-import styled, { keyframes } from "styled-components";
+import { Typography } from '@components/styles/typography';
+import styled, { keyframes } from 'styled-components';
 
 const errorAnim = keyframes`
     0% { opacity: 1; }
@@ -13,7 +13,7 @@ const errorAnim = keyframes`
     80% { opacity: 0.5; }
     90% { opacity: 0.9; }
     100% { opacity: 1; }
-`
+`;
 export const FormWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -41,8 +41,8 @@ export const Form = styled.form`
 export const Input = styled.input`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
-    color: ${({theme}) => theme.colors.white};
-    font-family: ${({theme}) => theme.fonts.body};
+    color: ${({ theme }) => theme.colors.white};
+    font-family: ${({ theme }) => theme.fonts.body};
     border: unset;
     border-radius: 0.2rem;
     padding: 0.3rem;
@@ -110,7 +110,7 @@ export const ConfirmContent = styled.div`
     align-items: center;
     text-align: center;
     height: 100%;
-    background-color: ${({theme})=>theme.colors.darkMain};
+    background-color: ${({ theme }) => theme.colors.darkMain};
     @media (min-width: 0px) {  min-width: 100%; }
     @media (min-width: 1500px) { min-width: 1500px; }
     @media (min-width: 1800px) { min-width: 1800px; }
