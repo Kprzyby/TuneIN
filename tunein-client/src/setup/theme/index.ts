@@ -5,7 +5,7 @@ import {
   textStyles,
   fontWeights,
 } from './partials/typography';
-import { innerStyles } from './partials/inners';
+import innerStyles from './partials/inners';
 
 const theme = {
   colors,

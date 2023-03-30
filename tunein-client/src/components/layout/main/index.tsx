@@ -5,7 +5,6 @@ import Header from '@components/organisms/Header';
 import Footer from '@components/organisms/Footer/indes';
 import { useRouter } from 'next/router';
 import { UserData } from '@components/context/UserContext';
-import { authorizedNav, unauthorizedNav } from './consts';
 import * as Styled from './styles';
 
 const Main: React.FC<PropsWithChildren<unknown>> = ({
@@ -15,6 +14,14 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUser, setIsUser] = useState(false);
+  const unauthorizedNav = [
+    { label: 'Register', href: '/auth/register' },
+    { label: 'Login', href: '/auth/login' },
+  ];
+  const authorizedNav = [
+    { label: 'Logout', href: '/auth/logout' },
+    { label: 'Profile', href: `/user/${user?.userName}` },
+  ];
   useEffect(() => {
     const changeHeader = () => {
       if (window.scrollY !== 0) {
