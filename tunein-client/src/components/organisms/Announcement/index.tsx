@@ -1,18 +1,26 @@
 import React, { useEffect, useRef } from "react";
 import * as Styled from "./styles";
-import * as Endpoint from '../../../api/endpoint'
 import {AnnouncementProperties} from './types'
 
-const Announcement: React.FC<AnnouncementProperties> = ({title, img}) => {
+const Announcement: React.FC<AnnouncementProperties> = ({title, interested, img}) => {
 
   const Title = useRef<HTMLParagraphElement>(null);
   const Interested = useRef<HTMLParagraphElement>(null);
 
+  useEffect(() => {
+    if (Title.current) {
+      Title.current.innerHTML = title;
+    }
+    if (Interested.current) {
+      Interested.current.innerHTML = interested + " interested in";
+    }
+  }, []);
+
   return (
-    <Styled.Announcement title="" img={img}>
+    <Styled.Announcement title={title} interested={interested} img={img}>
       <Styled.SeeTrough>
-        <Styled.Title ref={Title} />
-        <Styled.Interested ref={Interested} />
+        <Styled.Title ref={Title}></Styled.Title>
+        <Styled.Interested ref={Interested}></Styled.Interested>
       </Styled.SeeTrough>
     </Styled.Announcement>
   );
