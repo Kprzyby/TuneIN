@@ -34,7 +34,6 @@ namespace Backend.Controllers
             if ((string)trackInfo["message"] == "Track not found") return BadRequest("Not Found");
             TrackViewModel trackViewModel = new TrackViewModel
             {
-                MbId = (int)trackInfo["track"]["mbid"],
                 TrackName = (string)trackInfo["track"]["name"],
                 Band = (string)trackInfo["track"]["artist"]["name"],
                 Genre = (string)trackInfo["track"]["toptags"]["tag"][0]["name"],

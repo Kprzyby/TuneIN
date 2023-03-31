@@ -58,7 +58,6 @@ namespace Backend.Controllers
 
             TrackInfoDTO trackInfoDTO = new TrackInfoDTO()
             {
-                MbId= trackInfo.MbId,
                 TrackName = trackInfo.TrackName,
                 Band = trackInfo.Band,
                 Genre = trackInfo.Genre,

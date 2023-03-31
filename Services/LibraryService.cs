@@ -92,12 +92,11 @@ namespace Services
 
                 TrackInfo trackInfo = new TrackInfo()
                 {
-                    MbId = trackInfoDTO.MbId,
                     TrackName = trackInfoDTO.TrackName,
                     Band = trackInfoDTO.Band,
                     Genre = trackInfoDTO.Genre,
                     LinkToCover = trackInfoDTO.LinkToCover,
-                    LinkToTabs = link
+                    LinkToTabs = new List<string>() { link }
                 };
 
                 await _libraryRepository.AddAndSaveChangesAsync(trackInfo);
