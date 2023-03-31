@@ -142,7 +142,7 @@ namespace Backend.Controllers
         }
 
         /// <summary>
-        /// Asynchronous method for publishing a tuotrship announcement as the user that is currently logged in
+        /// Asynchronous method for publishing a tutorship announcement as the user that is currently logged in
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
