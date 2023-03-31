@@ -6,6 +6,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Data.DTOs.Library;
 using System.Diagnostics;
+using Data.DTOs.Tutorship;
+using Backend.ViewModels.Tutorship;
 
 namespace Backend.Controllers
 {
@@ -27,12 +29,43 @@ namespace Backend.Controllers
 
         #endregion Constructors
 
-        #region Methods        
-        [HttpGet]
-        [Route("Library/GetTracks")]
-        public async Task<IActionResult> GetTracksAsync()
+        #region Methods   
+        /// <summary>
+        /// Asynchronous method for loading all trackInfos
+        /// </summary>
+        /// <remarks>
+        /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
+        ///
+        /// The trackName filter will return trackInfos that start with the given value (not case sensitive).
+        /// The band filter will return trackInfos that start with the given value (not case sensitive).
+        /// The genre filter will return trackInfos which genre exactly matches the one provided (not case sensitive).
+        /// </remarks>
+        /// <param name="pagingInfo">Object containing information about paging, filtering and order</param>
+        /// <returns>Object containing a list of trackInfos along with information about paging and filtering</returns>
+        /// <response code="200">Object containing a list of trackInfos along with information about paging and filtering</response>
+        /// <response code="500">Error message</response>
+        [HttpPost]
+        [Route("Library/GetTracksAsync")]
+        [ProducesResponseType(typeof(GetTracksResponseDTO), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetTracksAsync(GetTracksViewModel pagingInfo)
         {
-            var tracks = await _libraryService.GetTracksAsync();
+            GetTracksDTO dto = new GetTracksDTO()
+            {
+                PageNumber = pagingInfo.PageNumber,
+                PageSize = pagingInfo.PageSize,
+                TrackNameFilterValue = pagingInfo.TrackNameFilterValue,
+                BandFilterValue = pagingInfo.BandFilterValue,
+                GenreFilterValue = pagingInfo.GenreFilterValue
+            };
+
+            var tracks = await _libraryService.GetTracksAsync(dto);
+
+            if (tracks == null)
+            {
+                return StatusCode(500, "Error while loading tracks");
+            }
+
             return Ok(tracks);
         }
         [HttpGet]
@@ -43,9 +76,9 @@ namespace Backend.Controllers
             return Ok(tracks);
         }
 
-        
+
         [HttpPost]
-        [Route("Library/AddNewTrack")]
+        [Route("Library/AddNewTrackAsync")]
         public async Task<IActionResult> AddTrackAsync(TrackViewModel trackInfo)
         {
 
@@ -75,7 +108,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete]
-        [Route("Library/RemoveTrack")]
+        [Route("Library/RemoveTrackAsync")]
         public async Task<IActionResult> RemoveTrackById(int id)
         {
             bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(id);

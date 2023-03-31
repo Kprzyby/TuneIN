@@ -5,14 +5,16 @@ using Microsoft.Identity.Client;
 using Data.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using Data.DTOs.Tutorship;
+using Data.DTOs.User;
+using X.PagedList;
 namespace Services
 {
     [ScopedAttribute]
     public class LibraryService
     {
         #region Properties
-       
+
         private readonly LibraryRepository _libraryRepository;
 
         #endregion Properties
@@ -39,18 +41,60 @@ namespace Services
             return trackExists;
         }
 
-        public async Task<IEnumerable<TrackInfo>> GetTracksAsync()
+        public async Task<GetTracksResponseDTO> GetTracksAsync(GetTracksDTO dto)
         {
-            IEnumerable<TrackInfo> result;
             try
             {
-                result = await Task.FromResult(_libraryRepository.GetAll());
+                IQueryable<TrackInfo> trackInfos = _libraryRepository.GetAll();
+                //filtrowanie po gatunku utworu
+                if (!String.IsNullOrEmpty(dto.GenreFilterValue))
+                {
+                    trackInfos = trackInfos.Where(t => t.Genre.ToUpper() == dto.GenreFilterValue.ToUpper());
+                    trackInfos = trackInfos.OrderBy(t => t.Genre);
+                }
+                //filtrowanie po zespole
+                if (!String.IsNullOrEmpty(dto.BandFilterValue))
+                {
+                    trackInfos = trackInfos.Where(t => t.Band.ToUpper().StartsWith(dto.BandFilterValue.ToUpper()));
+                    trackInfos = trackInfos.OrderBy(t => t.Band);
+                }
+                //filtrowanie po nazwie utworu
+                if (!String.IsNullOrEmpty(dto.TrackNameFilterValue))
+                {
+                    trackInfos = trackInfos.Where(t => t.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()));
+                    trackInfos = trackInfos.OrderBy(t => t.TrackName);
+                }
+                //filtrowanie po użytkowniku
+                if (dto.UserIdFilterValue != null)
+                {
+                    trackInfos = trackInfos.Where(t => t.UserId == dto.UserIdFilterValue);
+
+                }
+                GetTracksResponseDTO response = new GetTracksResponseDTO();
+
+                response.TotalCount = trackInfos.Count();
+                response.PageNumber = dto.PageNumber;
+                response.PageSize = dto.PageSize;
+                response.TrackNameFilterValue = dto.TrackNameFilterValue;
+                response.BandFilterValue = dto.BandFilterValue;
+                response.GenreFilterValue = dto.GenreFilterValue;
+
+                response.TrackInfos = await trackInfos.
+                    Select(t => new TrackInfoDTO()
+                    {
+                        Id = t.Id,
+                        TrackName = t.TrackName,
+                        Band = t.Band,
+                        Genre = t.Genre,
+                    })
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                return response;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 return null;
             }
-            return result;
         }
         public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string toFilter)
         {
@@ -77,7 +121,7 @@ namespace Services
             {
                 await _libraryRepository.RemoveByIdAndSaveChangesAsync(id);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return false;
             }
@@ -110,7 +154,7 @@ namespace Services
 
         }
 
-        
+
         #endregion Methods
 
     }

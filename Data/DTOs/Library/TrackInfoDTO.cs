@@ -9,12 +9,14 @@ namespace Data.DTOs.Library
     public class TrackInfoDTO
     {
         public int Id { get; set; }
-        public int MbId { get; set; }
 
         public string TrackName { get; set; }
         public string Band { get; set; }
         public string Genre { get; set; }
         public string LinkToCover { get; set; }
+        public List<string> Links { get; set; }
+        public byte[] Files { get; set; }
+
 
     }
 }
