@@ -91,7 +91,7 @@ namespace Backend.Controllers
         /// <response code="500">Error message</response>
 
         [HttpPost]
-        [Route("Library/AddNewTrackAsync")]
+        [Route("Library/AddTrackAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(string), 500)]
@@ -122,6 +122,18 @@ namespace Backend.Controllers
 
             return StatusCode(201, "Track added successfully!");
         }
+
+        [HttpPut]
+        [Route("Library/UpdateTrackInfoAsync/{trackId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> UpdateTrackInfoAsync(int trackId, TrackViewModel trackInfo)
+        {
+
+            return Ok();
+        }
+
         /// <summary>
         /// Asynchronous method for deleting the track in the library
         /// </summary>
@@ -135,12 +147,12 @@ namespace Backend.Controllers
         /// <response code="500">Error message</response>
 
         [HttpDelete]
-        [Route("Library/RemoveTrackAsync")]
+        [Route("Library/DeleteTrackAsync/{trackId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(string), 201)]
         [ProducesResponseType(typeof(string), 409)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> RemoveTrackById(int trackId)
+        public async Task<IActionResult> DeleteTrackAsync(int trackId)
         {
             bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(trackId);
 
