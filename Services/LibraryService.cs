@@ -98,7 +98,7 @@ namespace Services
                 return null;
             }
         }
-
+        /*
         public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string toFilter)
         {
             IEnumerable<TrackInfo> result;
@@ -116,7 +116,7 @@ namespace Services
             }
             return result;
         }
-
+        */
         public async Task<bool> RemoveTracksAsync(int id)
         {
             try

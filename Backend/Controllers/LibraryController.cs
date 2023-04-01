@@ -34,6 +34,8 @@ namespace Backend.Controllers
         /// Asynchronous method for loading all trackInfos
         /// </summary>
         /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        ///
         /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
         ///
         /// The trackName filter will return trackInfos that start with the given value (not case sensitive).
@@ -46,6 +48,7 @@ namespace Backend.Controllers
         /// <response code="500">Error message</response>
         [HttpPost]
         [Route("Library/GetTracksAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(GetTracksResponseDTO), 200)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTracksAsync(GetTracksViewModel pagingInfo)
@@ -68,6 +71,7 @@ namespace Backend.Controllers
 
             return Ok(tracks);
         }
+        /*
         [HttpGet]
         [Route("Library/GetTracksFiltered")]
         public async Task<IActionResult> GetTracksFilteredByTrackNameAsync(string trackName)
@@ -75,10 +79,22 @@ namespace Backend.Controllers
             var tracks = await _libraryService.GetTracksFilteredByTrackNameAsync(trackName);
             return Ok(tracks);
         }
-
+        */
+        /// <summary>
+        /// Asynchronous method for adding a new track to the user's library
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks> 
+        /// <returns>Conformation of the action</returns>
+        /// <response code="201">Track added succesfilly</response>
+        /// <response code="500">Error message</response>
 
         [HttpPost]
-        [Route("Library/AddNewTrackAsync")]
+        [Route("Library/AddTrackAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> AddTrackAsync(TrackViewModel trackInfo)
         {
 
@@ -107,18 +123,45 @@ namespace Backend.Controllers
             return StatusCode(201, "Track added successfully!");
         }
 
-        [HttpDelete]
-        [Route("Library/RemoveTrackAsync")]
-        public async Task<IActionResult> RemoveTrackById(int id)
+        [HttpPut]
+        [Route("Library/UpdateTrackInfoAsync/{trackId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> UpdateTrackInfoAsync(int trackId, TrackViewModel trackInfo)
         {
-            bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(id);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Asynchronous method for deleting the track in the library
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <param name="trackId">Id of the track</param>
+        /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
+        /// <response code="201"></response>
+        /// <response code="409">Error message</response>
+        /// <response code="500">Error message</response>
+
+        [HttpDelete]
+        [Route("Library/DeleteTrackAsync/{trackId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 409)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> DeleteTrackAsync(int trackId)
+        {
+            bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(trackId);
 
             if (trackExists == false)
             {
                 return StatusCode(409, "This track doesn't exist in library");
             }
 
-            var createResult = await _libraryService.RemoveTracksAsync(id);
+            var createResult = await _libraryService.RemoveTracksAsync(trackId);
 
             if (createResult == false)
             {
