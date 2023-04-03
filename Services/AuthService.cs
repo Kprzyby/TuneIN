@@ -381,6 +381,24 @@ namespace Services
             }
         }
 
+        public async Task<ServiceResponseDTO> GetAllUsernamesAsync()
+        {
+            try
+            {
+                IQueryable<User> users = _authRepository.GetAllUsers();
+
+                var result = await users
+                    .Select(u => u.UserName)
+                    .ToListAsync();
+
+                return CreateSuccessResponse(200, "Usernames loaded successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while getting usernames");
+            }
+        }
+
         #endregion Methods
     }
 }

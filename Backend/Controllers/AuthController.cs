@@ -389,6 +389,31 @@ namespace Backend.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Asynchronous method for loading all user's usernames
+        /// </summary>
+        /// <returns>All usernames that are currently used</returns>
+        /// <response code="200">All usernames that are currently used</response>
+        /// <response code="500">Error message</response>
+        [HttpGet]
+        [Route("Auth/GetAllUsernames")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetAllUsernamesAsync()
+        {
+            var response = await _authService.GetAllUsernamesAsync();
+
+            if (response.IsSuccess == false)
+            {
+                return StatusCode(response.StatusCode, response.Message);
+            }
+
+            List<string> usernames = (List<string>)response.Result;
+
+            return Ok(usernames);
+        }
+
         #endregion Methods
     }
 }
