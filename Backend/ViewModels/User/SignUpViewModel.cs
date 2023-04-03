@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Common.CustomDataAttributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Backend.ViewModels.User
 {
     public class SignUpViewModel
     {
         [Required(ErrorMessage = "This field is required!")]
+        [UsernameUnique]
         public string UserName { get; set; }
 
         [Required(ErrorMessage = "This field is required!")]

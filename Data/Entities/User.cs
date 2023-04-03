@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Entities
 {
     [Table("User")]
+    [Index(nameof(UserName), IsUnique = true)]
     public class User
     {
         [Key]
@@ -19,6 +21,6 @@ namespace Data.Entities
         public Guid ConfirmationGUID { get; set; }
         public Guid? PasswordRecoveryGUID { get; set; }
         public string ChatIdentityId { get; set; }
-        public virtual ICollection<TrackInfo>? TrackInfos { get; set;}
+        public virtual ICollection<TrackInfo>? TrackInfos { get; set; }
     }
 }
