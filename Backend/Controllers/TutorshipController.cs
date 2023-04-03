@@ -60,8 +60,6 @@ namespace Backend.Controllers
         /// Asynchronous method for loading all tutorships
         /// </summary>
         /// <remarks>
-        /// Only a user that is currently logged in and has a confirmed account can access this method
-        ///
         /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
         ///
         /// The "SortInfo" parameter's key has to be "Price" and its value either "asc" or "desc" depending on the desired sort order.
@@ -76,7 +74,6 @@ namespace Backend.Controllers
         /// <response code="500">Error message</response>
         [HttpPost]
         [Route("Tutorship/GetTutorshipsAsync")]
-        [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(GetTutorshipsResponseDTO), 200)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTutorshipsAsync(GetTutorshipsViewModel pagingInfo)
@@ -106,8 +103,6 @@ namespace Backend.Controllers
         /// Asynchronous method for loading all tutorships that were published by the user specified by an id
         /// </summary>
         /// <remarks>
-        /// Only a user that is currently logged in and has a confirmed account can access this method
-        ///
         /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
         /// </remarks>
         /// <param name="userId">Id of the user</param>
@@ -117,7 +112,6 @@ namespace Backend.Controllers
         /// <response code="500">Error message</response>
         [HttpPost]
         [Route("Tutorship/GetTutorshipsForUserAsync/{userId}")]
-        [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(GetTutorshipsResponseDTO), 200)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTutorshipsForUserAsync(int userId, GetTutorshipsForUserViewModel pagingInfo)

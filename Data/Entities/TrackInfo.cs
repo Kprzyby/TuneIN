@@ -14,14 +14,16 @@ namespace Data.Entities
     {
         [Key]
         public int Id { get; set; }
+
         public string TrackName { get; set; }
         public string Band { get; set; }
         public string Genre { get; set; }
         public string LinkToCover { get; set; }
-        public List<string> LinkToTabs { get; set; }
+        public string LinkToTabs { get; set; }
         public virtual ICollection<FileEntity>? FileEntities { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
 
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
     }
 }

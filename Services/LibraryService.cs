@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using X.PagedList;
+
 namespace Services
 {
     [ScopedAttribute]
@@ -70,7 +71,6 @@ namespace Services
                 if (dto.UserIdFilterValue != null)
                 {
                     trackInfos = trackInfos.Where(t => t.UserId == dto.UserIdFilterValue);
-
                 }
                 GetTracksResponseDTO response = new GetTracksResponseDTO();
 
@@ -98,6 +98,7 @@ namespace Services
                 return null;
             }
         }
+
         /*
         public async Task<IEnumerable<TrackInfo>> GetTracksFilteredByTrackNameAsync(string toFilter)
         {
@@ -117,6 +118,7 @@ namespace Services
             return result;
         }
         */
+
         public async Task<bool> RemoveTracksAsync(int id)
         {
             try
@@ -142,7 +144,7 @@ namespace Services
                     Band = trackInfoDTO.Band,
                     Genre = trackInfoDTO.Genre,
                     LinkToCover = trackInfoDTO.LinkToCover,
-                    LinkToTabs = new List<string>() { link }
+                    LinkToTabs = link
                 };
 
                 await _libraryRepository.AddAndSaveChangesAsync(trackInfo);
@@ -153,7 +155,6 @@ namespace Services
             }
             return true;
         }
-
 
         #endregion Methods
     }
