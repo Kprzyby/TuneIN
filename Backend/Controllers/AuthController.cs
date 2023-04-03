@@ -345,6 +345,50 @@ namespace Backend.Controllers
             return Ok(userDTO);
         }
 
+        /// <summary>
+        /// Asynchronous method for loading information about all users
+        /// </summary>
+        /// <remarks>
+        /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
+        ///
+        /// The "SortInfo" parameter's keys can be "Email" or "UserName" and its value either "asc" or "desc" depending on the desired sort order.
+        /// If this parameter is not provided, the users will be sorted by username ascendingly.
+        ///
+        /// The email filter will return users whose email starts with the given value (not case sensitive).
+        /// The username filter will return users whose username starts with the given value  (not case sensitive).
+        /// </remarks>
+        /// <param name="getInfo">Object containing information about paging, filtering and order</param>
+        /// <returns>Object containing a list of users along with information about paging, filtering and order</returns>
+        /// <response code="200">Object containing a list of users along with information about paging, filtering and order</response>
+        /// <response code="500">Error message</response>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("Auth/GetAllUsersAsync")]
+        [ProducesResponseType(typeof(GetUsersResponseDTO), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetAllUsersAsync(GetAllUsersViewModel getInfo)
+        {
+            GetAllUsersDTO dto = new GetAllUsersDTO()
+            {
+                PageSize = getInfo.PageSize,
+                PageNumber = getInfo.PageNumber,
+                SortInfo = getInfo.SortInfo,
+                UsernameFilterValue = getInfo.UsernameFilterValue,
+                EmailFilterValue = getInfo.EmailFilterValue
+            };
+
+            var response = await _authService.GetAllUsersAsync(dto);
+
+            if (response.IsSuccess == false)
+            {
+                return StatusCode(response.StatusCode, response.Message);
+            }
+
+            GetUsersResponseDTO result = (GetUsersResponseDTO)response.Result;
+
+            return Ok(result);
+        }
+
         #endregion Methods
     }
 }

@@ -2,6 +2,7 @@
 using Azure.Communication.Email.Models;
 using Azure.Communication.Identity;
 using Common.Enums;
+using Common.Helpers;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Response;
 using Data.DTOs.User;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using X.PagedList;
 
 namespace Services
 {
@@ -318,6 +320,64 @@ namespace Services
             catch (Exception ex)
             {
                 return CreateFailureResponse(500, "Error while loading the user");
+            }
+        }
+
+        public async Task<ServiceResponseDTO> GetAllUsersAsync(GetAllUsersDTO dto)
+        {
+            try
+            {
+                IQueryable<User> users = _authRepository.GetAllUsers();
+
+                if (!String.IsNullOrEmpty(dto.UsernameFilterValue))
+                {
+                    users = users
+                        .Where(u => u.UserName.ToUpper()
+                                .StartsWith(dto.UsernameFilterValue.ToUpper()));
+                }
+
+                if (!String.IsNullOrEmpty(dto.EmailFilterValue))
+                {
+                    users = users
+                        .Where(u => u.Email.ToUpper()
+                            .StartsWith(dto.EmailFilterValue.ToUpper()));
+                }
+
+                if (dto.SortInfo == null)
+                {
+                    users = users
+                        .OrderBy(u => u.UserName);
+                }
+                else
+                {
+                    List<KeyValuePair<string, string>> sortValues = dto.SortInfo;
+
+                    users = SortingHelper<User>.Sort(users, sortValues);
+                }
+
+                GetUsersResponseDTO response = new GetUsersResponseDTO();
+                response.TotalCount = users.Count();
+                response.PageSize = dto.PageSize;
+                response.PageNumber = dto.PageNumber;
+                response.SortInfo = dto.SortInfo;
+                response.UsernameFilterValue = dto.UsernameFilterValue;
+                response.EmailFilterValue = dto.EmailFilterValue;
+
+                response.Users = await users
+                    .Select(u => new ReadUserDTO()
+                    {
+                        Id = u.Id,
+                        Email = u.Email,
+                        UserName = u.UserName,
+                        UserRole = u.UserRole
+                    })
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                return CreateSuccessResponse(200, "Users loaded successfully", response);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while loading users");
             }
         }
 
