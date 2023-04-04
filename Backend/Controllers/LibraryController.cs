@@ -8,11 +8,13 @@ using Data.DTOs.Library;
 using System.Diagnostics;
 using Data.DTOs.Tutorship;
 using Backend.ViewModels.Tutorship;
+using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
     [ApiController]
-    public class LibraryController : Controller
+    public class LibraryController : BaseController
     {
         #region Properties
 
@@ -30,6 +32,40 @@ namespace Backend.Controllers
         #endregion Constructors
 
         #region Methods   
+
+
+        /// <summary>
+        /// Asynchronous method for loading a track specified by an id
+        /// </summary>
+        /// <param name="trackId">Id of the track</param>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <returns>Object containing information about the track</returns>
+        /// <response code="200">Object containing information about the track</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        [HttpGet]
+        [Route("Library/GetTrackAsync/{trackId}", Name = "GetTrackAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(ReadTrackInfoDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetTrackAsync(int trackId)
+        {
+            var result = await _libraryService.GetTrackAsync(trackId);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            ReadTrackInfoDTO trackInfoDTO = (ReadTrackInfoDTO)result.Result;
+
+            return Ok(trackInfoDTO);
+        }
+
+
         /// <summary>
         /// Asynchronous method for loading all trackInfos
         /// </summary>
@@ -53,21 +89,26 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTracksAsync(GetTracksViewModel pagingInfo)
         {
+            int UserId = GetUserId();
+
             GetTracksDTO dto = new GetTracksDTO()
             {
                 PageNumber = pagingInfo.PageNumber,
                 PageSize = pagingInfo.PageSize,
                 TrackNameFilterValue = pagingInfo.TrackNameFilterValue,
                 BandFilterValue = pagingInfo.BandFilterValue,
-                GenreFilterValue = pagingInfo.GenreFilterValue
+                GenreFilterValue = pagingInfo.GenreFilterValue,
+                UserIdFilterValue = UserId
             };
 
-            var tracks = await _libraryService.GetTracksAsync(dto);
+            var result = await _libraryService.GetTracksAsync(dto);
 
-            if (tracks == null)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while loading tracks");
+                return StatusCode(result.StatusCode, result.Message);
             }
+
+            GetTracksResponseDTO tracks = (GetTracksResponseDTO)result.Result;
 
             return Ok(tracks);
         }
@@ -86,8 +127,10 @@ namespace Backend.Controllers
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
         /// </remarks> 
-        /// <returns>Conformation of the action</returns>
+        /// <param name="trackInfo">Object containing information about the tutorship</param>
+        /// <returns>Object containing information about a new tutorship along with a route to the get method</returns>
         /// <response code="201">Track added succesfilly</response>
+        /// <response code="409">Error message</response>
         /// <response code="500">Error message</response>
 
         [HttpPost]
@@ -99,6 +142,7 @@ namespace Backend.Controllers
         {
 
             bool trackExists = await _libraryService.CheckIfTrackExistsAsync(trackInfo.Band, trackInfo.TrackName);
+            int UserId = GetUserId();
 
             if (trackExists == true)
             {
@@ -111,27 +155,76 @@ namespace Backend.Controllers
                 Band = trackInfo.Band,
                 Genre = trackInfo.Genre,
                 LinkToCover = trackInfo.LinkToCover,
+                UserId = UserId
             };
 
-            var createResult = await _libraryService.AddTrackAsync(trackInfoDTO);
+            var result = await _libraryService.AddTrackAsync(trackInfoDTO);
 
-            if (createResult == false)
+            if (result.IsSuccess == false)
             {
-                return StatusCode(500, "Error while adding new track!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return StatusCode(201, "Track added successfully!");
+            ReadTrackInfoDTO trackDTO = (ReadTrackInfoDTO)result.Result;
+
+            return CreatedAtRoute("GetTrackAsync", new { trackId = trackDTO.Id }, trackDTO);
         }
+
+        /// <summary>
+        /// Asynchronous method for updating an existing trackInfo
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <param name="trackId">Id of the track</param>
+        /// <param name="trackInfo">Object containing new information about the track</param>
+        /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
+        /// <response code="204"></response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
 
         [HttpPut]
         [Route("Library/UpdateTrackInfoAsync/{trackId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
-        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(void), 403)]
+        [ProducesResponseType(typeof(void), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> UpdateTrackInfoAsync(int trackId, TrackViewModel trackInfo)
+        public async Task<IActionResult> UpdateTrackInfoAsync(int trackId, UpdateTrackViewModel trackInfo)
         {
+            int userId = GetUserId();
+            var oldTrack = await _libraryService.GetTrackAsync(trackId);
 
-            return Ok();
+            if (oldTrack.IsSuccess == false)
+            {
+                return StatusCode(oldTrack.StatusCode, oldTrack.Message);
+            }
+
+            ReadTrackInfoDTO oldTrackDTO = (ReadTrackInfoDTO)oldTrack.Result;
+
+            if (userId != oldTrackDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the track that you don't own");
+            }
+
+            UpdateTrackDTO dto = new UpdateTrackDTO()
+            {
+                Id = trackId,
+                TrackName = trackInfo.TrackName,
+                Band = trackInfo.Band,
+                Genre = trackInfo.Genre
+            };
+
+            var result = await _libraryService.UpdateTrackInfoAsync(dto);
+
+            if (result.IsSuccess == false)
+            {
+                StatusCode(result.StatusCode, result.Message);
+            }
+
+            return StatusCode(204);
+
         }
 
         /// <summary>
@@ -142,33 +235,43 @@ namespace Backend.Controllers
         /// </remarks>
         /// <param name="trackId">Id of the track</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
-        /// <response code="201"></response>
-        /// <response code="409">Error message</response>
+        /// <response code="204"></response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
 
         [HttpDelete]
         [Route("Library/DeleteTrackAsync/{trackId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
-        [ProducesResponseType(typeof(string), 201)]
-        [ProducesResponseType(typeof(string), 409)]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> DeleteTrackAsync(int trackId)
         {
-            bool trackExists = await _libraryService.CheckIfTrackExistsByIdAsync(trackId);
+            int userId = GetUserId();
+            var oldTrack = await _libraryService.GetTrackAsync(trackId);
 
-            if (trackExists == false)
+            if (oldTrack.IsSuccess == false)
             {
-                return StatusCode(409, "This track doesn't exist in library");
+                return StatusCode(oldTrack.StatusCode, oldTrack.Message);
             }
 
-            var createResult = await _libraryService.RemoveTracksAsync(trackId);
+            ReadTrackInfoDTO oldTrackDTO = (ReadTrackInfoDTO)oldTrack.Result;
 
-            if (createResult == false)
+            if (userId != oldTrackDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the track that you don't own");
+            }
+
+            var result = await _libraryService.RemoveTracksAsync(trackId);
+
+            if (result == false)
             {
                 return StatusCode(500, "Error while removing track!");
             }
 
-            return StatusCode(201, "Track removed successfully!");
+            return StatusCode(204);
         }
 
 
