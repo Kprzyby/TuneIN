@@ -33,6 +33,13 @@ namespace Data.Repositories
             return result;
         }
 
+        public IQueryable<User> GetAllUsers()
+        {
+            var result = DataContext.Users;
+
+            return result;
+        }
+
         #endregion Methods
     }
 }
