@@ -1,6 +1,8 @@
 export type UserType = {
-  username: string,
+  userName: string,
   id: number,
+  email: string,
+  userRole: string
 };
 export interface Props {
   user: UserType

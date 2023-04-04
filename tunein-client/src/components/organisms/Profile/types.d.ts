@@ -1,4 +1,6 @@
 export interface Props {
-  username: string;
-  id: number;
+  userName: string,
+  id: number,
+  email: string,
+  userRole: string
 }

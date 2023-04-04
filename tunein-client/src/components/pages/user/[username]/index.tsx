@@ -1,7 +1,8 @@
 import React from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import Profile from '@components/organisms/Profile';
-import { UserType, Props } from './types';
+import { Props } from './types';
+import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
 
 const ProfilePage: NextPage<Props> = ({ user }: Props) => (
   <Profile {...user} />
@@ -10,33 +11,38 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => (
 export default ProfilePage;
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  // TODO: get all users from the db
-  const users: UserType[] = [
-    { username: 'milos', id: 6 },
-    { username: 'accuse', id: 7 },
-    { username: 'string', id: 5 },
-    { username: 'string', id: 3 },
-    { username: 'string', id: 1 }];
-  const thisuser = users.find((x) => x.username === context.params?.username);
+  const pickedUser = await createDBEndpoint(ENDPOINTS.auth.getusers)
+    .post({
+      pageSize: 10000,
+      pageNumber: 1,
+      sortInfo: [
+        {
+          key: 'UserName',
+          value: 'asc',
+        },
+      ],
+    })
+    .then((res) => {
+      const usr = res.data.users.find((x: any) => x.userName === context.params?.username);
+      return usr;
+    });
   return {
     props: {
-      user: thisuser || { username: '', id: 0 },
+      user: pickedUser || {
+        userName: '', id: 0, email: '', userRole: '',
+      },
     },
     revalidate: 20,
   };
 };
 
 export const getStaticPaths = async () => {
-  // TODO: unique usernames, get all usernames form db
-  const users = [
-    { username: 'milos' },
-    { username: 'accuse' },
-    { username: 'string' },
-    { username: 'string' },
-    { username: 'string' }];
+  const usernames = await createDBEndpoint(ENDPOINTS.auth.getusernames)
+    .get()
+    .then((res) => res.data);
   return {
-    paths: users.map((u) => ({
-      params: { username: u.username },
+    paths: usernames.map((u: string) => ({
+      params: { username: u },
     })),
     fallback: false,
   };
