@@ -1,11 +1,12 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
 using Data.Entities;
+using Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
     [ScopedAttribute]
-    public class TutorshipRepository : BaseRepository<Tutorship>
+    public class TutorshipRepository : BaseRepository<Tutorship>, ITutorshipRepository
     {
         #region Constructors
 

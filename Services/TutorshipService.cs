@@ -5,7 +5,7 @@ using Data.DTOs.Response;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using Data.Entities;
-using Data.Repositories;
+using Data.IRepositories;
 using System.ComponentModel;
 using System.Reflection;
 using X.PagedList;
@@ -17,7 +17,7 @@ namespace Services
     {
         #region Constructors
 
-        public TutorshipService(TutorshipRepository tutorshipRepo)
+        public TutorshipService(ITutorshipRepository tutorshipRepo)
         {
             _tutorshipRepo = tutorshipRepo;
         }
@@ -26,7 +26,7 @@ namespace Services
 
         #region Properties
 
-        private readonly TutorshipRepository _tutorshipRepo;
+        private readonly ITutorshipRepository _tutorshipRepo;
 
         #endregion Properties
 
