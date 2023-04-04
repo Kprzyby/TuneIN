@@ -14,6 +14,6 @@ namespace Data.DTOs.Library
         public string? BandFilterValue { get; set; }
         public string? GenreFilterValue { get; set; }
 
-        public int? UserIdFilterValue { get; set; }
+        public int UserIdFilterValue { get; set; }
     }
 }
