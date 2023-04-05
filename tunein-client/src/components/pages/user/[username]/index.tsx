@@ -1,11 +1,17 @@
 import React from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import Profile from '@components/organisms/Profile';
+import UserHeroPage from '@components/organisms/UserHeroPage';
+// import UserHeroPageNavigation from '@components/organisms/UserHeroPageNavigation';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
 
 const ProfilePage: NextPage<Props> = ({ user }: Props) => (
-  <Profile {...user} />
+  <>
+    <UserHeroPage {...user} />
+    {/* <UserHeroPageNavigation /> */}
+    <Profile {...user} />
+  </>
 );
 
 export default ProfilePage;
