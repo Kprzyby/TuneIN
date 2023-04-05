@@ -12,19 +12,11 @@ namespace UnitTests.TutorshipTests
 {
     public class AddTutorshipAsyncTests : BaseTutorshipTests
     {
+        [Fact]
         public async Task AddTutorshipAsync_WhenAllIsGood_ShouldCreate()
         {
             //arrange
             CreateTutorshipDTO dto = new CreateTutorshipDTO()
-            {
-                Title = "Learn the guitar",
-                Details = "I teach the guitar everyone that is willing to learn. Reach out" +
-                " to me if you are interested.",
-                Price = 59.99M,
-                Category = "Music",
-                CreatedById = 1
-            };
-            Tutorship tutorship = new Tutorship()
             {
                 Title = "Learn the guitar",
                 Details = "I teach the guitar everyone that is willing to learn. Reach out" +
@@ -49,7 +41,7 @@ namespace UnitTests.TutorshipTests
                 }
             };
 
-            tutorshipRepo.Setup(e => e.AddTutorshipAsync(tutorship)).ReturnsAsync(tutorshipReturned);
+            tutorshipRepo.Setup(e => e.AddTutorshipAsync(It.IsAny<Tutorship>())).ReturnsAsync(tutorshipReturned);
 
             //act
             var result = await tutorshipService.AddTutorshipAsync(dto);
