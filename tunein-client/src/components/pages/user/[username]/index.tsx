@@ -1,22 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import Profile from '@components/organisms/Profile';
 import UserHeroPage from '@components/organisms/UserHeroPage';
-import UserHeroPageNavigation from '@components/organisms/UserHeroPageNavigation';
+import useNavigation from '@components/organisms/UserHeroPageNavigation';
+import Announcements from '@components/organisms/Announcements';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
 
 const ProfilePage: NextPage<Props> = ({ user }: Props) => {
-  const uitems = [
-    { label: 'Home', href: `/user/${user.userName}` },
-    { label: 'Playlists', href: '/' },
-    { label: 'Tuitions', href: '/' },
+  const nitems = [
+    { label: 'Home' },
+    { label: 'Playlists' },
+    { label: 'Tuitions' },
   ];
+  const { pickedNavigation, renderNavigation } = useNavigation({ items: nitems });
+  const getComponent = () => {
+    let component;
+    switch (pickedNavigation) {
+      case 'Home':
+        component = <Profile {...user} />;
+        break;
+      case 'Playlists':
+        component = <Announcements />;
+        break;
+      case 'Tuitions':
+        component = <Announcements />;
+        break;
+      default:
+        component = <Profile {...user} />;
+        break;
+    }
+    return component;
+  };
+  const [profComponent, setProfComponent] = useState(getComponent());
+  useEffect(() => {
+    setProfComponent(getComponent());
+  }, [pickedNavigation]);
   return (
     <>
       <UserHeroPage {...user} />
-      <UserHeroPageNavigation items={uitems} />
-      <Profile {...user} />
+      {renderNavigation}
+      {profComponent}
     </>
   );
 };

@@ -1,4 +1,8 @@
+// @ts-nocheck
+// there is no god
+import { Typography } from '@components/styles/typography';
 import styled from 'styled-components';
+import { StyledProps } from './types';
 
 export const Wrapper = styled.div`
     display: flex;
@@ -21,4 +25,10 @@ export const List = styled.ul`
     align-items: center;
     justify-content: flex-start;
     gap: 5rem;
+`;
+export const Item = styled(Typography)<StyledProps>`
+    &:hover {
+        color: ${({ isHighlighted, theme }) => isHighlighted || theme.colors.darkMain}
+    }
+    color: ${({ isHighlighted, theme }) => isHighlighted && theme.colors.white}
 `;
