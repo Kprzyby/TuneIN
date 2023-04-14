@@ -2,17 +2,24 @@ import React from 'react';
 import { GetStaticProps, NextPage } from 'next';
 import Profile from '@components/organisms/Profile';
 import UserHeroPage from '@components/organisms/UserHeroPage';
-// import UserHeroPageNavigation from '@components/organisms/UserHeroPageNavigation';
+import UserHeroPageNavigation from '@components/organisms/UserHeroPageNavigation';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
 
-const ProfilePage: NextPage<Props> = ({ user }: Props) => (
-  <>
-    <UserHeroPage {...user} />
-    {/* <UserHeroPageNavigation /> */}
-    <Profile {...user} />
-  </>
-);
+const ProfilePage: NextPage<Props> = ({ user }: Props) => {
+  const uitems = [
+    { label: 'Home', href: `/user/${user.userName}` },
+    { label: 'Playlists', href: '/' },
+    { label: 'Tuitions', href: '/' },
+  ];
+  return (
+    <>
+      <UserHeroPage {...user} />
+      <UserHeroPageNavigation items={uitems} />
+      <Profile {...user} />
+    </>
+  );
+};
 
 export default ProfilePage;
 

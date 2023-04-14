@@ -1,20 +1,21 @@
 import React from 'react';
 import Link from 'next/link';
+import { Typography } from '@components/styles/typography';
 import * as Styled from './styles';
 import { Props } from './types';
 
 const Navigation: React.FC<Props> = ({ items }) => (
   <Styled.Wrapper>
     <Styled.Content>
-      <ul>
+      <Styled.List>
         {items.map((i) => (
-          <li>
-            <div>
+          <li key={i.label}>
+            <Typography variant="ProfileNavbar">
               <Link href={i.href}>{i.label}</Link>
-            </div>
+            </Typography>
           </li>
         ))}
-      </ul>
+      </Styled.List>
     </Styled.Content>
   </Styled.Wrapper>
 );
