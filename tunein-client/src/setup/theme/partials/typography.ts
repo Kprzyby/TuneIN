@@ -101,4 +101,9 @@ export const textStyles = {
     fontFamily: fontFamilies.body,
     color: colors.darkMainL,
   },
+  ProfileNavbar: {
+    fontFamily: fontFamilies.body,
+    fontSize: fontSizes.fontSize24,
+    color: colors.darkMainL,
+  },
 };

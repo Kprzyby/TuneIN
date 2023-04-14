@@ -11,6 +11,8 @@ export const ENDPOINTS = {
     recoverpassword: 'Auth/RecoverPasswordAsync',
     changepassword: 'Auth/ChangePasswordAsync',
     getuserbyid: 'Auth/GetUserAsync',
+    getusernames: 'Auth/GetAllUsernames',
+    getusers: 'Auth/GetAllUsersAsync',
   },
   tutorship: {
     gettutorshipbyid: 'Tutorship/GetTutorshipAsync/',
@@ -33,7 +35,6 @@ export const createDBEndpoint = (endpoint: string) => {
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
   axios.defaults.withCredentials = true;
-  console.log(endpoint);
   return {
     post: (newRecord: any) => axios({
       method: 'post',

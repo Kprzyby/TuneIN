@@ -10,10 +10,10 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
     email,
     confirmationGUID,
   };
-  createDBEndpoint(ENDPOINTS.auth.confirmaccount)
+  const response = createDBEndpoint(ENDPOINTS.auth.confirmaccount)
     .put(putValue)
     .then(() => {
-      res.writeHead(307, { Location: '/auth/useractivated' });
+      res.redirect('/auth/useractivated');
       res.end();
       return res.status(200).json({ message: 'Fetch Succed' });
     })
@@ -22,5 +22,5 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       res.end();
       return res.status(400).json({ message: 'Fetch Failed' });
     });
-  return res.status(200).json({ message: 'Validated User' });
+  return response;
 };

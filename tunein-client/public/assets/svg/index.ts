@@ -11,8 +11,16 @@ import NavBar from './icons/Menu-Circles.svg';
 import MagnifyingGlass from './icons/MagnifyingGlass.svg';
 import MusicNote from './icons/MusicNote.svg';
 
+const Musicians = [
+  { Musician: Musician1 },
+  { Musician: Musician2 },
+  { Musician: Musician3 },
+  { Musician: Musician4 },
+  { Musician: Musician5 },
+  { Musician: Musician6 },
+];
 export {
   Twitter, Youtube, Instagram,
-  Musician1, Musician2, Musician3, Musician4, Musician5, Musician6,
+  Musicians, Musician1, Musician2, Musician3, Musician4, Musician5, Musician6,
   NavBar, MagnifyingGlass, MusicNote,
 };
