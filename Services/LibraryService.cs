@@ -7,11 +7,12 @@ using Newtonsoft.Json.Linq;
 using Data.DTOs.Tutorship;
 using Data.DTOs.User;
 using X.PagedList;
+using Data.DTOs.Response;
 
 namespace Services
 {
     [ScopedAttribute]
-    public class LibraryService
+    public class LibraryService : BaseService
     {
         #region Properties
 
@@ -44,11 +45,47 @@ namespace Services
             return trackExists;
         }
 
-        public async Task<GetTracksResponseDTO> GetTracksAsync(GetTracksDTO dto)
+        public async Task<ServiceResponseDTO> GetTrackAsync(int id)
         {
             try
             {
-                IQueryable<TrackInfo> trackInfos = _libraryRepository.GetAll();
+                TrackInfo trackInfo = await _libraryRepository.GetTrackAsync(id);
+
+                if (trackInfo == null)
+                {
+                    return CreateFailureResponse(404, "Track with such an id was not found");
+                }
+
+                ReadTrackInfoDTO result = new ReadTrackInfoDTO()
+                {
+                    Id = trackInfo.Id,
+                    TrackName = trackInfo.TrackName,
+                    Band = trackInfo.Band,
+                    Genre = trackInfo.Genre,
+                    LinkToCover = trackInfo.LinkToCover,
+                    LinkToTabs = trackInfo.LinkToTabs,
+                    Author = new ReadTutorshipAuthorDTO()
+                    {
+                        Id = trackInfo.User.Id,
+                        Username = trackInfo.User.UserName
+                    }
+                };
+
+                return CreateSuccessResponse(200, "Track retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while retrieving the track");
+            }
+        }
+
+        public async Task<ServiceResponseDTO> GetTracksAsync(GetTracksDTO dto)
+        {
+            try
+            {
+                IQueryable<TrackInfo> trackInfos = _libraryRepository.GetTracks();
+                //filtorwanie po użytkowniku
+                trackInfos = trackInfos.Where(t => t.User.Id == dto.UserIdFilterValue);
                 //filtrowanie po gatunku utworu
                 if (!String.IsNullOrEmpty(dto.GenreFilterValue))
                 {
@@ -67,11 +104,6 @@ namespace Services
                     trackInfos = trackInfos.Where(t => t.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()));
                     trackInfos = trackInfos.OrderBy(t => t.TrackName);
                 }
-                //filtrowanie po użytkowniku
-                if (dto.UserIdFilterValue != null)
-                {
-                    trackInfos = trackInfos.Where(t => t.UserId == dto.UserIdFilterValue);
-                }
                 GetTracksResponseDTO response = new GetTracksResponseDTO();
 
                 response.TotalCount = trackInfos.Count();
@@ -88,14 +120,17 @@ namespace Services
                         TrackName = t.TrackName,
                         Band = t.Band,
                         Genre = t.Genre,
+                        LinkToCover = t.LinkToCover,
+                        LinkToTabs = t.LinkToTabs,
+                        UserId = t.UserId,
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
-                return response;
+                return CreateSuccessResponse(200, "Tracks retrieved successfully", response);
             }
             catch (Exception ex)
             {
-                return null;
+                return CreateFailureResponse(500, "Error while retrieving the tracks");
             }
         }
 
@@ -132,7 +167,7 @@ namespace Services
             return true;
         }
 
-        public async Task<bool> AddTrackAsync(TrackInfoDTO trackInfoDTO)
+        public async Task<ServiceResponseDTO> AddTrackAsync(TrackInfoDTO trackInfoDTO)
         {
             try
             {
@@ -144,17 +179,69 @@ namespace Services
                     Band = trackInfoDTO.Band,
                     Genre = trackInfoDTO.Genre,
                     LinkToCover = trackInfoDTO.LinkToCover,
-                    LinkToTabs = link
+                    LinkToTabs = link,
+                    UserId = trackInfoDTO.UserId,
                 };
 
-                await _libraryRepository.AddAndSaveChangesAsync(trackInfo);
+                trackInfo = await _libraryRepository.AddTrackInfoAsync(trackInfo);
+
+                ReadTrackInfoDTO result = new ReadTrackInfoDTO()
+                {
+                    Id = trackInfo.Id,
+                    TrackName = trackInfoDTO.TrackName,
+                    Band = trackInfoDTO.Band,
+                    Genre = trackInfoDTO.Genre,
+                    LinkToCover = trackInfoDTO.LinkToCover,
+                    LinkToTabs = link,
+                    Author = new ReadTutorshipAuthorDTO()
+                    {
+                        Id = trackInfo.User.Id,
+                        Username = trackInfo.User.UserName
+                    }
+
+                };
+
+                return CreateSuccessResponse(201, "Track added successfully", result);
+
             }
             catch (Exception ex)
             {
-                return false;
+                return CreateFailureResponse(500, "Error while adding the track");
             }
-            return true;
         }
+        public async Task<ServiceResponseDTO> UpdateTrackInfoAsync(UpdateTrackDTO dto)
+        {
+            try
+            {
+                TrackInfo oldTrackInfo = await _libraryRepository.GetTrackAsync(dto.Id);
+
+                if (oldTrackInfo == null)
+                {
+                    return CreateFailureResponse(404, "Track with such an id was not found");
+                }
+                if (dto.TrackName != null)
+                {
+                    oldTrackInfo.TrackName = dto.TrackName;
+                }
+                if (dto.Band != null)
+                {
+                    oldTrackInfo.Band = dto.Band;
+                }
+                if (dto.Genre != null)
+                {
+                    oldTrackInfo.Genre = dto.Genre;
+                }
+
+                await _libraryRepository.UpdateTrackInfoAsync(oldTrackInfo);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the tutorship");
+            }
+        }
+
 
         #endregion Methods
     }

@@ -35,6 +35,39 @@ namespace Data.Repositories
             return result;
         }
 
+        public async Task<TrackInfo> GetTrackAsync(int id)
+        {
+            var result = await DataContext.TrackInfo
+                .Include(t => t.User)
+                .SingleOrDefaultAsync(t => t.Id == id);
+
+            return result;
+        }
+        public IQueryable<TrackInfo> GetTracks()
+        {
+            var result = DataContext.TrackInfo
+                .Include(t => t.User);
+
+            return result;
+        }
+
+        public async Task<TrackInfo> AddTrackInfoAsync(TrackInfo trackInfo)
+        {
+            await AddAndSaveChangesAsync(trackInfo);
+
+            await DataContext
+                .Entry(trackInfo)
+                .Reference(t => t.User)
+                .LoadAsync();
+
+            return trackInfo;
+        }
+
+        public async Task UpdateTrackInfoAsync(TrackInfo trackInfo)
+        {
+            await UpdateAndSaveChangesAsync(trackInfo);
+        }
+
         #endregion Methods
     }
 }
