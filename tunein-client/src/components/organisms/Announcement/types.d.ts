@@ -1,6 +1,5 @@
-
 export interface AnnouncementProperties {
-    title: string;
-    interested: number;
-    img?: string;
-  }
+  title: string;
+  interested: number;
+  img?: string;
+}

@@ -8,11 +8,7 @@ import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
 
 const ProfilePage: NextPage<Props> = ({ user }: Props) => {
-  const nitems = [
-    { label: 'Home' },
-    { label: 'Playlists' },
-    { label: 'Tuitions' },
-  ];
+  const nitems = [{ label: 'Home' }, { label: 'Playlists' }, { label: 'Tuitions' }];
   const { pickedNavigation, renderNavigation } = useNavigation({ items: nitems });
   const getComponent = () => {
     let component;
@@ -21,10 +17,10 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
         component = <Profile {...user} />;
         break;
       case 'Playlists':
-        component = <Announcements />;
+        component = <Profile {...user} />;
         break;
       case 'Tuitions':
-        component = <Announcements />;
+        component = <Announcements id={user.id} />;
         break;
       default:
         component = <Profile {...user} />;
