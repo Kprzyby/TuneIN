@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserData } from '@components/context/UserContext';
 import { Typography } from '@components/styles/typography';
+import DarkButton from '@components/molecules/DarkButton';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import TuitionForm from '../TuitionForm';
 
 const EditTuitions:React.FC = () => {
   const [pLast, setPLast] = useState<number | undefined>(undefined);
+  const [addItem, setAddItem] = useState(false);
   const [tuitions, setTuitions] = useState(
     {
       tutorships: [
@@ -50,6 +52,15 @@ const EditTuitions:React.FC = () => {
         <Typography variant="RegisterSuccess" style={{ flex: '1' }}>Price</Typography>
       </Styled.Header>
       <Styled.List>
+        <div
+          style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          onClick={() => setAddItem(!addItem)}
+        >
+          <Styled.AddBtn>
+            <DarkButton text="Add new Tuition" />
+          </Styled.AddBtn>
+        </div>
+        {addItem && <TuitionForm />}
         {tuitions.tutorships.map((t) => (
           <li key={t.id} style={{ padding: '0.4rem 0' }}>
             <Styled.IBtn
@@ -61,11 +72,7 @@ const EditTuitions:React.FC = () => {
               <Styled.Item variant="EditorList" flexPart={0.7}>{t.category}</Styled.Item>
               <Styled.Item variant="EditorList" flexPart={1}>{t.price}</Styled.Item>
             </Styled.IBtn>
-            {pLast === t.id && (
-            <div>
-              <TuitionForm tuition={t} />
-            </div>
-            )}
+            {pLast === t.id && <TuitionForm tuition={t} />}
           </li>
         ))}
       </Styled.List>

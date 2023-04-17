@@ -22,6 +22,11 @@ export const IBtn = styled.button`
     cursor: pointer;
     display: flex;
 `;
+export const AddBtn = styled.button`
+    border: unset;
+    background-color: transparent;
+    cursor: pointer;
+`;
 export const Item = styled(Typography)<StyledProps>`
     display: flex;
     flex: ${({ flexPart }) => flexPart};
