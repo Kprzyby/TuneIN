@@ -56,7 +56,7 @@ export const createDBEndpoint = (endpoint: string) => {
       params: record,
       httpsAgent,
     }),
-    delete: (deletedRecords: any) => axios({
+    delete: (deletedRecords?: any) => axios({
       method: 'delete',
       url,
       data: deletedRecords,

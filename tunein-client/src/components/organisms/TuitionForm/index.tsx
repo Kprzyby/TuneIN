@@ -80,6 +80,19 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       }
     },
   });
+  const handleDelete = () => {
+    if (tuition === undefined) return;
+    createDBEndpoint(ENDPOINTS.tutorship.removeTutorship + tuition.id)
+      .delete()
+      .then(() => {
+        setLoading(false);
+        router.reload();
+      })
+      .catch(() => {
+        setErr(true);
+        setLoading(false);
+      });
+  };
   return (
     <Styled.Wrapper>
       {loading ? (
@@ -118,9 +131,16 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
           <Styled.InputTitle variant="PasswordTileTitle">Opis</Styled.InputTitle>
           {renderRichText}
           {err && (<Styled.Error>Server error</Styled.Error>)}
-          <Styled.Button type="submit">
-            <DarkButton text="Publish" />
-          </Styled.Button>
+          <div style={{ display: 'flex' }}>
+            <Styled.Button type="submit">
+              <DarkButton text="Publish" />
+            </Styled.Button>
+            {tuition && (
+            <Styled.Button type="button" onClick={handleDelete}>
+              <DarkButton text="Delete" />
+            </Styled.Button>
+            )}
+          </div>
         </Styled.Form>
       )}
     </Styled.Wrapper>
