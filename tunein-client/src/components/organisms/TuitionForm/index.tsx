@@ -8,9 +8,10 @@ import { useRouter } from 'next/router';
 import { convertToRaw } from 'draft-js';
 import * as Styled from './styles';
 import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
+import { Props } from './types';
 
-const TuitionRegister: React.FC = () => {
-  const { renderRichText, editorState } = useRichText();
+const TuitionForm: React.FC<Props> = ({ tuition }) => {
+  const { renderRichText, editorState } = useRichText({ tuition });
   const [categories, setCategories] = useState<any[]>([]);
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -20,16 +21,14 @@ const TuitionRegister: React.FC = () => {
       .get()
       .then((res) => {
         setCategories(res.data.map((v: any) => ({ value: v, label: v })));
-      })
-      .catch(() => {
       });
   }, []);
   const formik = useFormik({
     initialValues: {
-      title: '',
+      title: tuition ? tuition.title : '',
       descEditorState: editorState,
-      category: '',
-      price: '',
+      category: tuition ? tuition.category : '',
+      price: tuition ? tuition.price : '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -46,26 +45,43 @@ const TuitionRegister: React.FC = () => {
     onSubmit: (values) => {
       setLoading(true);
       setErr(false);
-      createDBEndpoint(ENDPOINTS.tutorship.addTutorship)
-        .post({
-          title: values.title,
-          details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-          price: values.price,
-          category: values.category,
-        })
-        .then(() => {
-          setLoading(false);
-          router.back();
-        })
-        .catch(() => {
-          setErr(true);
-          setLoading(false);
-        });
+      if (tuition === undefined) {
+        createDBEndpoint(ENDPOINTS.tutorship.addTutorship)
+          .post({
+            title: values.title,
+            details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+            price: values.price,
+            category: values.category,
+          })
+          .then(() => {
+            setLoading(false);
+            router.back();
+          })
+          .catch(() => {
+            setErr(true);
+            setLoading(false);
+          });
+      } else {
+        createDBEndpoint(ENDPOINTS.tutorship.updateTutorship + tuition.id)
+          .put({
+            title: values.title,
+            details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+            price: values.price,
+            category: values.category,
+          })
+          .then(() => {
+            setLoading(false);
+            router.reload();
+          })
+          .catch(() => {
+            setErr(true);
+            setLoading(false);
+          });
+      }
     },
   });
   return (
     <Styled.Wrapper>
-      <Styled.Title variant="RegisterTitile">Create Tuition</Styled.Title>
       {loading ? (
         <Loader borderColor="white transparent" />
       ) : (
@@ -85,6 +101,7 @@ const TuitionRegister: React.FC = () => {
             options={categories}
             onChange={(selectedOption: any) => formik.setFieldValue('category', selectedOption.value)}
             instanceId="category"
+            defaultValue={tuition && { label: tuition?.category, value: tuition?.category }}
           />
           <Styled.Error variant="PasswordTileTitle">{formik.errors.category}</Styled.Error>
           {/* Price */}
@@ -109,4 +126,4 @@ const TuitionRegister: React.FC = () => {
     </Styled.Wrapper>
   );
 };
-export default TuitionRegister;
+export default TuitionForm;

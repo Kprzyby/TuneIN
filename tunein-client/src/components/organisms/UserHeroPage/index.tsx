@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ProfilePicture from '@components/atoms/ProfilePicture';
 import { Typography } from '@components/styles/typography';
 import DarkButton from '@components/molecules/DarkButton';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { UserData } from '@components/context/UserContext';
 import * as Styled from './styles';
 import { Props } from './types';
 
 const UserHeroPage: React.FC<Props> = ({ userName, email }) => {
   const router = useRouter();
+  const { user } = useContext(UserData);
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -38,7 +40,9 @@ const UserHeroPage: React.FC<Props> = ({ userName, email }) => {
               <Typography variant="Navigation">0 Tuitions | 0 Playlists | 0 Unique Users Taught</Typography>
             </div>
           </div>
-          <Link href={`${router.asPath}/edit`}><DarkButton text="Edit" /></Link>
+          {user?.userName === userName && (
+            <Link href={`${router.asPath}/edit`}><DarkButton text="Edit" /></Link>
+          )}
         </div>
       </Styled.Content>
     </Styled.Wrapper>
