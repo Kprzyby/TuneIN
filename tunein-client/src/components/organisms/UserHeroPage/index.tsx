@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ProfilePicture from '@components/atoms/ProfilePicture';
 import { Typography } from '@components/styles/typography';
 import DarkButton from '@components/molecules/DarkButton';
@@ -10,7 +10,12 @@ import { Props } from './types';
 
 const UserHeroPage: React.FC<Props> = ({ userName, email }) => {
   const router = useRouter();
+  const [path, setPath] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    setPath(router.asPath);
+  }, [router.asPath]);
   const { user } = useContext(UserData);
+  // TODO:add counters
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -37,11 +42,11 @@ const UserHeroPage: React.FC<Props> = ({ userName, email }) => {
             >
               <Typography variant="Logo">{userName}</Typography>
               <Typography variant="Navigation">{email}</Typography>
-              <Typography variant="Navigation">0 Tuitions | 0 Playlists | 0 Unique Users Taught</Typography>
+              <Typography variant="Navigation">0 Tuitions | 0 Playlists</Typography>
             </div>
           </div>
-          {user?.userName === userName && (
-            <Link href={`${router.asPath}/edit`}><DarkButton text="Edit" /></Link>
+          {user?.userName === userName && path !== undefined && (
+            <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
           )}
         </div>
       </Styled.Content>

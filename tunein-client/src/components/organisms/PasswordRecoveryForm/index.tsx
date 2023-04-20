@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
 import * as Styled from './styles';
 
-const RecoverPassword: React.FC = () => {
+const RecoverPasswordForm: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,6 @@ const RecoverPassword: React.FC = () => {
     <>
       {!success ? (
         <Styled.FormWrapper>
-          <Styled.Title variant="RegisterTitile">Recover Password</Styled.Title>
           {loading ? (
             <Loader borderColor="white transparent" />
           ) : (
@@ -75,4 +74,4 @@ const RecoverPassword: React.FC = () => {
   );
 };
 
-export default RecoverPassword;
+export default RecoverPasswordForm;

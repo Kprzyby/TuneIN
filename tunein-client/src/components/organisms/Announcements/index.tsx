@@ -35,11 +35,13 @@ const Announcements: React.FC<Props> = ({ id }) => {
     }
   }, []);
   return (
-    <Styled.AnnouncementsPage>
-      {tuitions.tutorships.map((t) => (
-        <Announcement key={t.id} title={t.title} interested={100} img={testimgsrc} />
-      ))}
-    </Styled.AnnouncementsPage>
+    <Styled.Wrapper>
+      <Styled.Content>
+        {tuitions.tutorships.map((t) => (
+          <Announcement key={t.id} title={t.title} interested={100} img={testimgsrc} />
+        ))}
+      </Styled.Content>
+    </Styled.Wrapper>
   );
 };
 
