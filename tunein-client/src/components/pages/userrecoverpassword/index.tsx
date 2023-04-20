@@ -4,6 +4,12 @@ import { Typography } from '@components/styles/typography';
 import styled from 'styled-components';
 import RecoverPasswordForm from '../../organisms/PasswordRecoveryForm';
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+`;
+
 const Title = styled(Typography)`
     text-align: center;
     font-weight: 700;
@@ -17,10 +23,10 @@ const Title = styled(Typography)`
 `;
 
 const RecoverPassword: NextPage = () => (
-  <>
+  <Wrapper>
     <Title variant="RegisterTitile">Recover Password</Title>
     <RecoverPasswordForm />
-  </>
+  </Wrapper>
 );
 
 export default RecoverPassword;
