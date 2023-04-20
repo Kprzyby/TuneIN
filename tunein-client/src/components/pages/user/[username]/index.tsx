@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { GetStaticProps, NextPage } from 'next';
-import Profile from '@components/organisms/Profile';
 import UserHeroPage from '@components/organisms/UserHeroPage';
 import useNavigation from '@components/organisms/UserHeroPageNavigation';
 import Announcements from '@components/organisms/Announcements';
@@ -14,16 +13,16 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
     let component;
     switch (pickedNavigation) {
       case 'Home':
-        component = <Profile {...user} />;
+        component = '';
         break;
       case 'Playlists':
-        component = <Profile {...user} />;
+        component = '';
         break;
       case 'Tuitions':
         component = <Announcements id={user.id} />;
         break;
       default:
-        component = <Profile {...user} />;
+        component = '';
         break;
     }
     return component;
@@ -33,11 +32,11 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
     setProfComponent(getComponent());
   }, [pickedNavigation]);
   return (
-    <>
+    <div>
       <UserHeroPage {...user} />
       {renderNavigation}
       {profComponent}
-    </>
+    </div>
   );
 };
 

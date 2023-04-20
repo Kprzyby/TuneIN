@@ -72,7 +72,7 @@ const EditTuitions:React.FC = () => {
               <Styled.Item variant="EditorList" flexPart={0.7}>{t.category}</Styled.Item>
               <Styled.Item variant="EditorList" flexPart={1}>{t.price}</Styled.Item>
             </Styled.IBtn>
-            {pLast === t.id && <TuitionForm tuition={t} />}
+            {pLast === t.id && addItem === false && <TuitionForm tuition={t} />}
           </li>
         ))}
       </Styled.List>

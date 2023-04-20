@@ -21,17 +21,6 @@ export const FormWrapper = styled.div`
     align-items: center;
     padding: 1rem;
 `;
-export const Title = styled(Typography)`
-    text-align: center;
-    font-weight: 700;
-    padding: 3rem;
-    @media (min-width: 0px) { font-size: 1.6rem; }
-    @media (min-width: 400px) { font-size: 2rem; }
-    @media (min-width: 600px) { font-size: 2.5rem; }
-    @media (min-width: 800px) { font-size: 4rem; }
-    @media (min-width: 1200px) { font-size: 6rem; }
-    @media (min-width: 1500px) { font-size: 7rem; }
-`;
 export const Form = styled.form`
     display: flex;
     flex-direction: column;
@@ -110,7 +99,6 @@ export const ConfirmContent = styled.div`
     align-items: center;
     text-align: center;
     height: 100%;
-    background-color: ${({ theme }) => theme.colors.darkMain};
     @media (min-width: 0px) {  min-width: 100%; }
     @media (min-width: 1500px) { min-width: 1500px; }
     @media (min-width: 1800px) { min-width: 1800px; }

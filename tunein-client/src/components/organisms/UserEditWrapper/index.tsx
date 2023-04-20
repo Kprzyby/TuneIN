@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import * as Styled from './styles';
 import EditTuitions from '../UserEditTuitions';
+import EditProfile from '../UserEditProfile';
 
 const EditCnt: React.FC = () => {
   const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tuitions' }];
@@ -9,7 +10,7 @@ const EditCnt: React.FC = () => {
     let component;
     switch (pNaviagtion) {
       case 'Profile':
-        component = 'temp';
+        component = <EditProfile />;
         break;
       case 'Playlists':
         component = 'temp';
