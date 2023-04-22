@@ -2,7 +2,6 @@
 using Azure.Communication.Email.Models;
 using Azure.Communication.Identity;
 using Common.Enums;
-using Common.Helpers;
 using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Response;
 using Data.DTOs.User;
@@ -12,7 +11,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using X.PagedList;
 
 namespace Services
 {
@@ -21,17 +19,17 @@ namespace Services
     {
         #region Properties
 
-        private readonly AuthRepository _authRepository;
+        private readonly UserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthService(IConfiguration configuration, AuthRepository authRepository)
+        public AuthService(IConfiguration configuration, UserRepository userRepository)
         {
             _configuration = configuration;
-            _authRepository = authRepository;
+            _userRepository = userRepository;
         }
 
         #endregion Constructors
@@ -81,7 +79,7 @@ namespace Services
 
         public async Task<bool> CheckIfUserExistsAsync(string email)
         {
-            var userExists = await _authRepository.CheckIfUserExistsAsync(email);
+            var userExists = await _userRepository.CheckIfUserExistsAsync(email);
 
             return userExists;
         }
@@ -110,7 +108,7 @@ namespace Services
                     ChatIdentityId = identity.Id
                 };
 
-                await _authRepository.AddAndSaveChangesAsync(newUser);
+                await _userRepository.AddAndSaveChangesAsync(newUser);
             }
             catch (Exception ex)
             {
@@ -124,7 +122,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetUserByEmailAsync(email);
+                User user = await _userRepository.GetUserByEmailAsync(email);
 
                 if (user == default)
                 {
@@ -138,7 +136,7 @@ namespace Services
 
                 user.UserRole = UserRole.REGULAR_USER.ToString();
 
-                await _authRepository.UpdateAndSaveChangesAsync(user);
+                await _userRepository.UpdateAndSaveChangesAsync(user);
             }
             catch (Exception ex)
             {
@@ -152,7 +150,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetUserByEmailAsync(email);
+                User user = await _userRepository.GetUserByEmailAsync(email);
 
                 if (user == default)
                 {
@@ -161,7 +159,7 @@ namespace Services
 
                 user.PasswordRecoveryGUID = passwordRecoveryGUID;
 
-                Task updateUser = _authRepository.UpdateAndSaveChangesAsync(user);
+                Task updateUser = _userRepository.UpdateAndSaveChangesAsync(user);
 
                 string connectionString = _configuration.GetConnectionString("AzureEmailConnection");
                 EmailClient emailClient = new EmailClient(connectionString);
@@ -194,7 +192,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetUserByEmailAsync(email);
+                User user = await _userRepository.GetUserByEmailAsync(email);
 
                 if (user == default)
                 {
@@ -212,7 +210,7 @@ namespace Services
                 user.Salt = salt;
                 user.Password = newPassword;
 
-                await _authRepository.UpdateAndSaveChangesAsync(user);
+                await _userRepository.UpdateAndSaveChangesAsync(user);
             }
             catch (Exception ex)
             {
@@ -226,7 +224,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetUserByEmailAsync(email);
+                User user = await _userRepository.GetUserByEmailAsync(email);
 
                 if (user == default)
                 {
@@ -285,118 +283,6 @@ namespace Services
             }
 
             return CreateSuccessResponse(200, "Confirmation email successfully sent");
-        }
-
-        public async Task<ServiceResponseDTO> GetUserAsync(string email, int? id)
-        {
-            try
-            {
-                User user;
-
-                if (id != null)
-                {
-                    user = await _authRepository.GetByIdAsync((int)id);
-                }
-                else
-                {
-                    user = await _authRepository.GetUserByEmailAsync(email);
-                }
-
-                if (user == null)
-                {
-                    return CreateFailureResponse(404, "User was not found");
-                }
-
-                ReadUserDTO result = new ReadUserDTO()
-                {
-                    Id = user.Id,
-                    UserRole = user.UserRole,
-                    UserName = user.UserName,
-                    Email = user.Email
-                };
-
-                return CreateSuccessResponse(200, "User found", result);
-            }
-            catch (Exception ex)
-            {
-                return CreateFailureResponse(500, "Error while loading the user");
-            }
-        }
-
-        public async Task<ServiceResponseDTO> GetAllUsersAsync(GetAllUsersDTO dto)
-        {
-            try
-            {
-                IQueryable<User> users = _authRepository.GetAllUsers();
-
-                if (!String.IsNullOrEmpty(dto.UsernameFilterValue))
-                {
-                    users = users
-                        .Where(u => u.UserName.ToUpper()
-                                .StartsWith(dto.UsernameFilterValue.ToUpper()));
-                }
-
-                if (!String.IsNullOrEmpty(dto.EmailFilterValue))
-                {
-                    users = users
-                        .Where(u => u.Email.ToUpper()
-                            .StartsWith(dto.EmailFilterValue.ToUpper()));
-                }
-
-                if (dto.SortInfo == null)
-                {
-                    users = users
-                        .OrderBy(u => u.UserName);
-                }
-                else
-                {
-                    List<KeyValuePair<string, string>> sortValues = dto.SortInfo;
-
-                    users = SortingHelper<User>.Sort(users, sortValues);
-                }
-
-                GetUsersResponseDTO response = new GetUsersResponseDTO();
-                response.TotalCount = users.Count();
-                response.PageSize = dto.PageSize;
-                response.PageNumber = dto.PageNumber;
-                response.SortInfo = dto.SortInfo;
-                response.UsernameFilterValue = dto.UsernameFilterValue;
-                response.EmailFilterValue = dto.EmailFilterValue;
-
-                response.Users = await users
-                    .Select(u => new ReadUserDTO()
-                    {
-                        Id = u.Id,
-                        Email = u.Email,
-                        UserName = u.UserName,
-                        UserRole = u.UserRole
-                    })
-                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
-
-                return CreateSuccessResponse(200, "Users loaded successfully", response);
-            }
-            catch (Exception ex)
-            {
-                return CreateFailureResponse(500, "Error while loading users");
-            }
-        }
-
-        public async Task<ServiceResponseDTO> GetAllUsernamesAsync()
-        {
-            try
-            {
-                IQueryable<User> users = _authRepository.GetAllUsers();
-
-                var result = await users
-                    .Select(u => u.UserName)
-                    .ToListAsync();
-
-                return CreateSuccessResponse(200, "Usernames loaded successfully", result);
-            }
-            catch (Exception ex)
-            {
-                return CreateFailureResponse(500, "Error while getting usernames");
-            }
         }
 
         #endregion Methods
