@@ -140,17 +140,20 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
+        ///
+        /// This request has multipart/form-data content type.
         /// </remarks>
-        /// <param name="newTutorship">Object containing information about the tutorship</param>
+        /// <param name="newTutorship">Object containing information about the tutorship. It should be bound using form-data in the request body</param>
         /// <returns>Object containing information about a new tutorship along with a route to the get method</returns>
         /// <response code="201">Object containing information about a new tutorship along with a route to the get method</response>
         /// <response code="500">Error message</response>
         [HttpPost]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [Route("Tutorship/AddTutorshipAsync")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(ReadTutorshipDTO), 201)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> AddTutorshipAsync(NewTutorshipViewModel newTutorship)
+        public async Task<IActionResult> AddTutorshipAsync([FromForm] NewTutorshipViewModel newTutorship)
         {
             int userId = GetUserId();
 
@@ -162,6 +165,22 @@ namespace Backend.Controllers
                 Category = newTutorship.Category,
                 CreatedById = userId
             };
+
+            if (newTutorship.Image == null)
+            {
+                dto.Image = Array.Empty<byte>();
+            }
+            else
+            {
+                using (Stream stream = newTutorship.Image.OpenReadStream())
+                {
+                    byte[] content = new byte[stream.Length];
+                    stream.Read(content, 0, content.Length);
+                    dto.Image = content;
+
+                    stream.Close();
+                }
+            }
 
             var result = await _tutorshipService.AddTutorshipAsync(dto);
 
@@ -180,9 +199,11 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
+        ///
+        /// This request has multipart/form-data content type.
         /// </remarks>
         /// <param name="tutorshipId">Id of the tutorship</param>
-        /// <param name="updatedTutorship">Object containing new information about the tutorship</param>
+        /// <param name="updatedTutorship">Object containing new information about the tutorship. It should be bound using form-data in the request body</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
         /// <response code="204"></response>
         /// <response code="403">Error message</response>
@@ -191,11 +212,12 @@ namespace Backend.Controllers
         [HttpPut]
         [Route("Tutorship/UpdateTutorshipAsync/{tutorshipId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> UpdateTutorshipAsync(int tutorshipId, UpdateTutorshipViewModel updatedTutorship)
+        public async Task<IActionResult> UpdateTutorshipAsync(int tutorshipId, [FromForm] UpdateTutorshipViewModel updatedTutorship)
         {
             int userId = GetUserId();
 
@@ -221,6 +243,22 @@ namespace Backend.Controllers
                 Price = updatedTutorship.Price,
                 Category = updatedTutorship.Category,
             };
+
+            if (updatedTutorship.Image == null)
+            {
+                dto.Image = Array.Empty<byte>();
+            }
+            else
+            {
+                using (Stream stream = updatedTutorship.Image.OpenReadStream())
+                {
+                    byte[] content = new byte[stream.Length];
+                    stream.Read(content, 0, content.Length);
+                    dto.Image = content;
+
+                    stream.Close();
+                }
+            }
 
             var result = await _tutorshipService.UpdateTutorshipAsync(dto);
 

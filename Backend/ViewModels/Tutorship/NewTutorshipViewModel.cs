@@ -16,5 +16,7 @@ namespace Backend.ViewModels.Tutorship
 
         [Required]
         public string Category { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

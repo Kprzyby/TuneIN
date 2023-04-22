@@ -8,5 +8,6 @@
         public decimal Price { get; set; }
         public string Category { get; set; }
         public int CreatedById { get; set; }
+        public byte[] Image { get; set; }
     }
 }
