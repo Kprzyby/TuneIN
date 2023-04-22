@@ -7,6 +7,7 @@ using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
 using System.ComponentModel;
+using System.Drawing;
 using System.Reflection;
 using X.PagedList;
 
@@ -56,6 +57,16 @@ namespace Services
                         Username = tutorship.CreatedBy.UserName
                     }
                 };
+
+                if (tutorship.Image.Length == 0)
+                {
+                    result.Image = null;
+                }
+                else
+                {
+                    MemoryStream stream = new MemoryStream(tutorship.Image);
+                    result.Image = Image.FromStream(stream);
+                }
 
                 return CreateSuccessResponse(200, "Tutorship retrieved successfully", result);
             }
@@ -121,7 +132,8 @@ namespace Services
                         {
                             Id = t.CreatedBy.Id,
                             Username = t.CreatedBy.UserName
-                        }
+                        },
+                        Image = t.Image.Length == 0 ? null : Image.FromStream(new MemoryStream(t.Image))
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
@@ -145,7 +157,8 @@ namespace Services
                     Category = dto.Category,
                     CreatedById = dto.CreatedById,
                     CreationDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now
+                    UpdatedDate = DateTime.Now,
+                    Image = dto.Image
                 };
 
                 tutorship = await _tutorshipRepo.AddTutorshipAsync(tutorship);
@@ -163,6 +176,8 @@ namespace Services
                         Username = tutorship.CreatedBy.UserName
                     }
                 };
+                MemoryStream stream = new MemoryStream(tutorship.Image);
+                newTutorship.Image = Image.FromStream(stream);
 
                 return CreateSuccessResponse(201, "Tutorship created successfully", newTutorship);
             }
@@ -188,6 +203,7 @@ namespace Services
                 oldTutorship.Price = dto.Price;
                 oldTutorship.Category = dto.Category;
                 oldTutorship.UpdatedDate = DateTime.Now;
+                oldTutorship.Image = dto.Image;
 
                 await _tutorshipRepo.UpdateTutorshipAsync(oldTutorship);
 

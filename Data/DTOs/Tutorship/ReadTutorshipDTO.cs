@@ -1,4 +1,5 @@
 ﻿using Data.DTOs.User;
+using System.Drawing;
 
 namespace Data.DTOs.Tutorship
 {
@@ -15,5 +16,6 @@ namespace Data.DTOs.Tutorship
         public string Category { get; set; }
 
         public ReadTutorshipAuthorDTO Author { get; set; }
+        public Image Image { get; set; }
     }
 }
