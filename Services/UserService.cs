@@ -173,6 +173,29 @@ namespace Services
             }
         }
 
+        public async Task<ServiceResponseDTO> UpdateUsernameAsync(UpdateUsernameDTO dto)
+        {
+            try
+            {
+                User user = await _userRepository.GetUserByIdAsync(dto.UserId);
+
+                if (user == null)
+                {
+                    CreateFailureResponse(404, "User with such id was not found");
+                }
+
+                user.UserName = dto.Username;
+
+                await _userRepository.UpdateUserAsync(user);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the username");
+            }
+        }
+
         #endregion Methods
     }
 }

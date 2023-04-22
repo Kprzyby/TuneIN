@@ -155,9 +155,28 @@ namespace Backend.Controllers
             return Ok(usernames);
         }
 
+        /// <summary>
+        /// Asynchronous method for setting the avatarId for the user
+        /// </summary>
+        /// <remarks>
+        /// To set the avatarId to the default one pass null as the avatarId
+        /// </remarks>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="avatarId">Id of the avatar</param>
+        /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
+        /// <response code="204"></response>
+        /// <response code="400">Error message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
         [HttpPatch]
         [Route("User/{userId}/UpdateAvatarIdAsync/{avatarId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> UpdateAvatarIdAsync(int userId, int? avatarId)
         {
             int currentUserId = GetUserId();
@@ -174,6 +193,55 @@ namespace Backend.Controllers
             };
 
             var response = await _userService.UpdateAvatarAsync(dto);
+
+            if (response.IsSuccess == false)
+            {
+                return StatusCode(response.StatusCode, response.Message);
+            }
+
+            return StatusCode(204);
+        }
+
+        /// <summary>
+        /// Asynchronous method for updating the user's username
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="usernameViewModel">Object containing user's new username</param>
+        /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
+        /// <response code="204"></response>
+        /// <response code="400">Error message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        [HttpPatch]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [Route("User/{userId}/UpdateUsernameAsync")]
+        [ProducesResponseType(typeof(string), 204)]
+        [ProducesResponseType(typeof(string), 400)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> UpdateUsernameAsync(int userId, UpdateUsernameViewModel usernameViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Username was not provided or was already taken by another user");
+            }
+
+            int currentUserId = GetUserId();
+
+            if (currentUserId != userId)
+            {
+                return StatusCode(403, "You can't update the avatar of another user");
+            }
+
+            UpdateUsernameDTO dto = new UpdateUsernameDTO()
+            {
+                UserId = userId,
+                Username = usernameViewModel.Username
+            };
+
+            var response = await _userService.UpdateUsernameAsync(dto);
 
             if (response.IsSuccess == false)
             {
