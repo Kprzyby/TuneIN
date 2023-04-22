@@ -196,6 +196,29 @@ namespace Services
             }
         }
 
+        public async Task<ServiceResponseDTO> UpdateEmailAsync(UpdateEmailDTO dto)
+        {
+            try
+            {
+                User user = await _userRepository.GetUserByIdAsync(dto.UserId);
+
+                if (user == null)
+                {
+                    CreateFailureResponse(404, "User with such id was not found");
+                }
+
+                user.Email = dto.Email;
+
+                await _userRepository.UpdateUserAsync(user);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the email");
+            }
+        }
+
         #endregion Methods
     }
 }

@@ -183,7 +183,7 @@ namespace Backend.Controllers
 
             if (currentUserId != userId)
             {
-                return StatusCode(403, "You can't update the avatar of another user");
+                return StatusCode(403, "You can't change the avatar of another user");
             }
 
             UpdateAvatarDTO dto = new UpdateAvatarDTO()
@@ -216,7 +216,7 @@ namespace Backend.Controllers
         [HttpPatch]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [Route("User/{userId}/UpdateUsernameAsync")]
-        [ProducesResponseType(typeof(string), 204)]
+        [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
@@ -232,7 +232,7 @@ namespace Backend.Controllers
 
             if (currentUserId != userId)
             {
-                return StatusCode(403, "You can't update the avatar of another user");
+                return StatusCode(403, "You can't change the username of another user");
             }
 
             UpdateUsernameDTO dto = new UpdateUsernameDTO()
@@ -242,6 +242,48 @@ namespace Backend.Controllers
             };
 
             var response = await _userService.UpdateUsernameAsync(dto);
+
+            if (response.IsSuccess == false)
+            {
+                return StatusCode(response.StatusCode, response.Message);
+            }
+
+            return StatusCode(204);
+        }
+
+        /// <summary>
+        /// Asynchronous method for updating the user's email
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="email">User's new email</param>
+        /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
+        /// <response code="204"></response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        [HttpPatch]
+        [Route("User/{userId}/UpdateEmailAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> UpdateEmailAsync(int userId, string email)
+        {
+            int currentUserId = GetUserId();
+
+            if (currentUserId != userId)
+            {
+                return StatusCode(403, "You can't change the email of another user");
+            }
+
+            UpdateEmailDTO dto = new UpdateEmailDTO()
+            {
+                UserId = userId,
+                Email = email
+            };
+
+            var response = await _userService.UpdateEmailAsync(dto);
 
             if (response.IsSuccess == false)
             {
