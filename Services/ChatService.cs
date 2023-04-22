@@ -18,17 +18,17 @@ namespace Services
     {
         #region Properties
 
-        private readonly AuthRepository _authRepository;
+        private readonly UserRepository _userRepository;
         private readonly IConfiguration _configuration;
 
         #endregion Properties
 
         #region Constructors
 
-        public ChatService(IConfiguration configuration, AuthRepository authRepository)
+        public ChatService(IConfiguration configuration, UserRepository userRepository)
         {
             _configuration = configuration;
-            _authRepository = authRepository;
+            _userRepository = userRepository;
         }
 
         #endregion Constructors
@@ -48,7 +48,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetUserByEmailAsync(email);
+                User user = await _userRepository.GetUserByEmailAsync(email);
 
                 if (user == null)
                 {
@@ -76,7 +76,7 @@ namespace Services
         {
             try
             {
-                User? user = await _authRepository.GetByIdAsync(id);
+                User? user = await _userRepository.GetByIdAsync(id);
 
                 if (user == null)
                 {
@@ -101,7 +101,7 @@ namespace Services
         {
             try
             {
-                User? user = await _authRepository.GetByIdAsync(id);
+                User? user = await _userRepository.GetByIdAsync(id);
 
                 if (user == null)
                 {
@@ -134,7 +134,7 @@ namespace Services
 
                 foreach (int participantId in participantsIds)
                 {
-                    User user = await _authRepository.GetByIdAsync(participantId);
+                    User user = await _userRepository.GetByIdAsync(participantId);
                     ChatParticipant chatParticipant = new ChatParticipant(new CommunicationUserIdentifier(user.ChatIdentityId));
                     chatParticipant.DisplayName = user.UserName;
 
@@ -162,7 +162,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetByIdAsync(userId);
+                User user = await _userRepository.GetByIdAsync(userId);
 
                 if (user == null)
                 {
@@ -195,7 +195,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetByIdAsync(userId);
+                User user = await _userRepository.GetByIdAsync(userId);
 
                 if (user == null)
                 {
@@ -308,7 +308,7 @@ namespace Services
         {
             try
             {
-                User user = await _authRepository.GetByIdAsync(userId);
+                User user = await _userRepository.GetByIdAsync(userId);
 
                 if (user == null)
                 {

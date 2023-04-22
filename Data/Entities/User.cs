@@ -22,5 +22,8 @@ namespace Data.Entities
         public Guid? PasswordRecoveryGUID { get; set; }
         public string ChatIdentityId { get; set; }
         public virtual ICollection<TrackInfo>? TrackInfos { get; set; }
+
+        [Range(0, 5)]
+        public int? AvatarId { get; set; }
     }
 }

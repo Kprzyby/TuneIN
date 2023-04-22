@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Data.Repositories
 {
     [ScopedAttribute]
-    public class AuthRepository : BaseRepository<User>
+    public class UserRepository : BaseRepository<User>
     {
         #region Constructors
 
-        public AuthRepository(DataContext dataContext) : base(dataContext)
+        public UserRepository(DataContext dataContext) : base(dataContext)
         {
         }
 
@@ -36,6 +36,19 @@ namespace Data.Repositories
         public IQueryable<User> GetAllUsers()
         {
             var result = DataContext.Users;
+
+            return result;
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            await UpdateAndSaveChangesAsync(user);
+        }
+
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            var result = await DataContext.Users
+                .SingleOrDefaultAsync(e => e.Id == id);
 
             return result;
         }
