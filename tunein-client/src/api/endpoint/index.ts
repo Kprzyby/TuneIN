@@ -10,9 +10,11 @@ export const ENDPOINTS = {
     confirmaccount: 'Auth/ConfirmAccountAsync',
     recoverpassword: 'Auth/RecoverPasswordAsync',
     changepassword: 'Auth/ChangePasswordAsync',
-    getuserbyid: 'Auth/GetUserAsync',
-    getusernames: 'Auth/GetAllUsernames',
-    getusers: 'Auth/GetAllUsersAsync',
+  },
+  user: {
+    getuserbyid: 'User/GetUserAsync',
+    getusers: 'User/GetAllUsersAsync',
+    getusernames: 'User/GetAllUsernames',
   },
   tutorship: {
     gettutorshipbyid: 'Tutorship/GetTutorshipAsync/',
@@ -61,6 +63,13 @@ export const createDBEndpoint = (endpoint: string) => {
       url,
       data: deletedRecords,
       params: deletedRecords,
+      httpsAgent,
+    }),
+    patch: (patchedRecords?: any) => axios({
+      method: 'patch',
+      url,
+      data: patchedRecords,
+      params: patchedRecords,
       httpsAgent,
     }),
   };

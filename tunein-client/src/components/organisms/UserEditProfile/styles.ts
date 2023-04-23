@@ -16,7 +16,8 @@ export const Title = styled(Typography)`
 
 export const PPButton = styled.button<StyledProps>`
     border: unset;
-    border-bottom: ${({ isPHighlighted, theme }) => (isPHighlighted ? `solid ${theme.colors.white} 0.1rem` : 'unset')};
+    border-bottom: ${({ isCurr, theme }) => (isCurr && `solid ${theme.colors.white} 0.1rem`)};
+    border: ${({ isLast, theme }) => (isLast && `solid ${theme.colors.white} 0.1rem`)};
     border-radius: 0.3rem;
     background-color: transparent;
     cursor: pointer;

@@ -7,4 +7,5 @@ export interface UserType {
   id: number;
   userName: string;
   userRole: string;
+  avatarId: number;
 }

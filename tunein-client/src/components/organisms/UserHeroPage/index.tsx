@@ -9,7 +9,9 @@ import * as Styled from './styles';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 
-const UserHeroPage: React.FC<Props> = ({ userName, email, id }) => {
+const UserHeroPage: React.FC<Props> = ({
+  userName, email, id, avatarId,
+}) => {
   const router = useRouter();
   const [path, setPath] = useState<string | undefined>(undefined);
   const [tuitCounter, setTuitCounter] = useState(0);
@@ -42,7 +44,7 @@ const UserHeroPage: React.FC<Props> = ({ userName, email, id }) => {
             flexFlow: 'row nowrap',
           }}
           >
-            <ProfilePicture id={1} />
+            <ProfilePicture id={avatarId} />
             <div style={{
               display: 'flex',
               flexDirection: 'column',

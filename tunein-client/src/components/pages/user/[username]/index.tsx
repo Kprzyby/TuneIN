@@ -43,7 +43,7 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
 export default ProfilePage;
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  const pickedUser = await createDBEndpoint(ENDPOINTS.auth.getusers)
+  const pickedUser = await createDBEndpoint(ENDPOINTS.user.getusers)
     .post({
       pageSize: 10000,
       pageNumber: 1,
@@ -61,7 +61,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   return {
     props: {
       user: pickedUser || {
-        userName: '', id: 0, email: '', userRole: '',
+        userName: '', id: 0, email: '', userRole: '', avatarId: 0,
       },
     },
     revalidate: 20,
@@ -69,7 +69,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
 };
 
 export const getStaticPaths = async () => {
-  const usernames = await createDBEndpoint(ENDPOINTS.auth.getusernames)
+  const usernames = await createDBEndpoint(ENDPOINTS.user.getusernames)
     .get()
     .then((res) => res.data);
   return {
