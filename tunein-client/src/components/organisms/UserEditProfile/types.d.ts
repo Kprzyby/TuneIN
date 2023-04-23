@@ -1,3 +1,4 @@
 export interface StyledProps {
-  isPHighlighted?: boolean;
+  isCurr?: boolean;
+  isLast?: boolean;
 }
