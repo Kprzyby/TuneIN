@@ -57,7 +57,14 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     .then((res) => {
       const usr = res.data.users.find((x: any) => x.userName === context.params?.username);
       return usr;
-    });
+    })
+    .catch(() => undefined);
+
+  if (pickedUser === undefined) {
+    return {
+      notFound: true,
+    };
+  }
   return {
     props: {
       user: pickedUser || {
@@ -76,6 +83,6 @@ export const getStaticPaths = async () => {
     paths: usernames.map((u: string) => ({
       params: { username: u },
     })),
-    fallback: false,
+    fallback: true,
   };
 };

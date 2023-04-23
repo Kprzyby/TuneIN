@@ -7,9 +7,13 @@ import { Musicians } from '../../../../public/assets/svg';
 import RecoverPasswordForm from '../PasswordRecoveryForm';
 import { createDBEndpoint } from '../../../api/endpoint';
 import { getUserCookie, updateUserCookie } from '../../../api/cookie/userCookie';
+import SingleUpdateForm from '../SingleUpdateForm';
 
 const EditProfile = () => {
   const [toggleEmail, setToggleEmail] = useState(false);
+  const [toggleUsername, setToggleUsername] = useState(false);
+  const [togglePassword, setTogglePassword] = useState(false);
+
   const { user, setUser } = useContext(UserData);
   const [currAPicked, setCurrAPicked] = useState(user?.avatarId);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,18 +31,29 @@ const EditProfile = () => {
   return (
     <Styled.Wrapper>
       <Styled.Title variant="RegisterSuccess">Username</Styled.Title>
+      <Styled.FormWrapper>
+        <Styled.ClearBtn type="button" onClick={() => setToggleUsername(!toggleUsername)}>
+          {toggleUsername ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+        </Styled.ClearBtn>
+        {toggleUsername && <SingleUpdateForm type="username" />}
+      </Styled.FormWrapper>
+
       <Styled.Title variant="RegisterSuccess">Email</Styled.Title>
+      <Styled.FormWrapper>
+        <Styled.ClearBtn type="button" onClick={() => setToggleEmail(!toggleEmail)}>
+          {toggleEmail ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+        </Styled.ClearBtn>
+        {toggleEmail && <SingleUpdateForm type="email" />}
+      </Styled.FormWrapper>
+
       <Styled.Title variant="RegisterSuccess">Password</Styled.Title>
       <Styled.FormWrapper>
-        <button
-          type="button"
-          style={{ border: 'unset', cursor: 'pointer', background: 'transparent' }}
-          onClick={() => setToggleEmail(!toggleEmail)}
-        >
-          {toggleEmail ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
-        </button>
-        {toggleEmail && <RecoverPasswordForm />}
+        <Styled.ClearBtn type="button" onClick={() => setTogglePassword(!togglePassword)}>
+          {togglePassword ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+        </Styled.ClearBtn>
+        {togglePassword && <RecoverPasswordForm />}
       </Styled.FormWrapper>
+
       <Styled.Title variant="RegisterSuccess">Profile Pricture</Styled.Title>
       <Styled.PPList>
         {Musicians.map((m, id) => {
@@ -65,13 +80,9 @@ const EditProfile = () => {
       </Styled.PPList>
       {currAPicked !== user?.avatarId
         && (
-        <button
-          type="button"
-          style={{ border: 'unset', cursor: 'pointer', background: 'transparent' }}
-          onClick={handleAChange}
-        >
+        <Styled.ClearBtn type="button" onClick={handleAChange}>
           <DarkButton text="Change Avatar" />
-        </button>
+        </Styled.ClearBtn>
         )}
     </Styled.Wrapper>
   );

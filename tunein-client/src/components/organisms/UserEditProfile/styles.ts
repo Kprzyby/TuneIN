@@ -36,3 +36,9 @@ export const FormWrapper = styled.div`
     flex-flow: column wrap;
     align-content: center;
 `;
+
+export const ClearBtn = styled.button`
+    border: unset; 
+    cursor: pointer; 
+    background: transparent;
+`;
