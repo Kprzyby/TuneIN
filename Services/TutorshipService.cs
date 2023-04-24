@@ -176,8 +176,16 @@ namespace Services
                         Username = tutorship.CreatedBy.UserName
                     }
                 };
-                MemoryStream stream = new MemoryStream(tutorship.Image);
-                newTutorship.Image = Image.FromStream(stream);
+
+                if (tutorship.Image.Length == 0)
+                {
+                    newTutorship.Image = null;
+                }
+                else
+                {
+                    MemoryStream stream = new MemoryStream(tutorship.Image);
+                    newTutorship.Image = Image.FromStream(stream);
+                }
 
                 return CreateSuccessResponse(201, "Tutorship created successfully", newTutorship);
             }
