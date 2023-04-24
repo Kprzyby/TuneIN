@@ -6,11 +6,15 @@ import DarkButton from '@components/molecules/DarkButton';
 import Loader from '@components/atoms/Loader';
 import { useRouter } from 'next/router';
 import { convertToRaw } from 'draft-js';
+import Image from 'next/image';
 import * as Styled from './styles';
 import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
 import { Props } from './types';
 
 const TuitionForm: React.FC<Props> = ({ tuition }) => {
+  const [preview, setPreview] = useState<string | undefined>();
+  const [image, setImage] = useState<File | undefined>();
+  const [imageBA, setImageBA] = useState();
   const { renderRichText, editorState } = useRichText({ tuition });
   const [categories, setCategories] = useState<any[]>([]);
   const [err, setErr] = useState(false);
@@ -28,7 +32,8 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       title: tuition ? tuition.title : '',
       descEditorState: editorState,
       category: tuition ? tuition.category : '',
-      price: tuition ? tuition.price : '',
+      price: tuition ? tuition.price : 0,
+      avatar: '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -41,39 +46,40 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       price: Yup.number()
         .min(0, 'Price cannot be negative')
         .required('Price is required'),
+      avatar: Yup.string()
+        .required('Avatar is required'),
     }),
     onSubmit: (values) => {
       setLoading(true);
       setErr(false);
+      const formData = new FormData();
+      formData.append('Title', values.title);
+      formData.append('Details', JSON.stringify(convertToRaw(editorState.getCurrentContent())));
+      formData.append('Price', values.price.toString());
+      formData.append('Category', values.category);
+      // @ts-ignore
+      formData.append('Image', imageBA);
       if (tuition === undefined) {
         createDBEndpoint(ENDPOINTS.tutorship.addTutorship)
-          .post({
-            title: values.title,
-            details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-            price: values.price,
-            category: values.category,
-          })
+          .post(formData, true)
           .then(() => {
             setLoading(false);
             router.back();
           })
-          .catch(() => {
+          .catch((e: any) => {
+            console.log(e.config);
             setErr(true);
             setLoading(false);
           });
       } else {
         createDBEndpoint(ENDPOINTS.tutorship.updateTutorship + tuition.id)
-          .put({
-            title: values.title,
-            details: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-            price: values.price,
-            category: values.category,
-          })
+          .put(formData, true)
           .then(() => {
             setLoading(false);
             router.reload();
           })
-          .catch(() => {
+          .catch((e: any) => {
+            console.log(e.config);
             setErr(true);
             setLoading(false);
           });
@@ -92,6 +98,34 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
         setErr(true);
         setLoading(false);
       });
+  };
+  useEffect(() => {
+    if (image) {
+      const prevReader = new FileReader();
+      prevReader.onloadend = () => { setPreview(prevReader.result as string); };
+      prevReader.readAsDataURL(image);
+      const outReader = new FileReader();
+      // @ts-ignore
+      outReader.onloadend = () => { setImageBA(outReader.result); };
+      outReader.readAsBinaryString(image);
+    } else {
+      setPreview(undefined);
+    }
+  }, [image]);
+  const hiddenFileInput = React.useRef(null);
+  const handlePhotoClick = () => {
+    // @ts-ignore
+    hiddenFileInput.current.click();
+  };
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // @ts-ignore
+    const file = event.target.files[0];
+    formik.setFieldValue('avatar', file);
+    if (file && file.type.substr(0, 5) === 'image') {
+      setImage(file);
+    } else {
+      setImage(undefined);
+    }
   };
   return (
     <Styled.Wrapper>
@@ -127,6 +161,35 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
             onChange={formik.handleChange}
           />
           <Styled.Error variant="PasswordTileTitle">{formik.errors.price}</Styled.Error>
+          {/* Avatar */}
+          <Styled.InputTitle variant="PasswordTileTitle">Avatar</Styled.InputTitle>
+          <button
+            type="button"
+            onClick={handlePhotoClick}
+            style={{ border: 'unset', background: 'transparent' }}
+          >
+            <DarkButton text="Upload photo" />
+            <input
+              placeholder="avatar"
+              id="avatar"
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              ref={hiddenFileInput}
+              onChange={(e) => handlePhotoChange(e)}
+            />
+          </button>
+          {preview
+            && (
+            <Image
+              src={preview}
+              alt="preview"
+              width={300}
+              height={300}
+              style={{ objectFit: 'contain' }}
+            />
+            )}
+          <Styled.Error variant="PasswordTileTitle">{formik.errors.avatar}</Styled.Error>
           {/* Description */}
           <Styled.InputTitle variant="PasswordTileTitle">Opis</Styled.InputTitle>
           {renderRichText}
