@@ -27,6 +27,7 @@ namespace Data.Entities
         public string Category { get; set; }
 
         public byte[] Image { get; set; }
+        public string? ImageFormat { get; set; }
 
         [Required]
         public int CreatedById { get; set; }

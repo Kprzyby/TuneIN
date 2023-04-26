@@ -33,6 +33,14 @@ namespace Services
 
         #region Methods
 
+        private string CreateDataURL(string imageFormat, byte[] imageData)
+        {
+            string dataString = Convert.ToBase64String(imageData);
+            string result = "data:" + imageFormat + ";base64," + dataString;
+
+            return result;
+        }
+
         public async Task<ServiceResponseDTO> GetTutorshipAsync(int id)
         {
             try
@@ -60,12 +68,12 @@ namespace Services
 
                 if (tutorship.Image.Length == 0)
                 {
-                    result.Image = null;
+                    //result.Image = null;
                 }
                 else
                 {
                     MemoryStream stream = new MemoryStream(tutorship.Image);
-                    result.Image = Image.FromStream(stream);
+                    //result.Image = Image.FromStream(stream);
                 }
 
                 return CreateSuccessResponse(200, "Tutorship retrieved successfully", result);
@@ -132,8 +140,8 @@ namespace Services
                         {
                             Id = t.CreatedBy.Id,
                             Username = t.CreatedBy.UserName
-                        },
-                        Image = t.Image.Length == 0 ? null : Image.FromStream(new MemoryStream(t.Image))
+                        }
+                        //Image = t.Image.Length == 0 ? null : Image.FromStream(new MemoryStream(t.Image))
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
@@ -158,7 +166,8 @@ namespace Services
                     CreatedById = dto.CreatedById,
                     CreationDate = DateTime.Now,
                     UpdatedDate = DateTime.Now,
-                    Image = dto.Image
+                    Image = dto.Image,
+                    ImageFormat = dto.ImageFormat
                 };
 
                 tutorship = await _tutorshipRepo.AddTutorshipAsync(tutorship);
@@ -179,12 +188,11 @@ namespace Services
 
                 if (tutorship.Image.Length == 0)
                 {
-                    newTutorship.Image = null;
+                    newTutorship.ImageDataURL = null;
                 }
                 else
                 {
-                    MemoryStream stream = new MemoryStream(tutorship.Image);
-                    newTutorship.Image = Image.FromStream(stream);
+                    newTutorship.ImageDataURL = CreateDataURL(tutorship.ImageFormat, tutorship.Image);
                 }
 
                 return CreateSuccessResponse(201, "Tutorship created successfully", newTutorship);
