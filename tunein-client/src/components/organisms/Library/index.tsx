@@ -4,6 +4,8 @@ import DarkButton from '@components/molecules/DarkButton';
 import useDarkButtonExpand from '@components/molecules/DarkButtonExpand';
 import SongCard from '@components/molecules/SongCard';
 import * as Styled from './styles';
+import { rootCertificates } from 'tls';
+import Router from 'next/router';
 // import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 const Library: React.FC = () => {
@@ -45,8 +47,8 @@ const Library: React.FC = () => {
   const handleEditClick = () => {
     // console.log('edit');
   };
-  const handleSongClicked = () => {
-    // console.log(musicCollection[index].name);
+  const handleSongClicked = (id: number) => {
+    Router.push(`/library/song/${id}`);
   };
   useEffect(() => {
     // console.log(pickedCollection);
@@ -78,7 +80,7 @@ const Library: React.FC = () => {
           {musicCollection.map((i) => (
             <div
               key={i.id}
-              onClick={() => handleSongClicked()}
+              onClick={() => handleSongClicked(i.id)}
             >
               <SongCard
                 name={i.name}
