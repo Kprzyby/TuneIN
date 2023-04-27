@@ -14,7 +14,6 @@ import { Props } from './types';
 const TuitionForm: React.FC<Props> = ({ tuition }) => {
   const [preview, setPreview] = useState<string | undefined>();
   const [image, setImage] = useState<File | undefined>();
-  const [imageBA, setImageBA] = useState();
   const { renderRichText, editorState } = useRichText({ tuition });
   const [categories, setCategories] = useState<any[]>([]);
   const [err, setErr] = useState(false);
@@ -104,10 +103,6 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       const prevReader = new FileReader();
       prevReader.onloadend = () => { setPreview(prevReader.result as string); };
       prevReader.readAsDataURL(image);
-      const outReader = new FileReader();
-      // @ts-ignore
-      outReader.onloadend = () => { setImageBA(outReader.result); };
-      outReader.readAsBinaryString(image);
     } else {
       setPreview(undefined);
     }

@@ -23,7 +23,6 @@ const Announcements: React.FC<Props> = ({ id }) => {
         }],
     },
   );
-  const testimgsrc = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/%C5%A0ventasis_Kazimieras%2C_1594_cropped.jpg/183px-%C5%A0ventasis_Kazimieras%2C_1594_cropped.jpg';
   useEffect(() => {
     // for some reason next trys to exec getusertutorships beforehead
     // error still accures
@@ -44,7 +43,7 @@ const Announcements: React.FC<Props> = ({ id }) => {
     <Styled.Wrapper>
       <Styled.Content>
         {tuitions.tutorships.map((t) => (
-          <Announcement key={t.id} title={t.title} interested={100} img={testimgsrc} />
+          <Announcement key={t.id} title={t.title} interested={100} />
         ))}
       </Styled.Content>
     </Styled.Wrapper>
