@@ -8,7 +8,7 @@ export interface Tuition {
   price: number;
   category: string;
   author: Author;
-  image: string;
+  imageDataURL: string;
 }
 interface Author {
   id: number;
