@@ -7,7 +7,6 @@ using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
 using System.ComponentModel;
-using System.Drawing;
 using System.Reflection;
 using X.PagedList;
 
@@ -68,12 +67,11 @@ namespace Services
 
                 if (tutorship.Image.Length == 0)
                 {
-                    //result.Image = null;
+                    result.ImageDataURL = null;
                 }
                 else
                 {
-                    MemoryStream stream = new MemoryStream(tutorship.Image);
-                    //result.Image = Image.FromStream(stream);
+                    result.ImageDataURL = CreateDataURL(tutorship.ImageFormat, tutorship.Image);
                 }
 
                 return CreateSuccessResponse(200, "Tutorship retrieved successfully", result);
@@ -128,8 +126,11 @@ namespace Services
                 response.CategoryFilterValue = dto.CategoryFilterValue;
                 response.SortInfo = dto.SortInfo;
 
-                response.Tutorships = await tutorships.
-                    Select(t => new ReadTutorshipDTO()
+                var tmpTutorships = await tutorships
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                response.Tutorships = tmpTutorships
+                    .Select(t => new ReadTutorshipDTO()
                     {
                         Id = t.Id,
                         Title = t.Title,
@@ -140,10 +141,9 @@ namespace Services
                         {
                             Id = t.CreatedBy.Id,
                             Username = t.CreatedBy.UserName
-                        }
-                        //Image = t.Image.Length == 0 ? null : Image.FromStream(new MemoryStream(t.Image))
-                    })
-                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+                        },
+                        ImageDataURL = t.Image.Length == 0 ? null : CreateDataURL(t.ImageFormat, t.Image)
+                    });
 
                 return CreateSuccessResponse(200, "Tutorships retrieved successfully", response);
             }
@@ -220,6 +220,7 @@ namespace Services
                 oldTutorship.Category = dto.Category;
                 oldTutorship.UpdatedDate = DateTime.Now;
                 oldTutorship.Image = dto.Image;
+                oldTutorship.ImageFormat = dto.ImageFormat;
 
                 await _tutorshipRepo.UpdateTutorshipAsync(oldTutorship);
 

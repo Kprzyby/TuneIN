@@ -250,6 +250,7 @@ namespace Backend.Controllers
             if (updatedTutorship.Image == null)
             {
                 dto.Image = Array.Empty<byte>();
+                dto.ImageFormat = null;
             }
             else
             {
@@ -261,6 +262,7 @@ namespace Backend.Controllers
 
                     stream.Close();
                 }
+                dto.ImageFormat = updatedTutorship.Image.ContentType;
             }
 
             var result = await _tutorshipService.UpdateTutorshipAsync(dto);
