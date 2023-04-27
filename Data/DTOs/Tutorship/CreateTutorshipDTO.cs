@@ -9,5 +9,6 @@
         public string Category { get; set; }
         public int CreatedById { get; set; }
         public byte[] Image { get; set; }
+        public string ImageFormat { get; set; }
     }
 }
