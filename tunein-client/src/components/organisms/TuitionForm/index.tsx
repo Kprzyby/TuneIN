@@ -12,27 +12,49 @@ import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
 import { Props } from './types';
 
 const TuitionForm: React.FC<Props> = ({ tuition }) => {
-  const [preview, setPreview] = useState<string | undefined>();
-  const [image, setImage] = useState<File | undefined>();
+  const [preview, setPreview] = useState<string | undefined>(undefined);
+  const [image, setImage] = useState<File | undefined>(undefined);
   const { renderRichText, editorState } = useRichText({ tuition });
   const [categories, setCategories] = useState<any[]>([]);
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const hiddenFileInput = React.useRef(null);
+
+  const getAvatar = async () => {
+    if (!tuition?.imageDataURL) return;
+    const dataUrl = tuition?.imageDataURL;
+    const imgType = dataUrl.substring(dataUrl.indexOf(':') + 1, dataUrl.indexOf(';'));
+    const blob = await (await fetch(dataUrl)).blob();
+    const img = new File([blob], `avatar.${imgType}`);
+    setImage(img);
+  };
+
   useEffect(() => {
+    getAvatar();
     createDBEndpoint(ENDPOINTS.tutorship.getcategories)
       .get()
       .then((res) => {
         setCategories(res.data.map((v: any) => ({ value: v, label: v })));
       });
   }, []);
+  useEffect(() => {
+    if (image) {
+      const prevReader = new FileReader();
+      prevReader.onloadend = () => { setPreview(prevReader.result as string); };
+      prevReader.readAsDataURL(image);
+    } else {
+      setPreview(undefined);
+    }
+  }, [image]);
+
   const formik = useFormik({
     initialValues: {
       title: tuition ? tuition.title : '',
       descEditorState: editorState,
       category: tuition ? tuition.category : '',
       price: tuition ? tuition.price : 0,
-      avatar: '',
+      avatar: tuition ? image : {},
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -45,8 +67,6 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       price: Yup.number()
         .min(0, 'Price cannot be negative')
         .required('Price is required'),
-      avatar: Yup.string()
-        .required('Avatar is required'),
     }),
     onSubmit: (values) => {
       setLoading(true);
@@ -57,7 +77,7 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
       formData.append('Price', values.price.toString());
       formData.append('Category', values.category);
       // @ts-ignore
-      formData.append('Image', imageBA);
+      formData.append('Image', values.avatar);
       if (tuition === undefined) {
         createDBEndpoint(ENDPOINTS.tutorship.addTutorship)
           .post(formData, true)
@@ -98,16 +118,6 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
         setLoading(false);
       });
   };
-  useEffect(() => {
-    if (image) {
-      const prevReader = new FileReader();
-      prevReader.onloadend = () => { setPreview(prevReader.result as string); };
-      prevReader.readAsDataURL(image);
-    } else {
-      setPreview(undefined);
-    }
-  }, [image]);
-  const hiddenFileInput = React.useRef(null);
   const handlePhotoClick = () => {
     // @ts-ignore
     hiddenFileInput.current.click();
