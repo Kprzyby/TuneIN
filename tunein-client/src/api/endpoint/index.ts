@@ -37,20 +37,30 @@ export const createDBEndpoint = (endpoint: string) => {
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
   axios.defaults.withCredentials = true;
+  const aHeaders = {
+    form: {
+      'Content-Type': 'multipart/form-data',
+    },
+    text: {
+      'Content-Type': 'application/json',
+    },
+  };
   return {
-    post: (newRecord: any) => axios({
+    post: (newRecord: any, isForm?: boolean) => axios({
       method: 'post',
       url,
       data: newRecord,
       params: newRecord,
       httpsAgent,
+      headers: isForm ? aHeaders.form : aHeaders.text,
     }),
-    put: (updatedRecords: any) => axios({
+    put: (updatedRecords: any, isForm?: boolean) => axios({
       method: 'put',
       url,
       data: updatedRecords,
       params: updatedRecords,
       httpsAgent,
+      headers: isForm ? aHeaders.form : aHeaders.text,
     }),
     get: (record?: any) => axios({
       method: 'get',

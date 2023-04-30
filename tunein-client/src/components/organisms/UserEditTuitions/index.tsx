@@ -5,26 +5,12 @@ import DarkButton from '@components/molecules/DarkButton';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import TuitionForm from '../TuitionForm';
+import { Tuition } from './types';
 
 const EditTuitions:React.FC = () => {
   const [pLast, setPLast] = useState<number | undefined>(undefined);
   const [addItem, setAddItem] = useState(false);
-  const [tuitions, setTuitions] = useState(
-    {
-      tutorships: [
-        {
-          id: 0,
-          title: '',
-          details: '',
-          price: 0,
-          category: '',
-          author: {
-            id: 0,
-            username: '',
-          },
-        }],
-    },
-  );
+  const [tuitions, setTuitions] = useState<Tuition[]>();
   const { user } = useContext(UserData);
   useEffect(() => {
     if (user?.id === undefined) return;
@@ -33,7 +19,7 @@ const EditTuitions:React.FC = () => {
     createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + user.id)
       .post(value)
       .then((res) => setTuitions(
-        { tutorships: res.data.tutorships.sort((a: any, b: any) => a.id - b.id) },
+        res.data.tutorships.sort((a: any, b: any) => a.id - b.id),
       ));
   }, [user]);
   const handleItemClick = (id: number) => {
@@ -61,7 +47,7 @@ const EditTuitions:React.FC = () => {
           </Styled.AddBtn>
         </div>
         {addItem && <TuitionForm />}
-        {tuitions.tutorships.map((t) => (
+        {tuitions?.map((t) => (
           <li key={t.id} style={{ padding: '0.4rem 0' }}>
             <Styled.IBtn
               type="button"
