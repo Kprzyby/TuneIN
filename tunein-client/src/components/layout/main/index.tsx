@@ -17,10 +17,12 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
   const unauthorizedNav = [
     { label: 'Register', href: '/auth/register' },
     { label: 'Login', href: '/auth/login' },
+    { label: 'Browse', href: '/browse' },
   ];
   const authorizedNav = [
     { label: 'Logout', href: '/auth/logout' },
     { label: 'Profile', href: `/user/${user?.userName}` },
+    { label: 'Browse', href: '/browse' },
   ];
   useEffect(() => {
     const changeHeader = () => {
