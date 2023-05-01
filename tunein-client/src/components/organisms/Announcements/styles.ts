@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
 export const Content = styled.div`
     display: flex;
     align-content: space-between;
+    justify-content: center;
     flex-flow: row wrap;
     padding: 2rem;
     gap: 1rem;

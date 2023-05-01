@@ -13,11 +13,17 @@ const TuitionPage: NextPage<Props> = ({ tuition }: Props) => (
 export default TuitionPage;
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
+  const { params } = context;
+  // const pickedTuition: TuitionType = await
+  // createDBEndpoint(ENDPOINTS.tutorship.gettutorshipbyid + parseInt(params.id, 10))
+  //   .get()
+  //   .then((res) => res.data)
+  //   .catch(() => undefined);
   const pickedTuition: TuitionType = await createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
     .post({ pageSize: 100, pageNumber: 1 })
     .then((res) => {
       const { tutorships } = res.data;
-      const t = tutorships.find((x: TuitionType) => x.id.toString() === context.params?.id);
+      const t = tutorships.find((x: TuitionType) => x.id.toString() === params?.id);
       return t;
     })
     .catch(() => undefined);
