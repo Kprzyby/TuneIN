@@ -1,13 +1,22 @@
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
+import { Typography } from '@components/styles/typography';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import { Props, Tuition } from './types';
 
 const TuitionPage: NextPage<Props> = ({ tuition }: Props) => (
-  <div>
-    {tuition?.id}
-    {tuition?.title}
-    {tuition?.author.username}
+  <div style={{
+    display: 'flex',
+    gap: '1rem',
+    width: '100%',
+    justifyContent: 'center',
+    flexFlow: 'column wrap',
+    alignItems: 'center',
+  }}
+  >
+    <Typography variant="Logo">{tuition?.id}</Typography>
+    <Typography variant="Logo">{tuition?.title}</Typography>
+    <Typography variant="Logo">{tuition?.author.username}</Typography>
   </div>
 );
 
