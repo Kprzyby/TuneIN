@@ -28,7 +28,13 @@ const Announcements: React.FC<Props> = ({ id }) => {
     <Styled.Wrapper>
       <Styled.Content>
         {tuitions !== null && tuitions.map((t) => (
-          <Announcement key={t.id} title={t.title} interested={100} img={t.imageDataURL} />
+          <Announcement
+            key={t.id}
+            tuitionId={t.id}
+            title={t.title}
+            author={t.author.username}
+            img={t.imageDataURL}
+          />
         ))}
       </Styled.Content>
     </Styled.Wrapper>
