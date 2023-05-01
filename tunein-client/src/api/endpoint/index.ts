@@ -26,7 +26,9 @@ export const ENDPOINTS = {
     removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
   },
   chat: 'CHAT',
-  library: 'LIBRARY',
+  library: {
+    getSongs:'Library/GetTracksAsync'
+  },
 };
 // TODO: change any
 export const createDBEndpoint = (endpoint: string) => {
