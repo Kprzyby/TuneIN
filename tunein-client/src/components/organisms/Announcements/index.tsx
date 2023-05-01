@@ -13,7 +13,7 @@ const Announcements: React.FC<Props> = ({ id }) => {
     // error still accures
     // TODO: fix it
     if (router.isFallback === true) return;
-    const value = { pageSize: 10, pageNumber: 1 };
+    const value = { pageSize: 50, pageNumber: 1 };
     if (id) {
       createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + id)
         .post(value)

@@ -111,4 +111,9 @@ export const textStyles = {
     fontSize: fontSizes.fontSize24,
     color: colors.darkMain,
   },
+  TuitionTopBarItem: {
+    fontFamily: fontFamilies.body,
+    fontSize: fontSizes.fontSize24,
+    color: colors.darkMainD,
+  },
 };

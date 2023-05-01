@@ -1,33 +1,23 @@
 import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
-import { Typography } from '@components/styles/typography';
+import Tuition from '@components/organisms/Tuition';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
-import { Props, Tuition } from './types';
+import { Props, TuitionType } from './types';
 
 const TuitionPage: NextPage<Props> = ({ tuition }: Props) => (
-  <div style={{
-    display: 'flex',
-    gap: '1rem',
-    width: '100%',
-    justifyContent: 'center',
-    flexFlow: 'column wrap',
-    alignItems: 'center',
-  }}
-  >
-    <Typography variant="Logo">{tuition?.id}</Typography>
-    <Typography variant="Logo">{tuition?.title}</Typography>
-    <Typography variant="Logo">{tuition?.author.username}</Typography>
-  </div>
+  <>
+    <Tuition {...{ tuition }} />
+  </>
 );
 
 export default TuitionPage;
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
-  const pickedTuition: Tuition = await createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
+  const pickedTuition: TuitionType = await createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
     .post({ pageSize: 100, pageNumber: 1 })
     .then((res) => {
       const { tutorships } = res.data;
-      const t = tutorships.find((x: Tuition) => x.id.toString() === context.params?.id);
+      const t = tutorships.find((x: TuitionType) => x.id.toString() === context.params?.id);
       return t;
     })
     .catch(() => undefined);
@@ -50,7 +40,7 @@ export const getStaticPaths = async () => {
     .post({ pageSize: 100, pageNumber: 1 })
     .then((res) => res.data.tutorships);
   return {
-    paths: tutorships.map((t: Tuition) => ({
+    paths: tutorships.map((t: TuitionType) => ({
       params: { id: t.id.toString() },
     })),
     fallback: true,
