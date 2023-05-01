@@ -14,7 +14,7 @@ import { Props } from './types';
 const TuitionForm: React.FC<Props> = ({ tuition }) => {
   const [preview, setPreview] = useState<string | undefined>(undefined);
   const [image, setImage] = useState<File | undefined>(undefined);
-  const { renderRichText, editorState } = useRichText({ tuition });
+  const { renderDraftForm, editorState } = useRichText({ tuition });
   const [categories, setCategories] = useState<any[]>([]);
   const [err, setErr] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -197,7 +197,7 @@ const TuitionForm: React.FC<Props> = ({ tuition }) => {
           <Styled.Error variant="PasswordTileTitle">{formik.errors.avatar}</Styled.Error>
           {/* Description */}
           <Styled.InputTitle variant="PasswordTileTitle">Opis</Styled.InputTitle>
-          {renderRichText}
+          {renderDraftForm}
           {err && (<Styled.Error>Server error</Styled.Error>)}
           <div style={{ display: 'flex' }}>
             <Styled.Button type="submit">
