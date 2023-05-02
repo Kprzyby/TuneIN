@@ -1,1 +1,1 @@
-export { default } from '../../../src/components/pages/BrowsePlaylists';
+export { default } from '../../../src/components/pages/browsePlaylists';

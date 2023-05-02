@@ -65,9 +65,17 @@ const UserHeroPage: React.FC<Props> = ({
               </Typography>
             </div>
           </div>
-          {user?.userName === userName && path !== undefined && (
-            <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
-          )}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {user?.userName !== userName && path !== undefined && (
+              <Link href="/"><DarkButton text="Send Message" /></Link>
+            )}
+            {user?.userName === userName && path !== undefined && (
+            <>
+              <Link href={`${path}/messages`}><DarkButton text="Messages" /></Link>
+              <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
+            </>
+            )}
+          </div>
         </div>
       </Styled.Content>
     </Styled.Wrapper>
