@@ -119,6 +119,11 @@ export const textStyles = {
   ChatEmail: {
     fontFamily: fontFamilies.body,
     fontSize: fontSizes.fontSize16,
+    color: colors.white,
+  },
+  ChatMessage: {
+    fontFamily: fontFamilies.body,
+    fontSize: fontSizes.fontSize24,
     color: colors.darkMainD,
   },
 };

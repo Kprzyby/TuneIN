@@ -5,6 +5,7 @@ import Loader from '@components/atoms/Loader';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import { UserType } from './types';
+import Chat from '../Chat';
 
 const ChatRoom: React.FC = () => {
   const [users, setUsers] = useState<UserType[] | undefined>(undefined);
@@ -47,7 +48,7 @@ const ChatRoom: React.FC = () => {
               );
             })}
         </Styled.UsersList>
-        <div />
+        <Chat chatId={0} />
       </Styled.Content>
     </Styled.Wrapper>
   );

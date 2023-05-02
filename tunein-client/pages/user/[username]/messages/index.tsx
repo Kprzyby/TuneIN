@@ -1,1 +1,1 @@
-export { default } from '../../../../src/components/pages/messages';
+export { default } from '../../../../src/components/pages/chat';
