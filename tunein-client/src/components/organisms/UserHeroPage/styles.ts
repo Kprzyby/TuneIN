@@ -14,3 +14,11 @@ export const Content = styled.div`
     @media (min-width: 1500px) { min-width: 1500px; }
     @media (min-width: 1800px) { min-width: 1800px; }
 `;
+export const AvatarWrapper = styled.div`
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0.1rem solid ${({ theme }) => theme.colors.darkMainL};
+    background-color: ${({ theme }) => theme.colors.darkMainD};
+`;

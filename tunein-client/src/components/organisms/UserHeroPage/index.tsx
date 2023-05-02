@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import ProfilePicture from '@components/atoms/ProfilePicture';
 import { Typography } from '@components/styles/typography';
 import DarkButton from '@components/molecules/DarkButton';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { UserData } from '@components/context/UserContext';
+import ProfilePicture from '@components/atoms/ProfilePicture';
 import * as Styled from './styles';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
@@ -44,7 +44,9 @@ const UserHeroPage: React.FC<Props> = ({
             flexFlow: 'row nowrap',
           }}
           >
-            <ProfilePicture id={avatarId} />
+            <Styled.AvatarWrapper>
+              <ProfilePicture id={avatarId} width={8} height={8} />
+            </Styled.AvatarWrapper>
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -65,9 +67,17 @@ const UserHeroPage: React.FC<Props> = ({
               </Typography>
             </div>
           </div>
-          {user?.userName === userName && path !== undefined && (
-            <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
-          )}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {user?.userName !== userName && path !== undefined && (
+              <Link href="/"><DarkButton text="Send Message" /></Link>
+            )}
+            {user?.userName === userName && path !== undefined && (
+            <>
+              <Link href={`${path}/messages`}><DarkButton text="Messages" /></Link>
+              <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
+            </>
+            )}
+          </div>
         </div>
       </Styled.Content>
     </Styled.Wrapper>
