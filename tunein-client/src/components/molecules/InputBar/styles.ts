@@ -9,7 +9,9 @@ export const Wrapper = styled.div`
     justify-content: center;
 `;
 export const Input = styled.input`
-    border-radius: 1rem;
+    background-color: ${({ theme }) => theme.colors.inputHint};
+    font-family: ${({ theme }) => theme.fonts.body};
+    border-radius: 0.8rem;
     margin-right: 1rem;
     padding: 0 0.6rem;
     border: unset;

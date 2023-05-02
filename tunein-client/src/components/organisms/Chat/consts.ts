@@ -4,7 +4,7 @@ export const Messages: MessageType[] = [
   {
     id: 0,
     message: 'hej',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
@@ -16,19 +16,19 @@ export const Messages: MessageType[] = [
   {
     id: 2,
     message: 'aaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 3,
     message: 'aaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 4,
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
@@ -46,19 +46,19 @@ export const Messages: MessageType[] = [
   {
     id: 7,
     message: 'aaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 8,
     message: 'aaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 9,
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
@@ -76,19 +76,19 @@ export const Messages: MessageType[] = [
   {
     id: 12,
     message: 'aaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 13,
     message: 'aaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 14,
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
@@ -106,19 +106,19 @@ export const Messages: MessageType[] = [
   {
     id: 17,
     message: 'aaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 18,
     message: 'aaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 19,
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
@@ -136,19 +136,19 @@ export const Messages: MessageType[] = [
   {
     id: 22,
     message: 'aaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 23,
     message: 'aaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
     id: 24,
     message: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-    senderName: 'accese',
+    senderName: 'accuse',
     userIsSender: false,
   },
   {
