@@ -44,6 +44,62 @@ namespace Services
             return chatClient;
         }
 
+        private async Task<ServiceResponseDTO> CheckIfChatExistsAsync(AccessToken accessToken, int userId, List<int> participantIds)
+        {
+            try
+            {
+                User user = await _userRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return CreateFailureResponse(500, "Error while loading the current user");
+                }
+
+                ChatClient client = GetChatClient(accessToken);
+                var usersChats = client.GetChatThreads();
+
+                List<string> participantsChatIds = new List<string>();
+
+                foreach (var participantId in participantIds)
+                {
+                    User chatParticipant = await _userRepository.GetByIdAsync(participantId);
+
+                    if (chatParticipant == null)
+                    {
+                        return CreateFailureResponse(404, "One of the users provided doesn't exist");
+                    }
+
+                    participantsChatIds.Add(chatParticipant.ChatIdentityId);
+                }
+
+                participantsChatIds.Add(user.ChatIdentityId);
+
+                foreach (var chat in usersChats)
+                {
+                    string chatId = chat.Id;
+                    ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+                    AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
+
+                    if (await participants.CountAsync() == participantsChatIds.Count())
+                    {
+                        bool chatExists = await participants
+                            .AllAsync(p => participantsChatIds.Contains(p.User.RawId));
+
+                        if (chatExists == true)
+                        {
+                            return CreateSuccessResponse(200, "", true);
+                        }
+                    }
+                }
+
+                return CreateSuccessResponse(200, "", false);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while checking if chat exists " + ex.Message);
+            }
+        }
+
         public async Task<ServiceResponseDTO> GenerateChatAccessTokenAsync(string email)
         {
             try
@@ -124,10 +180,23 @@ namespace Services
             }
         }
 
-        public async Task<ServiceResponseDTO> CreateChatAsync(string? topic, List<int> participantsIds, AccessToken token)
+        public async Task<ServiceResponseDTO> CreateChatAsync(int userId, string? topic, List<int> participantsIds, AccessToken token)
         {
             try
             {
+                var chatExistsResponse = await CheckIfChatExistsAsync(token, userId, participantsIds);
+
+                if (chatExistsResponse.IsSuccess == false)
+                {
+                    return CreateFailureResponse(chatExistsResponse.StatusCode, chatExistsResponse.Message);
+                }
+                else if ((bool)chatExistsResponse.Result == true)
+                {
+                    return CreateFailureResponse(409, "A chat with those participants already exists");
+                }
+
+                participantsIds.Add(userId);
+
                 ChatClient chatClient = GetChatClient(token);
 
                 List<ChatParticipant> chatParticipants = new List<ChatParticipant>();
@@ -199,7 +268,7 @@ namespace Services
 
                 if (user == null)
                 {
-                    CreateFailureResponse(500, "Error while loading the current user");
+                    return CreateFailureResponse(500, "Error while loading the current user");
                 }
 
                 ChatClient client = GetChatClient(token);
