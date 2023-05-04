@@ -25,7 +25,9 @@ export const ENDPOINTS = {
     updateTutorship: 'Tutorship/UpdateTutorshipAsync/',
     removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
   },
-  chat: 'CHAT',
+  chat: {
+    createChat:'Chat/CreateChatAsync'
+  },
   library: 'LIBRARY',
 };
 // TODO: change any
@@ -48,7 +50,7 @@ export const createDBEndpoint = (endpoint: string) => {
   return {
     post: (newRecord: any, isForm?: boolean) => axios({
       method: 'post',
-      url,
+      url:url,
       data: newRecord,
       params: newRecord,
       httpsAgent,
