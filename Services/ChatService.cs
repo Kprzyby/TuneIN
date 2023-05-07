@@ -264,9 +264,9 @@ namespace Services
         {
             try
             {
-                User user = await _userRepository.GetByIdAsync(userId);
+                User currentUser = await _userRepository.GetByIdAsync(userId);
 
-                if (user == null)
+                if (currentUser == null)
                 {
                     return CreateFailureResponse(500, "Error while loading the current user");
                 }
@@ -294,7 +294,7 @@ namespace Services
                             Message = message.Content.Message,
                             SenderId = message.Sender.RawId,
                             SenderName = message.SenderDisplayName,
-                            UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
+                            UserIsSender = message.Sender.RawId == currentUser.ChatIdentityId ? true : false
                         };
                     }
                     else
@@ -315,11 +315,32 @@ namespace Services
                 AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
                 List<ChatParticipant> chatParticipants = await participants.ToListAsync();
 
+                List<ChatParticipantDTO> chatParticipantDTOs = new List<ChatParticipantDTO>();
+
+                foreach (ChatParticipant chatParticipant in chatParticipants)
+                {
+                    User user = await _userRepository
+                        .GetUserByChatIdAsync(chatParticipant.User.RawId);
+
+                    if (user != null)
+                    {
+                        ChatParticipantDTO chatParticipantDTO = new ChatParticipantDTO()
+                        {
+                            UserId = user.Id,
+                            Email = user.Email,
+                            Username = user.UserName,
+                            AvatarId = user.AvatarId
+                        };
+
+                        chatParticipantDTOs.Add(chatParticipantDTO);
+                    }
+                }
+
                 GetChatDTO result = new GetChatDTO()
                 {
                     Id = chatThread.Id,
                     Topic = chatThread.Topic,
-                    Participants = chatParticipants,
+                    Participants = chatParticipantDTOs,
                     Messages = messages,
                     ContinuationToken = messagesPage.ContinuationToken
                 };
