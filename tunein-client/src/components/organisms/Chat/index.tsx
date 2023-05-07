@@ -7,6 +7,7 @@ import { UserData } from '@components/context/UserContext';
 import { MessageType, Props } from './types';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const Chat: React.FC<Props> = (props) => {
   console.log(props.chatId);
@@ -14,6 +15,8 @@ const Chat: React.FC<Props> = (props) => {
   const listBottomRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages]=useState<MessageType[]|undefined>(undefined);
   const [scrlBtttom, setScrlBottom] = useState(false);
+  const [hubConnection, setHubConnection]=useState(null);
+  const hubUrl='https://localhost:7074/Services/ChatService'
   const { user } = useContext(UserData);
   const {
     renderInputBar, barInput, enterEvent, setReset,
@@ -21,11 +24,9 @@ const Chat: React.FC<Props> = (props) => {
   const handleMessageSend = async () => {
     await createDBEndpoint(ENDPOINTS.chat.sendMessage)
     .post({chatId:props.chatId, message:barInput});
-
-    await fetchMessages();
   };
   const fetchMessages=async ()=>{
-    console.log(messages);
+    console.log('Fetched messages');
     await createDBEndpoint(ENDPOINTS.chat.getMessages)
     .get({chatId:props.chatId, pageSize:100})
     .then((res)=>{
@@ -36,10 +37,33 @@ const Chat: React.FC<Props> = (props) => {
       console.log(err.data);
     });
   }
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+        .withUrl(hubUrl)
+        .withAutomaticReconnect()
+        .build();
+
+    setHubConnection(newConnection);
+}, []);
+  useEffect(() => {
+    if (hubConnection) {
+        hubConnection.start()
+            .then(result => {
+                console.log('Connected!');
+
+                hubConnection.on('MessageSent', message => {
+                  console.log('onMessageSent');
+                  fetchMessages();
+                });
+            })
+            .catch(e => console.log('Connection failed: ', e));
+    }
+}, [hubConnection]);
   useEffect(()=>{
     fetchMessages();
   },[props.chatId]);
   useEffect(() => {
+    console.log('enter');
     if (enterEvent === true) {
       setReset(true);
       if (barInput === '') return;

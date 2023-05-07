@@ -8,7 +8,9 @@ using Data.DTOs.Chat;
 using Data.DTOs.Response;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Services.Hubs;
 using System.Text.Json;
 
 namespace Services
@@ -20,15 +22,17 @@ namespace Services
 
         private readonly UserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<ChatHub> _chatHub;
 
         #endregion Properties
 
         #region Constructors
 
-        public ChatService(IConfiguration configuration, UserRepository userRepository)
+        public ChatService(IConfiguration configuration, UserRepository userRepository, IHubContext<ChatHub> chatHub)
         {
             _configuration = configuration;
             _userRepository = userRepository;
+            _chatHub = chatHub;
         }
 
         #endregion Constructors
@@ -251,6 +255,8 @@ namespace Services
                 SendChatMessageResult sendChatMessageResult = await chatThreadClient.SendMessageAsync(sendChatMessageOptions);
 
                 string messageId = sendChatMessageResult.Id;
+
+                await _chatHub.Clients.All.SendAsync("MessageSent");
 
                 return CreateSuccessResponse(201, "Message successfully sent", messageId);
             }

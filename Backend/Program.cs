@@ -2,6 +2,7 @@ using Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using Services.Hubs;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +45,9 @@ builder.Services.AddDbContext<DataContext>(e => e.UseSqlServer(builder.Configura
 
 //DependencyInjection
 builder.Services.RegisterServices(builder.Configuration);
+
+//SignalR
+builder.Services.AddSignalR();
 
 //adding session
 builder.Services.AddDistributedMemoryCache();
@@ -91,6 +95,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSession();
+
+app.MapHub<ChatHub>("Services/ChatService");
 
 app.MapControllers();
 
