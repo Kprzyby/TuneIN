@@ -4,26 +4,41 @@ import React, {
 import { Typography } from '@components/styles/typography';
 import useInputBar from '@components/molecules/InputBar';
 import { UserData } from '@components/context/UserContext';
-import { Props } from './types';
+import { MessageType, Props } from './types';
 import * as Styled from './styles';
-import { Messages } from './consts';
+import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 
-const Chat: React.FC<Props> = () => {
+const Chat: React.FC<Props> = (props) => {
+  console.log(props.chatId);
   let lastSender: string | undefined;
   const listBottomRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages]=useState<MessageType[]|undefined>(undefined);
   const [scrlBtttom, setScrlBottom] = useState(false);
   const { user } = useContext(UserData);
   const {
     renderInputBar, barInput, enterEvent, setReset,
   } = useInputBar({});
-  const handleMessageSend = () => {
-    Messages.push({
-      id: Messages[Messages.length - 1].id + 1,
-      message: barInput,
-      senderName: user?.userName || 'err',
-      userIsSender: true,
-    });
+  const handleMessageSend = async () => {
+    await createDBEndpoint(ENDPOINTS.chat.sendMessage)
+    .post({chatId:props.chatId, message:barInput});
+
+    await fetchMessages();
   };
+  const fetchMessages=async ()=>{
+    console.log(messages);
+    await createDBEndpoint(ENDPOINTS.chat.getMessages)
+    .get({chatId:props.chatId, pageSize:100})
+    .then((res)=>{
+      const tempMessages: MessageType[] = res.data.messages;
+      setMessages(tempMessages);
+    })
+    .catch((err)=>{
+      console.log(err.data);
+    });
+  }
+  useEffect(()=>{
+    fetchMessages();
+  },[props.chatId]);
   useEffect(() => {
     if (enterEvent === true) {
       setReset(true);
@@ -44,7 +59,7 @@ const Chat: React.FC<Props> = () => {
   return (
     <Styled.Wrapper>
       <Styled.List>
-        {Messages.map((m) => {
+        {messages?.map((m) => {
           const isSameSender = lastSender === undefined
             ? false
             : lastSender === m.senderName;

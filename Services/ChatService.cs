@@ -415,7 +415,7 @@ namespace Services
 
                 List<ChatMessageDTO> messages = new List<ChatMessageDTO>();
 
-                foreach (ChatMessage message in messagesPage.Values)
+                foreach (ChatMessage message in messagesPage.Values.OrderBy(m => m.CreatedOn))
                 {
                     ChatMessageDTO messageDTO;
                     if (message.Type == ChatMessageType.Text)
