@@ -33,6 +33,14 @@ namespace Data.Repositories
             return result;
         }
 
+        public async Task<User> GetUserByChatIdAsync(string chatId)
+        {
+            var result = await DataContext.Users
+                .SingleOrDefaultAsync(u => u.ChatIdentityId == chatId);
+
+            return result;
+        }
+
         public IQueryable<User> GetAllUsers()
         {
             var result = DataContext.Users;

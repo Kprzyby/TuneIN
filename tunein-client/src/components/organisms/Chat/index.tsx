@@ -4,27 +4,66 @@ import React, {
 import { Typography } from '@components/styles/typography';
 import useInputBar from '@components/molecules/InputBar';
 import { UserData } from '@components/context/UserContext';
-import { Props } from './types';
+import { MessageType, Props } from './types';
 import * as Styled from './styles';
-import { Messages } from './consts';
+import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
-const Chat: React.FC<Props> = () => {
+const Chat: React.FC<Props> = (props) => {
+  console.log(props.chatId);
   let lastSender: string | undefined;
   const listBottomRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages]=useState<MessageType[]|undefined>(undefined);
   const [scrlBtttom, setScrlBottom] = useState(false);
+  const [hubConnection, setHubConnection]=useState(null);
+  const hubUrl='https://localhost:7074/Services/ChatService'
   const { user } = useContext(UserData);
   const {
     renderInputBar, barInput, enterEvent, setReset,
   } = useInputBar({});
-  const handleMessageSend = () => {
-    Messages.push({
-      id: Messages[Messages.length - 1].id + 1,
-      message: barInput,
-      senderName: user?.userName || 'err',
-      userIsSender: true,
-    });
+  const handleMessageSend = async () => {
+    await createDBEndpoint(ENDPOINTS.chat.sendMessage)
+    .post({chatId:props.chatId, message:barInput});
   };
+  const fetchMessages=async ()=>{
+    console.log('Fetched messages');
+    await createDBEndpoint(ENDPOINTS.chat.getMessages)
+    .get({chatId:props.chatId, pageSize:100})
+    .then((res)=>{
+      const tempMessages: MessageType[] = res.data.messages;
+      setMessages(tempMessages);
+    })
+    .catch((err)=>{
+      console.log(err.data);
+    });
+  }
   useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+        .withUrl(hubUrl)
+        .withAutomaticReconnect()
+        .build();
+
+    setHubConnection(newConnection);
+}, []);
+  useEffect(() => {
+    if (hubConnection) {
+        hubConnection.start()
+            .then(result => {
+                console.log('Connected!');
+
+                hubConnection.on('MessageSent', message => {
+                  console.log('onMessageSent');
+                  fetchMessages();
+                });
+            })
+            .catch(e => console.log('Connection failed: ', e));
+    }
+}, [hubConnection]);
+  useEffect(()=>{
+    fetchMessages();
+  },[props.chatId]);
+  useEffect(() => {
+    console.log('enter');
     if (enterEvent === true) {
       setReset(true);
       if (barInput === '') return;
@@ -44,7 +83,7 @@ const Chat: React.FC<Props> = () => {
   return (
     <Styled.Wrapper>
       <Styled.List>
-        {Messages.map((m) => {
+        {messages?.map((m) => {
           const isSameSender = lastSender === undefined
             ? false
             : lastSender === m.senderName;
