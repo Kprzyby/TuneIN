@@ -16,6 +16,20 @@ const UserHeroPage: React.FC<Props> = ({
   const [path, setPath] = useState<string | undefined>(undefined);
   const [tuitCounter, setTuitCounter] = useState(0);
   const [playlCounter, setPlaylCounter] = useState(0);
+  const handleSendMessage = () => {
+    createDBEndpoint(ENDPOINTS.chat.createChat)
+      .post({ topic: 'Message', participantsIds: [id] }, false)
+      .catch((error) => {
+        if (error.response.status === 409) {
+          console.log('Chat already exists');
+        } else {
+          console.log(error.response.data);
+        }
+      })
+      .finally(() => {
+        router.push(`/user/${userName}/messages`);
+      });
+  };
   useEffect(() => {
     setPath(router.asPath);
     createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + id)
@@ -68,8 +82,14 @@ const UserHeroPage: React.FC<Props> = ({
             </div>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            {user?.userName !== userName && path !== undefined && (
-              <Link href="/"><DarkButton text="Send Message" /></Link>
+            {user !== undefined && user?.userName !== userName && path !== undefined && (
+              <button
+                type="button"
+                onClick={handleSendMessage}
+                style={{ background: 'transparent', cursor: 'pointer', border: 'unset' }}
+              >
+                <DarkButton text="Send Message" />
+              </button>
             )}
             {user?.userName === userName && path !== undefined && (
             <>

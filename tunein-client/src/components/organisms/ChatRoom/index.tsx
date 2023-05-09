@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Typography } from '@components/styles/typography';
 import ProfilePicture from '@components/atoms/ProfilePicture';
 import Loader from '@components/atoms/Loader';
+import { UserData } from '@components/context/UserContext';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
-import { ChatType, UserType } from './types';
+import { ChatType } from './types';
 import Chat from '../Chat';
-import { UserData } from '@components/context/UserContext';
 
 const ChatRoom: React.FC = () => {
   const [chats, setChats] = useState<ChatType[] | undefined>(undefined);
@@ -32,7 +32,9 @@ const ChatRoom: React.FC = () => {
             ? <Loader borderColor="white transparent" />
             : chats && pickedChatId && chats.map((c) => {
               const isHighlighted = c.id === pickedChatId;
-              const otherUser=user?.id===c.participants[0].userId?c.participants[1]:c.participants[0];
+              const otherUser = user?.id === c.participants[0].userId
+                ? c.participants[1]
+                : c.participants[0];
               return (
                 <Styled.UserItemWrapper {...{ isHighlighted }} key={c.id}>
                   <Styled.UserItemButton
@@ -50,7 +52,7 @@ const ChatRoom: React.FC = () => {
               );
             })}
         </Styled.UsersList>
-        {pickedChatId!==undefined && <Chat chatId={pickedChatId} />}       
+        {pickedChatId !== undefined && <Chat chatId={pickedChatId} />}
       </Styled.Content>
     </Styled.Wrapper>
   );

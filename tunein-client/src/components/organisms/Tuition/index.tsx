@@ -8,7 +8,6 @@ import { Props } from './types';
 import * as Styled from './styles';
 import { Message } from '../../../../public/assets/svg';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
-import { error } from 'console';
 
 const Tuition: React.FC<Props> = ({ tuition }) => {
   const { renderDraftDisplay, editorState } = useRichText({ tuition });
@@ -17,12 +16,11 @@ const Tuition: React.FC<Props> = ({ tuition }) => {
   const { user } = useContext(UserData);
   const handleSendMessage = () => {
     createDBEndpoint(ENDPOINTS.chat.createChat)
-      .post({ topic:'Tutorship offer', participantsIds:[tuition?.author.id] }, false)
-      .catch((error)=>{
-        if(error.response.status===409){
-          console.log("Chat already exists");
-        }
-        else{
+      .post({ topic: 'Tutorship offer', participantsIds: [tuition?.author.id] }, false)
+      .catch((error) => {
+        if (error.response.status === 409) {
+          console.log('Chat already exists');
+        } else {
           console.log(error.response.data);
         }
       })
@@ -46,7 +44,7 @@ const Tuition: React.FC<Props> = ({ tuition }) => {
               }}
               type="button"
               onClick={handleSendMessage}
-              hidden={user.id===tuition?.author.id?true:false}
+              hidden={user.id === tuition?.author.id}
             >
               <Message />
             </button>

@@ -26,10 +26,10 @@ export const ENDPOINTS = {
     removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
   },
   chat: {
-    createChat:'Chat/CreateChatAsync',
-    getChats:'Chat/GetChatsAsync',
-    getMessages:'Chat/GetMessagesAsync',
-    sendMessage:'Chat/SendMessageAsync'
+    createChat: 'Chat/CreateChatAsync',
+    getChats: 'Chat/GetChatsAsync',
+    getMessages: 'Chat/GetMessagesAsync',
+    sendMessage: 'Chat/SendMessageAsync',
   },
   library: 'LIBRARY',
 };
@@ -53,7 +53,7 @@ export const createDBEndpoint = (endpoint: string) => {
   return {
     post: (newRecord: any, isForm?: boolean) => axios({
       method: 'post',
-      url:url,
+      url,
       data: newRecord,
       params: newRecord,
       httpsAgent,
@@ -69,7 +69,7 @@ export const createDBEndpoint = (endpoint: string) => {
     }),
     get: (record?: any) => axios({
       method: 'get',
-      url:url,
+      url,
       params: record,
       httpsAgent,
     }),
