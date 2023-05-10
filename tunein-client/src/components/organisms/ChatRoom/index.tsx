@@ -30,7 +30,7 @@ const ChatRoom: React.FC = () => {
         <Styled.UsersList>
           {chatListLoading
             ? <Loader borderColor="white transparent" />
-            : chats && pickedChatId && chats.map((c) => {
+            : chats && chats.map((c) => {
               const isHighlighted = c.id === pickedChatId;
               const otherUser = user?.id === c.participants[0].userId
                 ? c.participants[1]

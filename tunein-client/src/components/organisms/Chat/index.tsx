@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Typography } from '@components/styles/typography';
 import useInputBar from '@components/molecules/InputBar';
-import { HubConnectionBuilder, HubConnection } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import Loader from '@components/atoms/Loader';
 import { MessageType, Props } from './types';
 import * as Styled from './styles';
@@ -39,29 +39,35 @@ const Chat: React.FC<Props> = ({ chatId }) => {
         console.log(err.data);
       });
   };
-  useEffect(() => {
+  const initHubConnection = () => {
     const newConnection = new HubConnectionBuilder()
       .withUrl(hubUrl)
       .withAutomaticReconnect()
       .build();
+    newConnection.start()
+      .then(() => {
+        newConnection?.on('MessageSent', () => {
+          fetchMessages();
+        });
+      });
     setHubConnection(newConnection);
+  };
+  useEffect(() => () => {
+    /**
+       * if you don't "turn off" that handler it'll
+       * be invoked by SignalR as mane times as the client inited the hub
+       */
+    hubConnection?.off('MessageSent');
+    hubConnection?.stop();
   }, []);
   useEffect(() => {
-    if (hubConnection) {
-      hubConnection.start()
-        .then(() => {
-          hubConnection.on('MessageSent', () => {
-            fetchMessages();
-          });
-        })
-        .catch((e: any) => {
-          console.log('Connection failed: ', e);
-        });
-    }
-  }, [hubConnection]);
-  useEffect(() => {
     setLoading(true);
+    initHubConnection();
     fetchMessages();
+    return () => {
+      hubConnection?.off('MessageSent');
+      hubConnection?.stop();
+    };
   }, [chatId]);
   useEffect(() => {
     scrollBottom();
