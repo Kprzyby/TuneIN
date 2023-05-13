@@ -5,6 +5,9 @@ export const Wrapper = styled.div`
     width: 100%; 
     max-height: 100%;
     position: relative;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
 `;
 export const LoaderWrapper = styled.div`
     width: 100%;

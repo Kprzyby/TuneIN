@@ -65,7 +65,7 @@ const Chat: React.FC<Props> = ({ chatId, messages, isMesseges }) => {
             <div ref={listBottomRef} />
           </Styled.List>
         )}
-      <div style={{ position: 'absolute', bottom: '1rem', width: '100%' }}>
+      <div style={{ width: '100%', paddingTop: '1rem' }}>
         {renderInputBar}
       </div>
     </Styled.Wrapper>
