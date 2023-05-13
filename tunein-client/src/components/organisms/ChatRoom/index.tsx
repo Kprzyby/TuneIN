@@ -3,27 +3,74 @@ import { Typography } from '@components/styles/typography';
 import ProfilePicture from '@components/atoms/ProfilePicture';
 import Loader from '@components/atoms/Loader';
 import { UserData } from '@components/context/UserContext';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import { ChatType } from './types';
 import Chat from '../Chat';
+import { MessageType } from '../Chat/types';
 
 const ChatRoom: React.FC = () => {
   const [chats, setChats] = useState<ChatType[] | undefined>(undefined);
   const [chatListLoading, setChatListLoading] = useState(false);
-  const { user } = useContext(UserData);
   const [pickedChatId, setPickedChatId] = useState<string | undefined>(undefined);
-  useEffect(() => {
-    setChatListLoading(true);
-    createDBEndpoint(ENDPOINTS.chat.getChats)
+  const [messages, setMessages] = useState<MessageType[] | undefined>(undefined);
+  const [isMesseges, setIsMesseges] = useState<boolean>(false);
+  const [newMessege, setNewMessege] = useState(false);
+  const [signalRHub, setSignalRHub] = useState<HubConnection | undefined>(undefined);
+  const { user } = useContext(UserData);
+
+  const fetchMessages = () => {
+    if (!pickedChatId) return;
+    createDBEndpoint(ENDPOINTS.chat.getMessages)
+      .get({ chatId: pickedChatId, pageSize: 100 })
+      .then((res) => {
+        const tempMessages: MessageType[] = res.data.messages;
+        setMessages(tempMessages);
+        setIsMesseges(true);
+      });
+  };
+  const initHubConnection = () => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl('https://localhost:7074/Services/ChatService')
+      .withAutomaticReconnect()
+      .build();
+    newConnection.start()
+      .then(() => {
+        newConnection?.on('MessageSent', () => {
+          setNewMessege(true);
+        });
+      });
+    setSignalRHub(newConnection);
+  };
+  const initChats = async () => {
+    await createDBEndpoint(ENDPOINTS.chat.getChats)
       .get({ PageSize: 100, messagePageSize: 100 })
       .then((res) => {
         const tempChats: ChatType[] = res.data.chats;
         setChats(tempChats);
         setPickedChatId(tempChats[0].id);
-        setChatListLoading(false);
       });
+  };
+
+  useEffect(() => {
+    setChatListLoading(true);
+    initHubConnection();
+    initChats().then(() => setChatListLoading(false));
+    return () => {
+      signalRHub?.off('MessageSent');
+    };
   }, []);
+  useEffect(() => {
+    setIsMesseges(false);
+    fetchMessages();
+  }, [pickedChatId]);
+  useEffect(() => {
+    if (!newMessege) return;
+    fetchMessages();
+    setNewMessege(false);
+  }, [newMessege]);
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -52,7 +99,14 @@ const ChatRoom: React.FC = () => {
               );
             })}
         </Styled.UsersList>
-        {pickedChatId !== undefined && <Chat chatId={pickedChatId} />}
+        {messages && pickedChatId
+        && (
+        <Chat
+          chatId={pickedChatId}
+          messages={messages}
+          isMesseges={isMesseges}
+        />
+        )}
       </Styled.Content>
     </Styled.Wrapper>
   );

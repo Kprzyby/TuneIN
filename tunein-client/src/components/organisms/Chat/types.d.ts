@@ -1,5 +1,7 @@
 export interface Props {
-  chatId: string | undefined;
+  chatId: string;
+  messages: MessageType[];
+  isMesseges: boolean;
 }
 export interface MessageType {
   id: number;
