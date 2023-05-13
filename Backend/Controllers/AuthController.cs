@@ -239,7 +239,11 @@ namespace Backend.Controllers
             ClaimsIdentity identity = (ClaimsIdentity)claimsResult.Result;
             string chatToken = (string)tokenResponse.Result;
 
-            Response.Cookies.Append("ChatToken", chatToken);
+            Response.Cookies.Append("ChatToken", chatToken, new CookieOptions()
+            {
+                SameSite = SameSiteMode.None,
+                Secure = true,
+            });
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
             var userResult = await _userService.GetUserAsync(logInCredentials.Email, null);
