@@ -1,6 +1,5 @@
 import { Typography } from '@components/styles/typography';
 import styled, { keyframes } from 'styled-components';
-import { StyledProps } from './types';
 
 const errorAnim = keyframes`
     0% { opacity: 1; }
@@ -39,7 +38,7 @@ export const Form = styled.form`
     justify-content: center;
     align-items: center;
 `;
-export const Input = styled.input<StyledProps>`
+export const Input = styled.input`
     box-shadow: inset 0 0 1rem rgb(0 0 0 / 30%);
     background-color: ${({ theme }) => theme.colors.darkMain};
     color: ${({ theme }) => theme.colors.white};
@@ -47,8 +46,6 @@ export const Input = styled.input<StyledProps>`
     border: unset;
     border-radius: 0.2rem;
     padding: 0.3rem;
-    /* Input security */
-    ${({ isSecure }) => (isSecure ? '-webkit-text-security: disc;' : '')}
     /* Fix for background color change */
     &:-internal-autofill-selected,
     &:-webkit-autofill,

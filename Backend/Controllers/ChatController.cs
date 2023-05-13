@@ -31,7 +31,11 @@ namespace Backend.Controllers
         private async Task<AccessToken> GetTokenAsync()
         {
             var tokenObject = new JavaScriptSerializer().Deserialize<object>(Request.Cookies["ChatToken"]);
-            Dictionary<string, object>.ValueCollection tokenValues = (Dictionary<string, object>.ValueCollection)tokenObject.GetType().GetProperty("Values").GetValue(tokenObject);
+            Dictionary<string, object>.ValueCollection tokenValues =
+                (Dictionary<string, object>.ValueCollection)tokenObject
+                .GetType()
+                .GetProperty("Values")
+                .GetValue(tokenObject);
             List<object> tokenValuesList = new List<object>(tokenValues);
             string tokenValue = tokenValuesList[0].ToString();
             string expireString = tokenValuesList[1].ToString();

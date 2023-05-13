@@ -64,7 +64,7 @@ const UserLogin: React.FC = () => {
 
           <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
           <Styled.Input
-            isSecure
+            type="password"
             placeholder="Password"
             id="password"
             value={formik.values.password}
