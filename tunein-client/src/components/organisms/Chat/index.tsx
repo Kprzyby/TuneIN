@@ -1,74 +1,29 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Typography } from '@components/styles/typography';
 import useInputBar from '@components/molecules/InputBar';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import Loader from '@components/atoms/Loader';
-import { MessageType, Props } from './types';
+import { Props } from './types';
 import * as Styled from './styles';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 
-const Chat: React.FC<Props> = ({ chatId }) => {
+const Chat: React.FC<Props> = ({ chatId, messages, isMesseges }) => {
   let lastSender: string | undefined;
   const listBottomRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState<MessageType[] | undefined>(undefined);
-  const [hubConnection, setHubConnection] = useState<HubConnection | undefined>(undefined);
-  const hubUrl = 'https://localhost:7074/Services/ChatService';
   const {
     renderInputBar, barInput, enterEvent, setReset,
   } = useInputBar({});
+
   const scrollBottom = () => {
     if (listBottomRef.current === null) return;
     listBottomRef.current.scrollIntoView(
       { behavior: 'smooth', block: 'end' },
     );
   };
-  const handleMessageSend = async () => {
-    await createDBEndpoint(ENDPOINTS.chat.sendMessage)
+  const handleMessageSend = () => {
+    createDBEndpoint(ENDPOINTS.chat.sendMessage)
       .post({ chatId, message: barInput });
   };
-  const fetchMessages = async () => {
-    await createDBEndpoint(ENDPOINTS.chat.getMessages)
-      .get({ chatId, pageSize: 100 })
-      .then((res) => {
-        const tempMessages: MessageType[] = res.data.messages;
-        setMessages(tempMessages);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err.data);
-      });
-  };
-  const initHubConnection = () => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(hubUrl)
-      .withAutomaticReconnect()
-      .build();
-    newConnection.start()
-      .then(() => {
-        newConnection?.on('MessageSent', () => {
-          fetchMessages();
-        });
-      });
-    setHubConnection(newConnection);
-  };
-  useEffect(() => () => {
-    /**
-       * if you don't "turn off" that handler it'll
-       * be invoked by SignalR as mane times as the client inited the hub
-       */
-    hubConnection?.off('MessageSent');
-    hubConnection?.stop();
-  }, []);
-  useEffect(() => {
-    setLoading(true);
-    initHubConnection();
-    fetchMessages();
-    return () => {
-      hubConnection?.off('MessageSent');
-      hubConnection?.stop();
-    };
-  }, [chatId]);
+
   useEffect(() => {
     scrollBottom();
   }, [messages]);
@@ -79,9 +34,10 @@ const Chat: React.FC<Props> = ({ chatId }) => {
       handleMessageSend();
     }
   }, [enterEvent]);
+
   return (
     <Styled.Wrapper>
-      {loading
+      {!isMesseges
         ? (
           <Styled.LoaderWrapper>
             <Loader borderColor="white transparent" />

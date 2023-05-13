@@ -8,14 +8,18 @@ const useInputBar = ({ type } :Props) => {
   const [barInput, setBarInput] = useState('');
   const [enterEvent, setEnterEvent] = useState(false);
   const [reset, setReset] = useState(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
     setBarInput(event.target.value);
   };
-  const handleKey = (event: any) => {
+  const handleKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
     if (event.key === 'Enter' && !enterEvent) {
       setEnterEvent(true);
     }
   };
+
   useEffect(() => {
     if (reset === true) {
       setReset(false);
@@ -25,6 +29,7 @@ const useInputBar = ({ type } :Props) => {
       inputRef.current.value = '';
     }
   }, [reset]);
+
   return {
     barInput,
     enterEvent,
@@ -32,7 +37,7 @@ const useInputBar = ({ type } :Props) => {
     renderInputBar: (
       <Styled.Wrapper>
         <Styled.Input
-          onChange={handleChange}
+          onChange={(event) => handleChange(event)}
           onKeyUp={(event) => handleKey(event)}
           ref={inputRef}
         />
