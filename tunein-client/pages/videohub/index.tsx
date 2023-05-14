@@ -1,1 +1,1 @@
-export { default } from '../../src/components/pages/videoHub';
+export { default } from '../../src/components/pages/videohub';
