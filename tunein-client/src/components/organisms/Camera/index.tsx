@@ -6,13 +6,18 @@ const Camera: React.FC<Props> = ({ stream, size }: Props) => {
   const [videoWidth, setVideoWidth] = useState('');
 
   useEffect(() => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current) return undefined;
     cameraRef.current.srcObject = stream;
     if (size) {
       setVideoWidth(`${size}rem`);
     } else {
       setVideoWidth('100%');
     }
+    return () => {
+      stream?.getTracks().forEach((track) => {
+        track.stop();
+      });
+    };
   }, []);
 
   return (

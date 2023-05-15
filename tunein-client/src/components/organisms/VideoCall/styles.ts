@@ -29,7 +29,7 @@ export const TopPanelBG = styled.div`
     height: 100%;
     position: absolute;
     background-color: black;
-    opacity: '80%';
+    opacity: 70%;
 `;
 export const TopPanel = styled.div`
     position: absolute;
