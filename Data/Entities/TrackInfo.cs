@@ -21,6 +21,7 @@ namespace Data.Entities
         public string LinkToCover { get; set; }
         public string LinkToTabs { get; set; }
         public virtual ICollection<FileEntity>? FileEntities { get; set; }
+        //public virtual ICollection<PlaylistTracks> PlaylistTracks { get; set; }
         public int UserId { get; set; }
 
         [ForeignKey("UserId")]

@@ -42,6 +42,11 @@ builder.Services.AddCors(options =>
 
 //add DbContext
 builder.Services.AddDbContext<DataContext>(e => e.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+/*
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure()));
+*/
 
 //DependencyInjection
 builder.Services.RegisterServices(builder.Configuration);
