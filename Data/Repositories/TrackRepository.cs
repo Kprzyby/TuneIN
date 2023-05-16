@@ -20,7 +20,7 @@ namespace Data.Repositories
 
         #endregion Constructors
         #region Methods
-        public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
+        public async Task<bool> CheckIfTrackExistsAsync(int id)
         {
             var result = await DataContext.TrackInfo
                 .AnyAsync(e => e.Id == id);

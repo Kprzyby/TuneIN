@@ -15,14 +15,16 @@ namespace Backend.Controllers
         #region Properties
 
         private readonly PlaylistService _playlistService;
+        private readonly TrackService _trackService;
 
         #endregion Properties
 
         #region Constructors
 
-        public PlaylistController(PlaylistService playlistService)
+        public PlaylistController(PlaylistService playlistService, TrackService trackService)
         {
             _playlistService = playlistService;
+            _trackService = trackService;
         }
 
         #endregion Constructors
@@ -106,7 +108,7 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> DeleteTrackAsync(int playlistId)
+        public async Task<IActionResult> DeletePlaylistAsync(int playlistId)
         {
             int userId = GetUserId();
             var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
@@ -134,13 +136,13 @@ namespace Backend.Controllers
         }
 
         [HttpPut]
-        [Route("Playlist/UpdatePlaylistAsync/{playlistId}")]
+        [Route("Playlist/ChangePlaylistNameAsync/{playlistId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(void), 204)]
         [ProducesResponseType(typeof(void), 403)]
         [ProducesResponseType(typeof(void), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> UpdatePlaylistAsync(int playlistId, string newName)
+        public async Task<IActionResult> ChangePlaylistNameAsync(int playlistId, string newName)
         {
             int userId = GetUserId();
             var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
@@ -154,7 +156,7 @@ namespace Backend.Controllers
 
             if (userId != readPlaylistDTO.Author.Id)
             {
-                return StatusCode(403, "You can't modify the track that you don't own");
+                return StatusCode(403, "You can't modify the playlist that you don't own");
             }
 
             var result = await _playlistService.UpdatePlaylistAsync(playlistId, newName);
@@ -168,7 +170,89 @@ namespace Backend.Controllers
 
         }
 
+        [HttpPut]
+        [Route("Playlist/AddTrackToPlaylistAsync/{playlistId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> AddTrackToPlaylistAsync(int playlistId, int trackId)
+        {
+            bool trackExists = await _trackService.CheckIfTrackExistsAsync(trackId);
+            int userId = GetUserId();
 
+            if (trackExists == false)
+            {
+                return StatusCode(409, "This track doesn't exist");
+            }
+
+            var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
+
+            if (oldPlaylist.IsSuccess == false)
+            {
+                return StatusCode(oldPlaylist.StatusCode, oldPlaylist.Message);
+            }
+
+            ReadPlaylistDTO readPlaylistDTO = (ReadPlaylistDTO)oldPlaylist.Result;
+
+            if (userId != readPlaylistDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the playlist that you don't own");
+            }
+
+            var result = await _playlistService.AddTrackToPlaylistAsync(playlistId, trackId);
+
+            if (result.IsSuccess == false)
+            {
+                StatusCode(result.StatusCode, result.Message);
+            }
+
+            return StatusCode(204);
+
+        }
+
+        [HttpDelete]
+        [Route("Playlist/DeleteTrackFromPlaylistAsync/{playlistId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> DeleteTrackFromPlaylistAsync(int playlistId, int trackId)
+        {
+            bool trackExists = await _trackService.CheckIfTrackExistsAsync(trackId);
+            int userId = GetUserId();
+
+            if (trackExists == false)
+            {
+                return StatusCode(409, "This track doesn't exist");
+            }
+
+            var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
+
+            if (oldPlaylist.IsSuccess == false)
+            {
+                return StatusCode(oldPlaylist.StatusCode, oldPlaylist.Message);
+            }
+
+            ReadPlaylistDTO readPlaylistDTO = (ReadPlaylistDTO)oldPlaylist.Result;
+
+            if (userId != readPlaylistDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the playlist that you don't own");
+            }
+
+            var result = await _playlistService.DeleteTrackFromPlaylistAsync(playlistId, trackId);
+
+            if (result.IsSuccess == false)
+            {
+                StatusCode(result.StatusCode, result.Message);
+            }
+
+            return StatusCode(204);
+
+        }
 
         #endregion Methods
     }

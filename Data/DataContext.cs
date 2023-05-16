@@ -47,7 +47,7 @@ namespace Data
                 .HasOne(pt => pt.Playlist)
                 .WithMany()
                 .HasForeignKey(pt => pt.PlaylistId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
         
         public void AttachEntity<TEntity>(TEntity entity) where TEntity : class, new()

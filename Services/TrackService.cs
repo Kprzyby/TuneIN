@@ -38,9 +38,9 @@ namespace Services
             return trackExists;
         }
 
-        public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
+        public async Task<bool> CheckIfTrackExistsAsync(int id)
         {
-            var trackExists = await _trackRepository.CheckIfTrackExistsByIdAsync(id);
+            var trackExists = await _trackRepository.CheckIfTrackExistsAsync(id);
 
             return trackExists;
         }
@@ -241,6 +241,7 @@ namespace Services
                 return CreateFailureResponse(500, "Error while updating the tutorship");
             }
         }
+
 
 
         #endregion Methods

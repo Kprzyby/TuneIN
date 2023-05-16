@@ -16,14 +16,16 @@ namespace Services
         #region Properties
 
         private readonly PlaylistRepository _playlistRepository;
+        private readonly TrackRepository _trackRepository;
 
         #endregion Properties
 
         #region Constructors
 
-        public PlaylistService(PlaylistRepository playlistRepository)
+        public PlaylistService(PlaylistRepository playlistRepository, TrackRepository trackRepository)
         {
             _playlistRepository = playlistRepository;
+            _trackRepository = trackRepository;
         }
 
         #endregion Constructors
@@ -67,14 +69,14 @@ namespace Services
                             Genre = ti.TrackInfo.Genre,
                             LinkToCover = ti.TrackInfo.LinkToCover,
                             LinkToTabs = ti.TrackInfo.LinkToTabs,
-                            Author = new ReadTutorshipAuthorDTO() 
+                            Author = new ReadTutorshipAuthorDTO()
                             {
                                 Id = ti.TrackInfo.User.Id,
                                 Username = ti.TrackInfo.User.UserName
                             }
                         }),
-                        
-                        })
+
+                    })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
                 return CreateSuccessResponse(200, "Playlists retrieved successfully", response);
@@ -174,6 +176,7 @@ namespace Services
             try
             {
                 await _playlistRepository.RemoveByIdAndSaveChangesAsync(id);
+
             }
             catch (Exception ex)
             {
@@ -194,6 +197,86 @@ namespace Services
                 }
 
                 oldPlaylist.Name = newName;
+
+                await _playlistRepository.UpdateTrackInfoAsync(oldPlaylist);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the tutorship");
+            }
+        }
+
+        public async Task<ServiceResponseDTO> AddTrackToPlaylistAsync(int playlistId, int trackId)
+        {
+            try
+            {
+                TrackInfo trackInfo = await _trackRepository.GetTrackAsync(trackId);
+
+                if (trackInfo == null)
+                {
+                    return CreateFailureResponse(404, "Track with such an id was not found");
+                }
+
+                Playlist oldPlaylist = await _playlistRepository.GetPlaylistAsync(playlistId);
+
+                if (oldPlaylist == null)
+                {
+                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                }
+
+                var trackExistInPlaylist = oldPlaylist.PlaylistTracks.FirstOrDefault(pt => pt.TrackInfoId == trackId);
+
+                if (trackExistInPlaylist != null)
+                {
+                    return CreateFailureResponse(404, "Track with such an id already exists in playlist");
+                }
+
+                var playlistTrack = new PlaylistTracks
+                {
+                    PlaylistId = playlistId,
+                    TrackInfoId = trackId
+                };
+
+                oldPlaylist.PlaylistTracks.Add(playlistTrack);
+
+                await _playlistRepository.UpdateTrackInfoAsync(oldPlaylist);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the tutorship");
+            }
+        }
+
+        public async Task<ServiceResponseDTO> DeleteTrackFromPlaylistAsync(int playlistId, int trackId)
+        {
+            try
+            {
+                TrackInfo trackInfo = await _trackRepository.GetTrackAsync(trackId);
+
+                if (trackInfo == null)
+                {
+                    return CreateFailureResponse(404, "Track with such an id was not found");
+                }
+
+                Playlist oldPlaylist = await _playlistRepository.GetPlaylistAsync(playlistId);
+
+                if (oldPlaylist == null)
+                {
+                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                }
+
+                var playlistTrack = oldPlaylist.PlaylistTracks.FirstOrDefault(pt => pt.TrackInfoId == trackId);
+
+                if (playlistTrack == null)
+                {
+                    return CreateFailureResponse(404, "Track doesn't exist in this playlist");
+                }
+
+                oldPlaylist.PlaylistTracks.Remove(playlistTrack);
 
                 await _playlistRepository.UpdateTrackInfoAsync(oldPlaylist);
 
