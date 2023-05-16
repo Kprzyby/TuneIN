@@ -22,8 +22,10 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
   const authorizedNav = [
     { label: 'Logout', href: '/auth/logout' },
     { label: 'Profile', href: `/user/${user?.userName}` },
+    { label: 'Video Call', href: '/videohub' },
     { label: 'Browse', href: '/browse' },
   ];
+
   useEffect(() => {
     const changeHeader = () => {
       if (window.scrollY !== 0) {
@@ -38,6 +40,7 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
   useEffect(() => {
     setIsUser(user !== undefined);
   }, [user]);
+
   return (
     <Styled.Wrapper>
       <Header

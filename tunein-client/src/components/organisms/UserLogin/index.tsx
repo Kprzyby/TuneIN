@@ -48,7 +48,7 @@ const UserLogin: React.FC = () => {
   });
   return (
     <Styled.Wrapper>
-      <Styled.Title variant="RegisterTitile">Login</Styled.Title>
+      <Styled.Title variant="Navigation">Login</Styled.Title>
       {loading ? (
         <Loader borderColor="white transparent" />
       ) : (
