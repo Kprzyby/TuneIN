@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace Data.Repositories
 {
     [ScopedAttribute]
-    public class LibraryRepository : BaseRepository<TrackInfo>
+    public class TrackRepository : BaseRepository<TrackInfo>
     {
         #region Constructors
-        public LibraryRepository(DataContext dataContext) : base(dataContext)
+        public TrackRepository(DataContext dataContext) : base(dataContext)
         {
 
         }

@@ -42,4 +42,8 @@
     <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Playlist\" />
+  </ItemGroup>
+
 </Project>

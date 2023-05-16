@@ -12,19 +12,19 @@ using Data.DTOs.Response;
 namespace Services
 {
     [ScopedAttribute]
-    public class LibraryService : BaseService
+    public class TrackService : BaseService
     {
         #region Properties
 
-        private readonly LibraryRepository _libraryRepository;
+        private readonly TrackRepository _trackRepository;
 
         #endregion Properties
 
         #region Constructors
 
-        public LibraryService(LibraryRepository libraryRepository)
+        public TrackService(TrackRepository trackRepository)
         {
-            _libraryRepository = libraryRepository;
+            _trackRepository = trackRepository;
         }
 
         #endregion Constructors
@@ -33,14 +33,14 @@ namespace Services
 
         public async Task<bool> CheckIfTrackExistsAsync(string artist, string trackName)
         {
-            var trackExists = await _libraryRepository.CheckIfTrackExistsAsync(artist, trackName);
+            var trackExists = await _trackRepository.CheckIfTrackExistsAsync(artist, trackName);
 
             return trackExists;
         }
 
         public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
         {
-            var trackExists = await _libraryRepository.CheckIfTrackExistsByIdAsync(id);
+            var trackExists = await _trackRepository.CheckIfTrackExistsByIdAsync(id);
 
             return trackExists;
         }
@@ -49,7 +49,7 @@ namespace Services
         {
             try
             {
-                TrackInfo trackInfo = await _libraryRepository.GetTrackAsync(id);
+                TrackInfo trackInfo = await _trackRepository.GetTrackAsync(id);
 
                 if (trackInfo == null)
                 {
@@ -83,7 +83,7 @@ namespace Services
         {
             try
             {
-                IQueryable<TrackInfo> trackInfos = _libraryRepository.GetTracks();
+                IQueryable<TrackInfo> trackInfos = _trackRepository.GetTracks();
                 //filtorwanie po użytkowniku
                 trackInfos = trackInfos.Where(t => t.User.Id == dto.UserIdFilterValue);
                 //filtrowanie po gatunku utworu
@@ -158,7 +158,7 @@ namespace Services
         {
             try
             {
-                await _libraryRepository.RemoveByIdAndSaveChangesAsync(id);
+                await _trackRepository.RemoveByIdAndSaveChangesAsync(id);
             }
             catch (Exception ex)
             {
@@ -183,7 +183,7 @@ namespace Services
                     UserId = trackInfoDTO.UserId,
                 };
 
-                trackInfo = await _libraryRepository.AddTrackInfoAsync(trackInfo);
+                trackInfo = await _trackRepository.AddTrackInfoAsync(trackInfo);
 
                 ReadTrackInfoDTO result = new ReadTrackInfoDTO()
                 {
@@ -213,7 +213,7 @@ namespace Services
         {
             try
             {
-                TrackInfo oldTrackInfo = await _libraryRepository.GetTrackAsync(dto.Id);
+                TrackInfo oldTrackInfo = await _trackRepository.GetTrackAsync(dto.Id);
 
                 if (oldTrackInfo == null)
                 {
@@ -232,7 +232,7 @@ namespace Services
                     oldTrackInfo.Genre = dto.Genre;
                 }
 
-                await _libraryRepository.UpdateTrackInfoAsync(oldTrackInfo);
+                await _trackRepository.UpdateTrackInfoAsync(oldTrackInfo);
 
                 return CreateSuccessResponse(204, "");
             }
