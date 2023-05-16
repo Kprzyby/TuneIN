@@ -3,24 +3,24 @@ import { StyledProps } from './types';
 
 export const Wrapper = styled.div`
     width: 100%; 
-    max-height: 100%;
+    height: 100%;
     position: relative;
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
 `;
 export const LoaderWrapper = styled.div`
     width: 100%;
     height: 100%;
+    position: absolute;
     display: flex;
     justify-content: center; 
     align-items: center;
 `;
 export const List = styled.ul`
+    width: 100%;
+    height: 100%;
     padding: 0 0.4rem 0.1rem 0.4rem;
+    position: absolute;
     overflow: hidden;
     overflow-y: scroll;
-    max-height: 70vh;
 
     &::-webkit-scrollbar { 
         display: none;  /* Safari and Chrome */

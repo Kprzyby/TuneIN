@@ -101,11 +101,13 @@ const ChatRoom: React.FC = () => {
         </Styled.UsersList>
         {messages && pickedChatId
         && (
-        <Chat
-          chatId={pickedChatId}
-          messages={messages}
-          isMesseges={isMesseges}
-        />
+          <div style={{ height: '90%', width: '100%' }}>
+            <Chat
+              chatId={pickedChatId}
+              messages={messages}
+              isMesseges={isMesseges}
+            />
+          </div>
         )}
       </Styled.Content>
     </Styled.Wrapper>

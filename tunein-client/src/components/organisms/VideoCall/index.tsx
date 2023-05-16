@@ -110,11 +110,13 @@ const VideoCall: React.FC<Props> = () => {
             <button type="button" onClick={() => setIsChat(!isChat)}>Show/Hide Chat</button>
           </div>
           {isChat && messeges && chatID && (
+          <div style={{ width: '100%', padding: '0 8rem 3rem 8rem', minHeight: '20rem' }}>
             <Chat
               chatId={chatID}
               messages={messeges}
               isMesseges={isMesseges}
             />
+          </div>
           )}
           {isChat && (!messeges || !chatID) && (
             <Loader borderColor="white transparent" />

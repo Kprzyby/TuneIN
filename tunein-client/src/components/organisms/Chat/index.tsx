@@ -37,35 +37,37 @@ const Chat: React.FC<Props> = ({ chatId, messages, isMesseges }) => {
 
   return (
     <Styled.Wrapper>
-      {!isMesseges
-        ? (
-          <Styled.LoaderWrapper>
-            <Loader borderColor="white transparent" />
-          </Styled.LoaderWrapper>
-        )
-        : (
-          <Styled.List>
-            {messages?.map((m) => {
-              const isSameSender = lastSender === undefined
-                ? false
-                : lastSender === m.senderName;
-              lastSender = m.senderName;
-              return (
-                <Styled.Item key={m.id} userIsSender={m.userIsSender}>
-                  {!m.userIsSender && !isSameSender
+      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        {!isMesseges
+          ? (
+            <Styled.LoaderWrapper>
+              <Loader borderColor="white transparent" />
+            </Styled.LoaderWrapper>
+          )
+          : (
+            <Styled.List>
+              {messages?.map((m) => {
+                const isSameSender = lastSender === undefined
+                  ? false
+                  : lastSender === m.senderName;
+                lastSender = m.senderName;
+                return (
+                  <Styled.Item key={m.id} userIsSender={m.userIsSender}>
+                    {!m.userIsSender && !isSameSender
               && <Typography variant="ChatEmail">{m.senderName}</Typography>}
-                  <Styled.Message>
-                    <div style={{ maxWidth: '30rem', wordWrap: 'break-word' }}>
-                      <Typography variant="ChatMessage">{m.message}</Typography>
-                    </div>
-                  </Styled.Message>
-                </Styled.Item>
-              );
-            })}
-            <div ref={listBottomRef} />
-          </Styled.List>
-        )}
-      <div style={{ width: '100%', paddingTop: '1rem' }}>
+                    <Styled.Message>
+                      <div style={{ maxWidth: '30rem', wordWrap: 'break-word' }}>
+                        <Typography variant="ChatMessage">{m.message}</Typography>
+                      </div>
+                    </Styled.Message>
+                  </Styled.Item>
+                );
+              })}
+              <div ref={listBottomRef} />
+            </Styled.List>
+          )}
+      </div>
+      <div style={{ width: '100%' }}>
         {renderInputBar}
       </div>
     </Styled.Wrapper>
