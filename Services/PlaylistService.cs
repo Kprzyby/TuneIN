@@ -30,6 +30,61 @@ namespace Services
 
         #region Methods   
 
+        public async Task<ServiceResponseDTO> GetPlaylistsAsync(GetPlaylistsDTO dto)
+        {
+            try
+            {
+                IQueryable<Playlist> playlists = _playlistRepository.GetPlaylists();
+
+                //filtorwanie po użytkowniku
+                playlists = playlists.Where(t => t.User.Id == dto.UserIdFilterValue);
+
+                //filtrowanie i sortowanie po nazwie playlisty
+                if (!String.IsNullOrEmpty(dto.PlaylistNameFilterValue))
+                {
+                    playlists = playlists.Where(t => t.Name.ToUpper().Contains(dto.PlaylistNameFilterValue.ToUpper()));
+                    playlists = playlists.OrderBy(t => t.Name);
+                }
+
+                GetPlaylistsResponseDTO response = new GetPlaylistsResponseDTO();
+
+                response.TotalCount = playlists.Count();
+                response.PageNumber = dto.PageNumber;
+                response.PageSize = dto.PageSize;
+                response.PlaylistNameFilterValue = dto.PlaylistNameFilterValue;
+
+                response.Playlists = await playlists.
+                    Select(t => new PlaylistDTO()
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        UserId = t.UserId,
+                        trackInfos = t.PlaylistTracks.Select(ti => new ReadTrackInfoDTO()
+                        {
+                            Id = ti.TrackInfo.Id,
+                            TrackName = ti.TrackInfo.TrackName,
+                            Band = ti.TrackInfo.Band,
+                            Genre = ti.TrackInfo.Genre,
+                            LinkToCover = ti.TrackInfo.LinkToCover,
+                            LinkToTabs = ti.TrackInfo.LinkToTabs,
+                            Author = new ReadTutorshipAuthorDTO() 
+                            {
+                                Id = ti.TrackInfo.User.Id,
+                                Username = ti.TrackInfo.User.UserName
+                            }
+                        }),
+                        
+                        })
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                return CreateSuccessResponse(200, "Playlists retrieved successfully", response);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while retrieving the playlists");
+            }
+        }
+
         public async Task<ServiceResponseDTO> GetPlaylistAsync(int id)
         {
             try
@@ -83,7 +138,7 @@ namespace Services
         public async Task<ServiceResponseDTO> AddPlaylistAsync(string name, int userId)
         {
             try
-            {               
+            {
 
                 Playlist playlist = new Playlist()
                 {
@@ -111,6 +166,42 @@ namespace Services
             catch (Exception ex)
             {
                 return CreateFailureResponse(500, "Error while adding the playlist");
+            }
+        }
+
+        public async Task<bool> RemovePlaylistAsync(int id)
+        {
+            try
+            {
+                await _playlistRepository.RemoveByIdAndSaveChangesAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<ServiceResponseDTO> UpdatePlaylistAsync(int id, string newName)
+        {
+            try
+            {
+                Playlist oldPlaylist = await _playlistRepository.GetPlaylistAsync(id);
+
+                if (oldPlaylist == null)
+                {
+                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                }
+
+                oldPlaylist.Name = newName;
+
+                await _playlistRepository.UpdateTrackInfoAsync(oldPlaylist);
+
+                return CreateSuccessResponse(204, "");
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while updating the tutorship");
             }
         }
 

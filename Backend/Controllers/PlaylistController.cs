@@ -5,6 +5,7 @@ using Services;
 using Data.DTOs.Library;
 using Data.DTOs.Playlist;
 using Data.Entities;
+using Backend.ViewModels.Playlist;
 
 namespace Backend.Controllers
 {
@@ -27,7 +28,37 @@ namespace Backend.Controllers
         #endregion Constructors
 
         #region Methods  
-        
+
+        [HttpPost]
+        [Route("Playlist/GetPlaylistsAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(GetPlaylistsResponseDTO), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetPlaylistsAsync(GetPlaylistsViewModel pagingInfo)
+        {
+            int UserId = GetUserId();
+
+            GetPlaylistsDTO dto = new GetPlaylistsDTO()
+            {
+                PageNumber = pagingInfo.PageNumber,
+                PageSize = pagingInfo.PageSize,
+                PlaylistNameFilterValue = pagingInfo.PlaylistNameFilterValue,
+                UserIdFilterValue = UserId
+            };
+
+            var result = await _playlistService.GetPlaylistsAsync(dto);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            GetPlaylistsResponseDTO tracks = (GetPlaylistsResponseDTO)result.Result;
+
+            return Ok(tracks);
+        }
+
+
         [HttpGet]
         [Route("Playlist/GetPlaylistAsync/{playlistId}", Name = "GetPlaylistAsync")]
         [ProducesResponseType(typeof(ReadPlaylistDTO), 200)]
@@ -67,6 +98,77 @@ namespace Backend.Controllers
 
             return CreatedAtRoute("GetPlaylistAsync", new { playlistId = playlistDTO.Id }, playlistDTO);
         }
+
+        [HttpDelete]
+        [Route("Playlist/DeletePlaylistAsync/{playlistId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> DeleteTrackAsync(int playlistId)
+        {
+            int userId = GetUserId();
+            var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
+
+            if (oldPlaylist.IsSuccess == false)
+            {
+                return StatusCode(oldPlaylist.StatusCode, oldPlaylist.Message);
+            }
+
+            ReadPlaylistDTO oldPlaylistDTO = (ReadPlaylistDTO)oldPlaylist.Result;
+
+            if (userId != oldPlaylistDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the playlist that you don't own");
+            }
+
+            var result = await _playlistService.RemovePlaylistAsync(playlistId);
+
+            if (result == false)
+            {
+                return StatusCode(500, "Error while removing the playlist!");
+            }
+
+            return StatusCode(204);
+        }
+
+        [HttpPut]
+        [Route("Playlist/UpdatePlaylistAsync/{playlistId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(void), 204)]
+        [ProducesResponseType(typeof(void), 403)]
+        [ProducesResponseType(typeof(void), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> UpdatePlaylistAsync(int playlistId, string newName)
+        {
+            int userId = GetUserId();
+            var oldPlaylist = await _playlistService.GetPlaylistAsync(playlistId);
+
+            if (oldPlaylist.IsSuccess == false)
+            {
+                return StatusCode(oldPlaylist.StatusCode, oldPlaylist.Message);
+            }
+
+            ReadPlaylistDTO readPlaylistDTO = (ReadPlaylistDTO)oldPlaylist.Result;
+
+            if (userId != readPlaylistDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the track that you don't own");
+            }
+
+            var result = await _playlistService.UpdatePlaylistAsync(playlistId, newName);
+
+            if (result.IsSuccess == false)
+            {
+                StatusCode(result.StatusCode, result.Message);
+            }
+
+            return StatusCode(204);
+
+        }
+
+
 
         #endregion Methods
     }

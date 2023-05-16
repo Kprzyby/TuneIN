@@ -46,6 +46,20 @@ namespace Data.Repositories
             return playlist;
         }
 
+        public async Task UpdateTrackInfoAsync(Playlist playlist)
+        {
+            await UpdateAndSaveChangesAsync(playlist);
+        }
+
+        public IQueryable<Playlist> GetPlaylists()
+        {
+            var result = DataContext.Playlists
+                .Include(t => t.User)
+                .Include(p => p.PlaylistTracks)
+                    .ThenInclude(pt => pt.TrackInfo);
+
+            return result;
+        }
         #endregion Methods
     }
 }
