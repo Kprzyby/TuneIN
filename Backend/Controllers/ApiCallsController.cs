@@ -40,10 +40,13 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTrackInfoAsync(string artist, string trackName)
         {
-            Console.WriteLine("Works");
             var trackInfo = await _apiCallsService.GetTrackInfoAsync(artist, trackName);
-            if (trackInfo == null) return BadRequest("Error");
-            if ((string)trackInfo["message"] == "Track not found") return StatusCode(500,"Track not found");
+            if (trackInfo == null)
+            {
+                return BadRequest("Error");
+
+            }
+            if ((string)trackInfo["message"] == "Track not found") return StatusCode(500, "Track not found");
             TrackViewModel trackViewModel = new TrackViewModel
             {
                 TrackName = (string)trackInfo["track"]["name"],
@@ -67,7 +70,6 @@ namespace Backend.Controllers
         [RequireRole("REGULAR_USER", "TUTOR")]
         public async Task<IActionResult> GetSearchListAsync(string name)
         {
-            Console.WriteLine("Works");
             var trackList = await _apiCallsService.GetSearchListAsync(name);
             if (trackList == null) return StatusCode(500, "Error");
             return Ok(trackList);

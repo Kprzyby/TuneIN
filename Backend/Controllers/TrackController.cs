@@ -113,11 +113,10 @@ namespace Backend.Controllers
         /// Only a user that is currently logged in and has a confirmed account can access this method
         /// </remarks> 
         /// <param name="trackInfo">Object containing information about the track</param>
-        /// <returns>Object containing information about a new tutorship along with a route to the get method</returns>
+        /// <returns>Object containing information about a new track along with a route to the get method</returns>
         /// <response code="201">Track added succesfilly</response>
         /// <response code="409">Error message</response>
         /// <response code="500">Error message</response>
-
         [HttpPost]
         [Route("Tracks/AddTrackAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
@@ -169,7 +168,6 @@ namespace Backend.Controllers
         /// <response code="403">Error message</response>
         /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
-
         [HttpPut]
         [Route("Tracks/UpdateTrackInfoAsync/{trackId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
@@ -225,7 +223,6 @@ namespace Backend.Controllers
         /// <response code="403">Error message</response>
         /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
-
         [HttpDelete]
         [Route("Tracks/DeleteTrackAsync/{trackId}")]
         [RequireRole("REGULAR_USER", "TUTOR")]
