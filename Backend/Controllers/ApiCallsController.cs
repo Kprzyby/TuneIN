@@ -7,9 +7,10 @@ using Services;
 namespace Backend.Controllers
 {
     [ApiController]
-    public class ApiCallsController : Controller
+    public class ApiCallsController : BaseController
     {
         #region Properties
+
         private readonly ApiCallsService _apiCallsService;
 
 
@@ -34,19 +35,25 @@ namespace Backend.Controllers
         /// <param name="artist">Name of the band/artist</param>
         /// <param name="trackName">Name of the track</param>
         [HttpGet]
-        [Route("APICalls/GetTrackInfo")]
+        [Route("APICalls/GetTrackInfoAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
-        [ProducesResponseType(typeof(TrackViewModel), 200)]
+        [ProducesResponseType(typeof(TrackInfoDTO), 200)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTrackInfoAsync(string artist, string trackName)
         {
             var trackInfo = await _apiCallsService.GetTrackInfoAsync(artist, trackName);
+
             if (trackInfo == null)
             {
                 return BadRequest("Error");
 
             }
-            if ((string)trackInfo["message"] == "Track not found") return StatusCode(500, "Track not found");
+
+            if ((string)trackInfo["message"] == "Track not found")
+            {
+                return StatusCode(500, "Track not found");
+            }
+
             TrackViewModel trackViewModel = new TrackViewModel
             {
                 TrackName = (string)trackInfo["track"]["name"],
@@ -66,7 +73,7 @@ namespace Backend.Controllers
         /// <param name="name">Name of the track</param>
 
         [HttpGet]
-        [Route("APICalls/GetSearchList")]
+        [Route("APICalls/GetSearchListAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         public async Task<IActionResult> GetSearchListAsync(string name)
         {
