@@ -19,15 +19,17 @@ namespace Backend.Controllers
 
         private readonly AuthService _authService;
         private readonly ChatService _chatService;
+        private readonly UserService _userService;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthController(AuthService authService, ChatService chatService)
+        public AuthController(AuthService authService, ChatService chatService, UserService userService)
         {
             _authService = authService;
             _chatService = chatService;
+            _userService = userService;
         }
 
         #endregion Constructors
@@ -159,7 +161,7 @@ namespace Backend.Controllers
         {
             string host = Request.Host.Host;
             Guid passwordRecoveryGUID = Guid.NewGuid();
-            var getResult = await _authService.GetUserAsync(email, null);
+            var getResult = await _userService.GetUserAsync(email, null);
 
             if (getResult.IsSuccess == false)
             {
@@ -237,10 +239,14 @@ namespace Backend.Controllers
             ClaimsIdentity identity = (ClaimsIdentity)claimsResult.Result;
             string chatToken = (string)tokenResponse.Result;
 
-            Response.Cookies.Append("ChatToken", chatToken);
+            Response.Cookies.Append("ChatToken", chatToken, new CookieOptions()
+            {
+                SameSite = SameSiteMode.None,
+                Secure = true,
+            });
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            var userResult = await _authService.GetUserAsync(logInCredentials.Email, null);
+            var userResult = await _userService.GetUserAsync(logInCredentials.Email, null);
 
             if (userResult.IsSuccess == false)
             {
@@ -283,66 +289,6 @@ namespace Backend.Controllers
             }
 
             return Ok("User signed out successfully!");
-        }
-
-        /// <summary>
-        /// Asynchronous method for loading information about the currently logged in user
-        /// </summary>
-        /// <remarks>
-        /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks>
-        /// <returns>Object containing information about the user that is currently logged in</returns>
-        /// <response code="200">Object containing information about the user that is currently logged in</response>
-        /// <response code="404">Error message</response>
-        /// <response code="500">Error message</response>
-        [RequireRole("REGULAR_USER", "TUTOR")]
-        [HttpGet]
-        [Route("Auth/GetCurrentUserAsync")]
-        [ProducesResponseType(typeof(ReadUserDTO), 200)]
-        [ProducesResponseType(typeof(string), 404)]
-        [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> GetCurrentUserAsync()
-        {
-            int userId = GetUserId();
-
-            var result = await _authService.GetUserAsync(null, userId);
-
-            if (result.IsSuccess == false)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
-            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
-
-            return Ok(userDTO);
-        }
-
-        /// <summary>
-        /// Asynchronous method for loading information about the user that is specified by an id
-        /// </summary>
-        /// <param name="userId">User's id</param>
-        /// <returns>Object containing information about the user</returns>
-        /// <response code="200">Object containing information about the user</response>
-        /// <response code="404">Error message</response>
-        /// <response code="500">Error message</response>
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("Auth/GetUserAsync")]
-        [ProducesResponseType(typeof(ReadUserDTO), 200)]
-        [ProducesResponseType(typeof(string), 404)]
-        [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> GetUserAsync(int userId)
-        {
-            var result = await _authService.GetUserAsync(null, userId);
-
-            if (result.IsSuccess == false)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
-            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
-
-            return Ok(userDTO);
         }
 
         #endregion Methods

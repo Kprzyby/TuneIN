@@ -1,24 +1,27 @@
-import { EditorState } from 'draft-js';
+import { EditorState, convertFromRaw } from 'draft-js';
 import dynamic from 'next/dynamic';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import React, { useState } from 'react';
 import * as Styled from './styles';
+import { Props } from './types';
 
 const Editor = dynamic(
   () => import('react-draft-wysiwyg').then((mod) => mod.Editor),
   { ssr: false },
 );
 
-const useRichText = () => {
+const useRichText = ({ tuition }: Props) => {
   const [editorState, setEditorState] = useState(
-    EditorState.createEmpty(),
+    tuition
+      ? EditorState.createWithContent(convertFromRaw(JSON.parse(tuition.details)))
+      : EditorState.createEmpty(),
   );
   const handleChange = (state: EditorState) => {
     setEditorState(state);
   };
   return {
     editorState,
-    renderRichText: (
+    renderDraftForm: (
       <Styled.Wrapper>
         <Editor
           editorState={editorState}
@@ -35,6 +38,13 @@ const useRichText = () => {
           }}
         />
       </Styled.Wrapper>
+    ),
+    renderDraftDisplay: (
+      <Editor
+        editorState={editorState}
+        readOnly
+        toolbarHidden
+      />
     ),
   };
 };

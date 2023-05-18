@@ -31,7 +31,11 @@ namespace Backend.Controllers
         private async Task<AccessToken> GetTokenAsync()
         {
             var tokenObject = new JavaScriptSerializer().Deserialize<object>(Request.Cookies["ChatToken"]);
-            Dictionary<string, object>.ValueCollection tokenValues = (Dictionary<string, object>.ValueCollection)tokenObject.GetType().GetProperty("Values").GetValue(tokenObject);
+            Dictionary<string, object>.ValueCollection tokenValues =
+                (Dictionary<string, object>.ValueCollection)tokenObject
+                .GetType()
+                .GetProperty("Values")
+                .GetValue(tokenObject);
             List<object> tokenValuesList = new List<object>(tokenValues);
             string tokenValue = tokenValuesList[0].ToString();
             string expireString = tokenValuesList[1].ToString();
@@ -59,12 +63,16 @@ namespace Backend.Controllers
         /// </remarks>
         /// <returns>Created chat's id</returns>
         /// <response code="201">Created chat's id</response>
+        /// <response code="404">Error message</response>
+        /// <response code="409">Error message</response>
         /// <response code="500">Error message</response>
         /// <response code="502">Error message</response>
         [HttpPost]
         [Route("Chat/CreateChatAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 409)]
         [ProducesResponseType(typeof(string), 500)]
         [ProducesResponseType(typeof(string), 502)]
         public async Task<IActionResult> CreateChatAsync(CreateChatViewModel newChat)
@@ -76,9 +84,7 @@ namespace Backend.Controllers
                 return StatusCode(502, "Error while creating an access token!");
             }
 
-            newChat.ParticipantsIds.Add(GetUserId());
-
-            var result = await _chatService.CreateChatAsync(newChat.Topic, newChat.ParticipantsIds, token);
+            var result = await _chatService.CreateChatAsync(GetUserId(), newChat.Topic, newChat.ParticipantsIds, token);
 
             if (result.IsSuccess == false)
             {

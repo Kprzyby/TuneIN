@@ -1,3 +1,4 @@
 export type Props = {
-  text: String
+  text?: String;
+  children?: string | JSX.Element | JSX.Element[];
 };

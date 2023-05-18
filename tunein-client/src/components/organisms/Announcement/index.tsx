@@ -1,29 +1,23 @@
-import React, { useEffect, useRef } from "react";
-import * as Styled from "./styles";
-import {AnnouncementProperties} from './types'
+import React from 'react';
+import Link from 'next/link';
+import * as Styled from './styles';
+import { Props } from './types';
 
-const Announcement: React.FC<AnnouncementProperties> = ({title, interested, img}) => {
-
-  const Title = useRef<HTMLParagraphElement>(null);
-  const Interested = useRef<HTMLParagraphElement>(null);
-
-  useEffect(() => {
-    if (Title.current) {
-      Title.current.innerHTML = title;
-    }
-    if (Interested.current) {
-      Interested.current.innerHTML = interested + " interested in";
-    }
-  }, []);
-
-  return (
-    <Styled.Announcement title={title} interested={interested} img={img}>
+const Announcement: React.FC<Props> = ({
+  tuitionId, title, author, img,
+}) => (
+  <Link href={`/tuition/${tuitionId}`}>
+    <Styled.Announcement {...{ img }}>
       <Styled.SeeTrough>
-        <Styled.Title ref={Title}></Styled.Title>
-        <Styled.Interested ref={Interested}></Styled.Interested>
+        <Styled.Title>
+          {title}
+        </Styled.Title>
+        <Styled.Interested>
+          {author}
+        </Styled.Interested>
       </Styled.SeeTrough>
     </Styled.Announcement>
-  );
-};
+  </Link>
+);
 
 export default Announcement;

@@ -1,6 +1,6 @@
-
-export interface AnnouncementProperties {
-    title: string;
-    interested: number;
-    img?: string;
-  }
+export interface Props {
+  title: string;
+  author: string;
+  img?: string;
+  tuitionId: number;
+}

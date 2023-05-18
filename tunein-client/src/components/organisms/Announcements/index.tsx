@@ -1,24 +1,58 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useState } from 'react';
 import Announcement from '@components/organisms/Announcement';
-import * as Endpoint from '../../../api/endpoint'
-import * as Styled from "./styles"
+import { useRouter } from 'next/router';
+import Loader from '@components/atoms/Loader';
+import * as Styled from './styles';
+import { Props, Tuition } from './types';
+import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 
-const Announcements: React.FC = () => {
-
-    // announcementsList : [] = [];
-    // Endpoint.createDBEndpoint(Endpoint.BASE_URL + Endpoint.ENDPOINTS.)
-
-    return (
-        <Styled.AnnouncementsPage>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-            <Announcement title="Title" interested={100} img="https://images.unsplash.com/photo-1593642532979-7c1a43b0b6ac?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmFja2dyb3VuZHxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80"/>
-        </Styled.AnnouncementsPage>
-    )
-}
+const Announcements: React.FC<Props> = ({ id }) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [tuitions, setTuitions] = useState<Tuition[] | null>(null);
+  useEffect(() => {
+    // for some reason next trys to exec getusertutorships beforehead
+    // error still accures
+    // TODO: fix it
+    if (router.isFallback === true) return;
+    const value = { pageSize: 50, pageNumber: 1 };
+    setLoading(true);
+    if (id) {
+      createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + id)
+        .post(value)
+        .then((res) => {
+          setTuitions(res.data.tutorships);
+          setLoading(false);
+        });
+    } else {
+      createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
+        .post(value)
+        .then((res) => {
+          setTuitions(res.data.tutorships);
+          setLoading(false);
+        });
+    }
+  }, [router.isFallback]);
+  return (
+    <Styled.Wrapper>
+      <Styled.Content>
+        {loading ? (
+          <div style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+            <Loader borderColor="white transparent" />
+          </div>
+        )
+          : tuitions !== null && tuitions.map((t) => (
+            <Announcement
+              key={t.id}
+              tuitionId={t.id}
+              title={t.title}
+              author={t.author.username}
+              img={t.imageDataURL}
+            />
+          ))}
+      </Styled.Content>
+    </Styled.Wrapper>
+  );
+};
 
 export default Announcements;

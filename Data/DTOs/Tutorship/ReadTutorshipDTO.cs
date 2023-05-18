@@ -15,5 +15,6 @@ namespace Data.DTOs.Tutorship
         public string Category { get; set; }
 
         public ReadTutorshipAuthorDTO Author { get; set; }
+        public string ImageDataURL { get; set; }
     }
 }

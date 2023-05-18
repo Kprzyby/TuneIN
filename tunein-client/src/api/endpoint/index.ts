@@ -10,7 +10,11 @@ export const ENDPOINTS = {
     confirmaccount: 'Auth/ConfirmAccountAsync',
     recoverpassword: 'Auth/RecoverPasswordAsync',
     changepassword: 'Auth/ChangePasswordAsync',
-    getuserbyid: 'Auth/GetUserAsync',
+  },
+  user: {
+    getuserbyid: 'User/GetUserAsync',
+    getusers: 'User/GetAllUsersAsync',
+    getusernames: 'User/GetAllUsernames',
   },
   tutorship: {
     gettutorshipbyid: 'Tutorship/GetTutorshipAsync/',
@@ -21,7 +25,12 @@ export const ENDPOINTS = {
     updateTutorship: 'Tutorship/UpdateTutorshipAsync/',
     removeTutorship: 'Tutorship/DeleteTutorshipAsync/',
   },
-  chat: 'CHAT',
+  chat: {
+    createChat: 'Chat/CreateChatAsync',
+    getChats: 'Chat/GetChatsAsync',
+    getMessages: 'Chat/GetMessagesAsync',
+    sendMessage: 'Chat/SendMessageAsync',
+  },
   library: 'LIBRARY',
 };
 // TODO: change any
@@ -33,21 +42,30 @@ export const createDBEndpoint = (endpoint: string) => {
   // TODO: change temporary solution to permament one
   const httpsAgent = new https.Agent({ rejectUnauthorized: false });
   axios.defaults.withCredentials = true;
-  console.log(endpoint);
+  const aHeaders = {
+    form: {
+      'Content-Type': 'multipart/form-data',
+    },
+    text: {
+      'Content-Type': 'application/json',
+    },
+  };
   return {
-    post: (newRecord: any) => axios({
+    post: (newRecord: any, isForm?: boolean) => axios({
       method: 'post',
       url,
       data: newRecord,
       params: newRecord,
       httpsAgent,
+      headers: isForm ? aHeaders.form : aHeaders.text,
     }),
-    put: (updatedRecords: any) => axios({
+    put: (updatedRecords: any, isForm?: boolean) => axios({
       method: 'put',
       url,
       data: updatedRecords,
       params: updatedRecords,
       httpsAgent,
+      headers: isForm ? aHeaders.form : aHeaders.text,
     }),
     get: (record?: any) => axios({
       method: 'get',
@@ -55,11 +73,18 @@ export const createDBEndpoint = (endpoint: string) => {
       params: record,
       httpsAgent,
     }),
-    delete: (deletedRecords: any) => axios({
+    delete: (deletedRecords?: any) => axios({
       method: 'delete',
       url,
       data: deletedRecords,
       params: deletedRecords,
+      httpsAgent,
+    }),
+    patch: (patchedRecords?: any) => axios({
+      method: 'patch',
+      url,
+      data: patchedRecords,
+      params: patchedRecords,
       httpsAgent,
     }),
   };

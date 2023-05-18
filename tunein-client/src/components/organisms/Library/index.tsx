@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
-import useSearchBar from '@components/molecules/SearchBar';
+import useInputBar, {} from '@components/molecules/InputBar';
 import DarkButton from '@components/molecules/DarkButton';
 import useDarkButtonExpand from '@components/molecules/DarkButtonExpand';
 import SongCard from '@components/molecules/SongCard';
+import Router from 'next/router';
 import * as Styled from './styles';
 // import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
@@ -41,23 +42,23 @@ const Library: React.FC = () => {
     pickedItem: pickedCategory,
     renederDBtnExp: renderCategoryBtn,
   } = useDarkButtonExpand(listSort, headSort);
-  const { renderSearchBar, searchInput } = useSearchBar();
+  const { renderInputBar, barInput } = useInputBar({ type: 'search' });
   const handleEditClick = () => {
     // console.log('edit');
   };
-  const handleSongClicked = () => {
-    // console.log(musicCollection[index].name);
+  const handleSongClicked = (id: number) => {
+    Router.push(`/library/song/${id}`);
   };
   useEffect(() => {
     // console.log(pickedCollection);
     // console.log(pickedCategory);
     // console.log(searchInput);
-  }, [pickedCollection, pickedCategory, searchInput]);
+  }, [pickedCollection, pickedCategory, barInput]);
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.ToolBox>
-          <Styled.UpRow>{renderSearchBar}</Styled.UpRow>
+          <Styled.UpRow>{renderInputBar}</Styled.UpRow>
           <Styled.DownRow>
             <Styled.DownRowSide>
               {renderCollectionBtn}
@@ -78,7 +79,7 @@ const Library: React.FC = () => {
           {musicCollection.map((i) => (
             <div
               key={i.id}
-              onClick={() => handleSongClicked()}
+              onClick={() => handleSongClicked(i.id)}
             >
               <SongCard
                 name={i.name}
