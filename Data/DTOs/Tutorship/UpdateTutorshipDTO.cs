@@ -10,5 +10,7 @@
         public decimal Price { get; set; }
 
         public string Category { get; set; }
+        public byte[] Image { get; set; }
+        public string ImageFormat { get; set; }
     }
 }

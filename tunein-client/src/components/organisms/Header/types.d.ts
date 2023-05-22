@@ -1,11 +1,11 @@
 export interface HeaderItemsProps {
-    href: string;
-    label: string;
+  href: string;
+  label: string;
 }
 export interface StyledHeaderProps {
-    isLight?: boolean;
-    isHighlighted?: boolean;
+  isLight?: boolean;
+  isHighlighted?: boolean;
 }
 export interface HeaderProps extends StyledHeaderProps {
-    items: HeaderItemsProps[];
+  items: HeaderItemsProps[];
 }

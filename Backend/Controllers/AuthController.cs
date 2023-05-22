@@ -19,15 +19,17 @@ namespace Backend.Controllers
 
         private readonly AuthService _authService;
         private readonly ChatService _chatService;
+        private readonly UserService _userService;
 
         #endregion Properties
 
         #region Constructors
 
-        public AuthController(AuthService authService, ChatService chatService)
+        public AuthController(AuthService authService, ChatService chatService, UserService userService)
         {
             _authService = authService;
             _chatService = chatService;
+            _userService = userService;
         }
 
         #endregion Constructors
@@ -60,9 +62,22 @@ namespace Backend.Controllers
             return finalUrl;
         }
 
+        /// <summary>
+        /// Asynchronous method for creating a user's account
+        /// </summary>
+        /// <param name="newUser">Object containing information about the new user</param>
+        /// <returns>Error or success message</returns>
+        /// <response code="201">Success message</response>
+        /// <response code="409">Error message</response>
+        /// <response code="500">Error message</response>
+        /// <response code="502">Error message</response>
         [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignUpAsync")]
+        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 409)]
+        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(typeof(string), 502)]
         public async Task<IActionResult> SignUpAsync(SignUpViewModel newUser)
         {
             bool userExists = await _authService.CheckIfUserExistsAsync(newUser.Email);
@@ -104,9 +119,23 @@ namespace Backend.Controllers
             return StatusCode(createResult.StatusCode, createResult.Message);
         }
 
+        /// <summary>
+        /// Asynchronous method for confirming a user's account
+        /// </summary>
+        /// <param name="email">User's email</param>
+        /// <param name="confirmationGUID">Identifier passed in the URL of the link in the confirmation email</param>
+        /// <returns>Error or success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
         [HttpPut]
         [AllowAnonymous]
         [Route("Auth/ConfirmAccountAsync")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> ConfirmAccountAsync(string email, Guid confirmationGUID)
         {
             var result = await _authService.ConfirmAccountAsync(email, confirmationGUID);
@@ -114,14 +143,25 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result.Message);
         }
 
+        /// <summary>
+        /// Asynchronous method for sending an email to the user with the purpose of recovering his password
+        /// </summary>
+        /// <param name="email">User's email</param>
+        /// <returns>Error or success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
         [HttpGet]
         [AllowAnonymous]
         [Route("Auth/RecoverPasswordAsync")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> RecoverPasswordAsync(string email)
         {
             string host = Request.Host.Host;
             Guid passwordRecoveryGUID = Guid.NewGuid();
-            var getResult = await _authService.GetUserAsync(email, null);
+            var getResult = await _userService.GetUserAsync(email, null);
 
             if (getResult.IsSuccess == false)
             {
@@ -139,9 +179,22 @@ namespace Backend.Controllers
             return StatusCode(emailResult.StatusCode, emailResult.Message);
         }
 
+        /// <summary>
+        /// Asynchronous method for changing the user's password after password recovery was requested
+        /// </summary>
+        /// <param name="newPassword">Object containing inofmration necessary to change the password</param>
+        /// <returns>Error or success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
         [HttpPut]
         [AllowAnonymous]
         [Route("Auth/ChangePasswordAsync")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel newPassword)
         {
             var result = await _authService.ChangePasswordAsync(newPassword.Email, newPassword.Password, newPassword.PasswordRecoveryGUID);
@@ -149,9 +202,24 @@ namespace Backend.Controllers
             return StatusCode(result.StatusCode, result.Message);
         }
 
+        /// <summary>
+        /// Asynchronous method for signing in to the app
+        /// </summary>
+        /// <param name="logInCredentials">Object containing authorization credentials</param>
+        /// <returns>Object containing information about the user</returns>
+        /// <response code="200">Object containing information about the user</response>
+        /// <response code="401">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        /// <response code="502">Error message</response>
         [AllowAnonymous]
         [HttpPost]
         [Route("Auth/SignInAsync")]
+        [ProducesResponseType(typeof(ReadUserDTO), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        [ProducesResponseType(typeof(string), 502)]
         public async Task<IActionResult> SignInAsync(SignInViewModel logInCredentials)
         {
             var claimsResult = await _authService.ValidateUserAndCreateClaimsAsync(logInCredentials.Email, logInCredentials.Password);
@@ -171,10 +239,14 @@ namespace Backend.Controllers
             ClaimsIdentity identity = (ClaimsIdentity)claimsResult.Result;
             string chatToken = (string)tokenResponse.Result;
 
-            Response.Cookies.Append("ChatToken", chatToken);
+            Response.Cookies.Append("ChatToken", chatToken, new CookieOptions()
+            {
+                SameSite = SameSiteMode.None,
+                Secure = true,
+            });
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            var userResult = await _authService.GetUserAsync(logInCredentials.Email, null);
+            var userResult = await _userService.GetUserAsync(logInCredentials.Email, null);
 
             if (userResult.IsSuccess == false)
             {
@@ -186,9 +258,22 @@ namespace Backend.Controllers
             return Ok(userDTO);
         }
 
+        /// <summary>
+        /// Asynchronous method for logging out of the app
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <returns>Error or success message</returns>
+        /// <response code="200">Success message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="502">Error message</response>
         [RequireRole("REGULAR_USER", "TUTOR")]
         [HttpGet]
         [Route("Auth/SignOutAsync")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 502)]
         public async Task<IActionResult> SignOutAsync()
         {
             await HttpContext.SignOutAsync("Cookies");
@@ -204,42 +289,6 @@ namespace Backend.Controllers
             }
 
             return Ok("User signed out successfully!");
-        }
-
-        [RequireRole("REGULAR_USER", "TUTOR")]
-        [HttpGet]
-        [Route("Auth/GetCurrentUserAsync")]
-        public async Task<IActionResult> GetCurrentUserAsync()
-        {
-            int userId = GetUserId();
-
-            var result = await _authService.GetUserAsync(null, userId);
-
-            if (result.IsSuccess == false)
-            {
-                return StatusCode(500, "Error while loading the user from the database");
-            }
-
-            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
-
-            return Ok(userDTO);
-        }
-
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("Auth/GetUserAsync")]
-        public async Task<IActionResult> GetUserAsync(int userId)
-        {
-            var result = await _authService.GetUserAsync(null, userId);
-
-            if (result.IsSuccess == false)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
-            ReadUserDTO userDTO = (ReadUserDTO)result.Result;
-
-            return Ok(userDTO);
         }
 
         #endregion Methods

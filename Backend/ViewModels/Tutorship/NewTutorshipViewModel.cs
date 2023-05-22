@@ -1,4 +1,5 @@
-﻿using DataAnnotationsExtensions;
+﻿using Common.CustomDataAttributes;
+using DataAnnotationsExtensions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Backend.ViewModels.Tutorship
@@ -16,5 +17,8 @@ namespace Backend.ViewModels.Tutorship
 
         [Required]
         public string Category { get; set; }
+
+        [AcceptImageFormat("image/png", "image/jpeg", "image/jpg")]
+        public IFormFile? Image { get; set; }
     }
 }

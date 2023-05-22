@@ -1,18 +1,31 @@
-import React, { PropsWithChildren, useContext, useEffect, useState } from 'react';
+import React, {
+  PropsWithChildren, useContext, useEffect, useState,
+} from 'react';
 import Header from '@components/organisms/Header';
-import * as Styled from "./styles";
-import { authorizedNav, unauthorizedNav } from "./consts";
 import Footer from '@components/organisms/Footer/indes';
 import { useRouter } from 'next/router';
-import { User_data } from '@components/context/UserContext';
+import { UserData } from '@components/context/UserContext';
+import * as Styled from './styles';
 
 const Main: React.FC<PropsWithChildren<unknown>> = ({
-    children
-  }) => {
-  const { user } = useContext(User_data);
+  children,
+}) => {
+  const { user } = useContext(UserData);
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUser, setIsUser] = useState(false);
+  const unauthorizedNav = [
+    { label: 'Register', href: '/auth/register' },
+    { label: 'Login', href: '/auth/login' },
+    { label: 'Browse', href: '/browse' },
+  ];
+  const authorizedNav = [
+    { label: 'Logout', href: '/auth/logout' },
+    { label: 'Profile', href: `/user/${user?.userName}` },
+    { label: 'Video Call', href: '/videohub' },
+    { label: 'Browse', href: '/browse' },
+  ];
+
   useEffect(() => {
     const changeHeader = () => {
       if (window.scrollY !== 0) {
@@ -21,24 +34,25 @@ const Main: React.FC<PropsWithChildren<unknown>> = ({
         setIsScrolled(false);
       }
     };
-    window.addEventListener("scroll", changeHeader);
-    return () => window.removeEventListener("scroll", changeHeader);
+    window.addEventListener('scroll', changeHeader);
+    return () => window.removeEventListener('scroll', changeHeader);
   }, [isScrolled]);
-  useEffect(()=>{
-    setIsUser(user === undefined ? false : true);
+  useEffect(() => {
+    setIsUser(user !== undefined);
   }, [user]);
+
   return (
     <Styled.Wrapper>
-        <Header 
-          items={isUser ? authorizedNav : unauthorizedNav}
-          isLight={router.asPath === "/" && !isScrolled}
-        />
-        <Styled.Main>
-          {children}
-        </Styled.Main>
-        <Footer/>
+      <Header
+        items={isUser ? authorizedNav : unauthorizedNav}
+        isLight={router.asPath === '/' && !isScrolled}
+      />
+      <Styled.Main>
+        {children}
+      </Styled.Main>
+      <Footer />
     </Styled.Wrapper>
-  )
-}
+  );
+};
 
 export default Main;

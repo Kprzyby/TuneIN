@@ -1,6 +1,7 @@
-import styled from "styled-components";
-import { Typography } from "@components/styles/typography";
-import { Musician3 } from "../../../../public/assets/svg";
+import styled from 'styled-components';
+import { Typography } from '@components/styles/typography';
+import { Musician3 } from '../../../../public/assets/svg';
+
 export const Wrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -23,7 +24,7 @@ export const Content = styled.div`
     justify-content: space-evenly;
     flex-direction: row;
     align-items: stretch;
-    background-color: ${({theme})=>theme.colors.darkMain};
+    background-color: ${({ theme }) => theme.colors.darkMain};
     @media (min-width: 0px) {  min-width: 100%; }
     @media (min-width: 1300px) { min-width: 1300px; }
 `;

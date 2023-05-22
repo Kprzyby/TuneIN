@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Props } from "./types";
+import styled from 'styled-components';
+import { Props } from './types';
 
 export const Button = styled.button<Pick<Props, 'borderSize'>>`
     align-items: center;
@@ -10,7 +10,7 @@ export const Button = styled.button<Pick<Props, 'borderSize'>>`
     box-sizing: border-box;
     display: flex;
     justify-content: center;
-    padding: ${props => props.borderSize}rem;
+    padding: ${(props) => props.borderSize}rem;
     text-decoration: none;
     user-select: none;
     white-space: nowrap;
@@ -18,8 +18,8 @@ export const Button = styled.button<Pick<Props, 'borderSize'>>`
 `;
 export const Text = styled.span<Pick<Props, 'boxSize' | 'textSize'>>`
     background-color: ${({ theme }) => theme.colors.darkMain};
-    padding: ${props => props.boxSize}rem ${props => props.boxSize * 1.3}rem;
-    font-size: ${props => props.textSize}rem;
+    padding: ${(props) => props.boxSize}rem ${(props) => props.boxSize * 1.3}rem;
+    font-size: ${(props) => props.textSize}rem;
     border-radius: 0.765rem;
     color: lightgray;
     width: 100%;

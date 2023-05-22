@@ -3,35 +3,35 @@ import { Typography } from '@components/styles/typography';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import * as Styled from "./styles";
-import { HeaderProps } from "./types";
+import * as Styled from './styles';
+import { HeaderProps } from './types';
 
 const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
   const { asPath } = useRouter();
-  //TODO: isHighlighted
+  // TODO: isHighlighted
   return (
-    <Styled.Wrapper {...{isLight}}>
-        <Inner variant="wide">
-            <Styled.ItemsWrapper>
-                <Styled.Logo variant='Logo'>
-                    <Link href="/">TuneIN</Link>
-                </Styled.Logo>
-                <ul>
-                    {items.map(({ label, href }) => {
-                        const isHighlighted = asPath.startsWith(href);
-                        return (
-                            <Styled.ListItem key={label} {...{isHighlighted}}>
-                                <Typography variant="Navigation" style={{fontSize: "inherit"}}>
-                                    <Link {...{ href }}>{label}</Link>
-                                </Typography>
-                            </Styled.ListItem>
-                        );
-                    })}
-                </ul>
-            </Styled.ItemsWrapper>
-        </Inner>
+    <Styled.Wrapper {...{ isLight }}>
+      <Inner variant="wide">
+        <Styled.ItemsWrapper>
+          <Styled.Logo variant="Logo">
+            <Link href="/">TuneIN</Link>
+          </Styled.Logo>
+          <ul>
+            {items.map(({ label, href }) => {
+              const isHighlighted = asPath.startsWith(href);
+              return (
+                <Styled.ListItem key={label} {...{ isHighlighted }}>
+                  <Typography variant="Navigation" style={{ fontSize: 'inherit' }}>
+                    <Link {...{ href }}>{label}</Link>
+                  </Typography>
+                </Styled.ListItem>
+              );
+            })}
+          </ul>
+        </Styled.ItemsWrapper>
+      </Inner>
     </Styled.Wrapper>
-  )
+  );
 };
 
 export default Header;

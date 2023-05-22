@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react"
-import * as Styled from "./styles"
-import ToggleButton from "../../molecules/ToggleButton"
+import React, { useEffect, useRef, useState } from 'react';
+import * as Styled from './styles';
+import ToggleButton from '../../molecules/ToggleButton';
 
 interface LocalCameraProps {
     localStream: MediaStream | null;
@@ -8,11 +8,10 @@ interface LocalCameraProps {
 
 const LocalCamera: React.FC<LocalCameraProps> = ({localStream}) => {
 
-    const videoRef = useRef<HTMLVideoElement | null>(null);
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
 
-    const [isVideoEnabled, setIsVideoEnabled] = useState(true);
-    const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
     const [stream, setStream] = useState<MediaStream | null>(null);
 
@@ -51,7 +50,28 @@ const LocalCamera: React.FC<LocalCameraProps> = ({localStream}) => {
                 audioTrack.enabled = !audioTrack.enabled;
             }
         }
+      })
+      .catch(() => {
+        // console.log('Error getting user media: ', error);
+      });
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
+  }, []);
+
+  const handleAudioToggle = () => {
+    if (stream) {
+      const audioTrack = stream.getAudioTracks()[0];
+      setIsAudioEnabled(!isAudioEnabled);
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+      }
     }
+  };
 
     const handleVideoToggle = () => {
         if (localStream) {
@@ -62,6 +82,7 @@ const LocalCamera: React.FC<LocalCameraProps> = ({localStream}) => {
             }
         }
     }
+  };
 
     return (
         <Styled.CameraWithButtons>

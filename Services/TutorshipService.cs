@@ -32,6 +32,14 @@ namespace Services
 
         #region Methods
 
+        private string CreateDataURL(string imageFormat, byte[] imageData)
+        {
+            string dataString = Convert.ToBase64String(imageData);
+            string result = "data:" + imageFormat + ";base64," + dataString;
+
+            return result;
+        }
+
         public async Task<ServiceResponseDTO> GetTutorshipAsync(int id)
         {
             try
@@ -56,6 +64,15 @@ namespace Services
                         Username = tutorship.CreatedBy.UserName
                     }
                 };
+
+                if (tutorship.Image.Length == 0)
+                {
+                    result.ImageDataURL = null;
+                }
+                else
+                {
+                    result.ImageDataURL = CreateDataURL(tutorship.ImageFormat, tutorship.Image);
+                }
 
                 return CreateSuccessResponse(200, "Tutorship retrieved successfully", result);
             }
@@ -109,8 +126,11 @@ namespace Services
                 response.CategoryFilterValue = dto.CategoryFilterValue;
                 response.SortInfo = dto.SortInfo;
 
-                response.Tutorships = await tutorships.
-                    Select(t => new ReadTutorshipDTO()
+                var tmpTutorships = await tutorships
+                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+
+                response.Tutorships = tmpTutorships
+                    .Select(t => new ReadTutorshipDTO()
                     {
                         Id = t.Id,
                         Title = t.Title,
@@ -121,9 +141,9 @@ namespace Services
                         {
                             Id = t.CreatedBy.Id,
                             Username = t.CreatedBy.UserName
-                        }
-                    })
-                    .ToPagedListAsync(dto.PageNumber, dto.PageSize);
+                        },
+                        ImageDataURL = t.Image.Length == 0 ? null : CreateDataURL(t.ImageFormat, t.Image)
+                    });
 
                 return CreateSuccessResponse(200, "Tutorships retrieved successfully", response);
             }
@@ -145,7 +165,9 @@ namespace Services
                     Category = dto.Category,
                     CreatedById = dto.CreatedById,
                     CreationDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now
+                    UpdatedDate = DateTime.Now,
+                    Image = dto.Image,
+                    ImageFormat = dto.ImageFormat
                 };
 
                 tutorship = await _tutorshipRepo.AddTutorshipAsync(tutorship);
@@ -163,6 +185,15 @@ namespace Services
                         Username = tutorship.CreatedBy.UserName
                     }
                 };
+
+                if (tutorship.Image.Length == 0)
+                {
+                    newTutorship.ImageDataURL = null;
+                }
+                else
+                {
+                    newTutorship.ImageDataURL = CreateDataURL(tutorship.ImageFormat, tutorship.Image);
+                }
 
                 return CreateSuccessResponse(201, "Tutorship created successfully", newTutorship);
             }
@@ -188,6 +219,8 @@ namespace Services
                 oldTutorship.Price = dto.Price;
                 oldTutorship.Category = dto.Category;
                 oldTutorship.UpdatedDate = DateTime.Now;
+                oldTutorship.Image = dto.Image;
+                oldTutorship.ImageFormat = dto.ImageFormat;
 
                 await _tutorshipRepo.UpdateTutorshipAsync(oldTutorship);
 

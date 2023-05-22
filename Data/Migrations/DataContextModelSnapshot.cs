@@ -22,6 +22,78 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Data.Entities.FileEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TrackId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TrackId");
+
+                    b.ToTable("FileEntities");
+                });
+
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Playlist");
+                });
+
+            modelBuilder.Entity("Data.Entities.PlaylistTracks", b =>
+                {
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrackInfoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlaylistId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlaylistId", "TrackInfoId");
+
+                    b.HasIndex("PlaylistId1");
+
+                    b.HasIndex("TrackInfoId");
+
+                    b.ToTable("PlaylistTracks");
+                });
+
             modelBuilder.Entity("Data.Entities.TrackInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -50,7 +122,12 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TrackInfo");
                 });
@@ -80,6 +157,13 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImageFormat")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -105,6 +189,9 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AvatarId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ChatIdentityId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -129,7 +216,7 @@ namespace Data.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserRole")
                         .IsRequired()
@@ -137,7 +224,64 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Data.Entities.FileEntity", b =>
+                {
+                    b.HasOne("Data.Entities.TrackInfo", "Track")
+                        .WithMany("FileEntities")
+                        .HasForeignKey("TrackId");
+
+                    b.Navigation("Track");
+                });
+
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany("Playlists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Data.Entities.PlaylistTracks", b =>
+                {
+                    b.HasOne("Data.Entities.Playlist", "Playlist")
+                        .WithMany()
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Playlist", null)
+                        .WithMany("PlaylistTracks")
+                        .HasForeignKey("PlaylistId1");
+
+                    b.HasOne("Data.Entities.TrackInfo", "TrackInfo")
+                        .WithMany()
+                        .HasForeignKey("TrackInfoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
+
+                    b.Navigation("TrackInfo");
+                });
+
+            modelBuilder.Entity("Data.Entities.TrackInfo", b =>
+                {
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Data.Entities.Tutorship", b =>
@@ -149,6 +293,21 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedBy");
+                });
+
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.Navigation("PlaylistTracks");
+                });
+
+            modelBuilder.Entity("Data.Entities.TrackInfo", b =>
+                {
+                    b.Navigation("FileEntities");
+                });
+
+            modelBuilder.Entity("Data.Entities.User", b =>
+                {
+                    b.Navigation("Playlists");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 import {
   TypographyProps as StyledTypographyProps,
   variant,
-  typography
-} from "styled-system";
-import { textStyles } from "../../../../src/setup/theme/partials/typography"
+  typography,
+} from 'styled-system';
+import { textStyles } from '../../../setup/theme/partials/typography';
 
 type TextVariants = keyof typeof textStyles;
 
@@ -14,5 +14,5 @@ interface TypographyProps extends StyledTypographyProps {
 
 export const Typography = styled.p<TypographyProps>`
   ${typography};
-  ${variant({ prop: "variant", variants: textStyles })}
+  ${variant({ prop: 'variant', variants: textStyles })}
 `;
