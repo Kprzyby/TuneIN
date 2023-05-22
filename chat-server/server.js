@@ -9,8 +9,9 @@ const ExpressPeerServer = require('peer').ExpressPeerServer
 const fs = require('fs')
 
 app.use(cors())
+app.use('/peerjs', ExpressPeerServer)
 
-var sslOptions = {
+const sslOptions = {
     key: fs.readFileSync('../tunein-client/tuneinCert+3-key.pem'),
     cert: fs.readFileSync('../tunein-client/tuneinCert+3.pem')
   };
@@ -44,8 +45,8 @@ publicRooms.on('connection', (socket) => {
     socket.on('join', (room, userId) => {
         socket.leave(socket.id)
         socket.join(room)
-        console.log(`User with ID: ${userId} joined room: ${room}`)
-        socket.to(room).emit('user-connected', userId)
+        console.log(`User with ID: ${userId} joined room: ${room} in publicRooms`)
+        socket.broadcast.to(room).emit('user-connected', userId)
     })
 
     socket.on('disconnect', () => {

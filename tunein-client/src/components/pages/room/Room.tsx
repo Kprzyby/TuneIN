@@ -14,7 +14,7 @@ function Room(props: { socket: Socket | undefined, room: string }) {
             const peer = new Peer()
 
             peer.on('open', id => {
-                setPeerId(id)
+                console.log('My id is: ' + id)
             })
 
             const videoGrid = document.getElementById("videoGrid")
@@ -39,7 +39,12 @@ function Room(props: { socket: Socket | undefined, room: string }) {
 
                 if (props.socket) {
                     props.socket.on("user-connected", userId => {
-                        connectToNewUser(userId, stream)
+                        console.log("User connected: " + userId)
+                        console.log(peer);
+                        if(userId !== peer.id) {
+                            console.log("USER trying to connect")
+                            connectToNewUser(userId, stream)
+                        }
                     })
 
                     props.socket.emit("join", props.room, peer.id)
