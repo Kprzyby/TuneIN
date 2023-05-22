@@ -37,7 +37,14 @@ export const FormWrapper = styled.div`
     align-content: center;
 `;
 
+export const ButtonWrapper = styled.div`
+    width: 100%; 
+    display: flex; 
+    justify-content: center;
+`;
+
 export const ClearBtn = styled.button`
+    width: max-content;
     border: unset; 
     cursor: pointer; 
     background: transparent;

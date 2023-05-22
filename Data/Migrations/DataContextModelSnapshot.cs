@@ -52,6 +52,48 @@ namespace Data.Migrations
                     b.ToTable("FileEntities");
                 });
 
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Playlist");
+                });
+
+            modelBuilder.Entity("Data.Entities.PlaylistTracks", b =>
+                {
+                    b.Property<int>("PlaylistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TrackInfoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlaylistId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlaylistId", "TrackInfoId");
+
+                    b.HasIndex("PlaylistId1");
+
+                    b.HasIndex("TrackInfoId");
+
+                    b.ToTable("PlaylistTracks");
+                });
+
             modelBuilder.Entity("Data.Entities.TrackInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -197,10 +239,44 @@ namespace Data.Migrations
                     b.Navigation("Track");
                 });
 
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.HasOne("Data.Entities.User", "User")
+                        .WithMany("Playlists")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Data.Entities.PlaylistTracks", b =>
+                {
+                    b.HasOne("Data.Entities.Playlist", "Playlist")
+                        .WithMany()
+                        .HasForeignKey("PlaylistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data.Entities.Playlist", null)
+                        .WithMany("PlaylistTracks")
+                        .HasForeignKey("PlaylistId1");
+
+                    b.HasOne("Data.Entities.TrackInfo", "TrackInfo")
+                        .WithMany()
+                        .HasForeignKey("TrackInfoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Playlist");
+
+                    b.Navigation("TrackInfo");
+                });
+
             modelBuilder.Entity("Data.Entities.TrackInfo", b =>
                 {
                     b.HasOne("Data.Entities.User", "User")
-                        .WithMany("TrackInfos")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -219,6 +295,11 @@ namespace Data.Migrations
                     b.Navigation("CreatedBy");
                 });
 
+            modelBuilder.Entity("Data.Entities.Playlist", b =>
+                {
+                    b.Navigation("PlaylistTracks");
+                });
+
             modelBuilder.Entity("Data.Entities.TrackInfo", b =>
                 {
                     b.Navigation("FileEntities");
@@ -226,7 +307,7 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.User", b =>
                 {
-                    b.Navigation("TrackInfos");
+                    b.Navigation("Playlists");
                 });
 #pragma warning restore 612, 618
         }

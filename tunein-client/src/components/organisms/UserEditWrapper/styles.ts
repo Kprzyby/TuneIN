@@ -29,9 +29,9 @@ export const NList = styled.ul`
 `;
 export const NItem = styled(Typography)<StyledProps>`
     &:hover {
-        color: ${({ isHighlighted, theme }) => isHighlighted || theme.colors.darkMainD}
+        color: ${({ isHighlighted, theme }) => isHighlighted || theme.colors.darkMainD};
     }
-    color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.colors.white : theme.colors.darkMain)}
+    color: ${({ isHighlighted, theme }) => (isHighlighted ? theme.colors.white : theme.colors.darkMain)};
 `;
 export const CWrapper = styled.div`
     width: 100%;

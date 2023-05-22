@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import useInputBar, {} from '@components/molecules/InputBar';
 import useSearchBar from '@components/molecules/SearchBar';
 import DarkButton from '@components/molecules/DarkButton';
 import useDarkButtonExpand from '@components/molecules/DarkButtonExpand';
 import SongCard from '@components/molecules/SongCard';
+import Router from 'next/router';
 import * as Styled from './styles';
 import { rootCertificates } from 'tls';
 import Router from 'next/router';
@@ -39,6 +41,7 @@ const Library: React.FC = () => {
     pickedItem: pickedCategory,
     renederDBtnExp: renderCategoryBtn,
   } = useDarkButtonExpand(listSort, headSort);
+  const { renderInputBar, barInput } = useInputBar({ type: 'search' });
 
   const { renderSearchBar, searchInput } = useSearchBar();
 
@@ -50,15 +53,19 @@ const Library: React.FC = () => {
     Router.push(`/library/song/${id}`);
   };
   useEffect(() => {
+    // console.log(pickedCollection);
+    // console.log(pickedCategory);
+    // console.log(searchInput);
+  }, [pickedCollection, pickedCategory, searchInput]);
     
     // createDBEndpoint(ENDPOINTS.library.getSongs)
     // .post()
-  }, [pickedCollection, pickedCategory, searchInput]);
+  //}, [pickedCollection, pickedCategory, searchInput]);
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.ToolBox>
-          <Styled.UpRow>{renderSearchBar}</Styled.UpRow>
+          <Styled.UpRow>{renderInputBar}</Styled.UpRow>
           <Styled.DownRow>
             <Styled.DownRowSide>
               {renderCollectionBtn}
@@ -76,7 +83,7 @@ const Library: React.FC = () => {
           </Styled.DownRow>
         </Styled.ToolBox>
         <Styled.List>
-          {songsCollection.map((i) => (
+          {songsCollection.songs.map((i) => (
             <div
               key={i.id}
               onClick={() => handleSongClicked(i.id)}

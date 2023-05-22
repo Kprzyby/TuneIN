@@ -48,7 +48,7 @@ const UserLogin: React.FC = () => {
   });
   return (
     <Styled.Wrapper>
-      <Styled.Title variant="RegisterTitile">Login</Styled.Title>
+      <Styled.Title variant="Navigation">Login</Styled.Title>
       {loading ? (
         <Loader borderColor="white transparent" />
       ) : (
@@ -64,7 +64,7 @@ const UserLogin: React.FC = () => {
 
           <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
           <Styled.Input
-            isSecure
+            type="password"
             placeholder="Password"
             id="password"
             value={formik.values.password}

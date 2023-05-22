@@ -19,7 +19,7 @@ namespace Backend.ViewModels.Tutorship
         [Required]
         public string Category { get; set; }
 
-        [AcceptImageFormat("image/png", "image/jpg")]
+        [AcceptImageFormat("image/png", "image/jpg", "image/jpeg")]
         public IFormFile? Image { get; set; }
     }
 }

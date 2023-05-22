@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 namespace Data.Repositories
 {
     [ScopedAttribute]
-    public class LibraryRepository : BaseRepository<TrackInfo>
+    public class TrackRepository : BaseRepository<TrackInfo>
     {
         #region Constructors
-        public LibraryRepository(DataContext dataContext) : base(dataContext)
+        public TrackRepository(DataContext dataContext) : base(dataContext)
         {
 
         }
 
         #endregion Constructors
         #region Methods
-        public async Task<bool> CheckIfTrackExistsByIdAsync(int id)
+        public async Task<bool> CheckIfTrackExistsAsync(int id)
         {
             var result = await DataContext.TrackInfo
                 .AnyAsync(e => e.Id == id);

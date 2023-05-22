@@ -21,7 +21,7 @@ const useRichText = ({ tuition }: Props) => {
   };
   return {
     editorState,
-    renderRichText: (
+    renderDraftForm: (
       <Styled.Wrapper>
         <Editor
           editorState={editorState}
@@ -38,6 +38,13 @@ const useRichText = ({ tuition }: Props) => {
           }}
         />
       </Styled.Wrapper>
+    ),
+    renderDraftDisplay: (
+      <Editor
+        editorState={editorState}
+        readOnly
+        toolbarHidden
+      />
     ),
   };
 };

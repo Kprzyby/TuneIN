@@ -32,25 +32,31 @@ const EditProfile = () => {
     <Styled.Wrapper>
       <Styled.Title variant="RegisterSuccess">Username</Styled.Title>
       <Styled.FormWrapper>
-        <Styled.ClearBtn type="button" onClick={() => setToggleUsername(!toggleUsername)}>
-          {toggleUsername ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
-        </Styled.ClearBtn>
+        <Styled.ButtonWrapper>
+          <Styled.ClearBtn type="button" onClick={() => setToggleUsername(!toggleUsername)}>
+            {toggleUsername ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+          </Styled.ClearBtn>
+        </Styled.ButtonWrapper>
         {toggleUsername && <SingleUpdateForm type="username" />}
       </Styled.FormWrapper>
 
       <Styled.Title variant="RegisterSuccess">Email</Styled.Title>
       <Styled.FormWrapper>
-        <Styled.ClearBtn type="button" onClick={() => setToggleEmail(!toggleEmail)}>
-          {toggleEmail ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
-        </Styled.ClearBtn>
+        <Styled.ButtonWrapper>
+          <Styled.ClearBtn type="button" onClick={() => setToggleEmail(!toggleEmail)}>
+            {toggleEmail ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+          </Styled.ClearBtn>
+        </Styled.ButtonWrapper>
         {toggleEmail && <SingleUpdateForm type="email" />}
       </Styled.FormWrapper>
 
       <Styled.Title variant="RegisterSuccess">Password</Styled.Title>
       <Styled.FormWrapper>
-        <Styled.ClearBtn type="button" onClick={() => setTogglePassword(!togglePassword)}>
-          {togglePassword ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
-        </Styled.ClearBtn>
+        <Styled.ButtonWrapper>
+          <Styled.ClearBtn type="button" onClick={() => setTogglePassword(!togglePassword)}>
+            {togglePassword ? <DarkButton text="Hide Form" /> : <DarkButton text="Show Form" />}
+          </Styled.ClearBtn>
+        </Styled.ButtonWrapper>
         {togglePassword && <RecoverPasswordForm />}
       </Styled.FormWrapper>
 
@@ -80,9 +86,11 @@ const EditProfile = () => {
       </Styled.PPList>
       {currAPicked !== user?.avatarId
         && (
-        <Styled.ClearBtn type="button" onClick={handleAChange}>
-          <DarkButton text="Change Avatar" />
-        </Styled.ClearBtn>
+          <Styled.ButtonWrapper>
+            <Styled.ClearBtn type="button" onClick={handleAChange}>
+              <DarkButton text="Change Avatar" />
+            </Styled.ClearBtn>
+          </Styled.ButtonWrapper>
         )}
     </Styled.Wrapper>
   );

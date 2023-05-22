@@ -8,6 +8,7 @@ interface Tuition {
     id: number,
     username: string,
   },
+  imageDataURL: string,
 }
 
 export interface Props {

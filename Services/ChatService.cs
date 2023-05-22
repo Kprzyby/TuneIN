@@ -8,7 +8,9 @@ using Data.DTOs.Chat;
 using Data.DTOs.Response;
 using Data.Entities;
 using Data.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Services.Hubs;
 using System.Text.Json;
 
 namespace Services
@@ -20,15 +22,17 @@ namespace Services
 
         private readonly UserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<ChatHub> _chatHub;
 
         #endregion Properties
 
         #region Constructors
 
-        public ChatService(IConfiguration configuration, UserRepository userRepository)
+        public ChatService(IConfiguration configuration, UserRepository userRepository, IHubContext<ChatHub> chatHub)
         {
             _configuration = configuration;
             _userRepository = userRepository;
+            _chatHub = chatHub;
         }
 
         #endregion Constructors
@@ -42,6 +46,62 @@ namespace Services
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
 
             return chatClient;
+        }
+
+        private async Task<ServiceResponseDTO> CheckIfChatExistsAsync(AccessToken accessToken, int userId, List<int> participantIds)
+        {
+            try
+            {
+                User user = await _userRepository.GetByIdAsync(userId);
+
+                if (user == null)
+                {
+                    return CreateFailureResponse(500, "Error while loading the current user");
+                }
+
+                ChatClient client = GetChatClient(accessToken);
+                var usersChats = client.GetChatThreads();
+
+                List<string> participantsChatIds = new List<string>();
+
+                foreach (var participantId in participantIds)
+                {
+                    User chatParticipant = await _userRepository.GetByIdAsync(participantId);
+
+                    if (chatParticipant == null)
+                    {
+                        return CreateFailureResponse(404, "One of the users provided doesn't exist");
+                    }
+
+                    participantsChatIds.Add(chatParticipant.ChatIdentityId);
+                }
+
+                participantsChatIds.Add(user.ChatIdentityId);
+
+                foreach (var chat in usersChats)
+                {
+                    string chatId = chat.Id;
+                    ChatThreadClient chatThreadClient = client.GetChatThreadClient(chatId);
+                    AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
+
+                    if (await participants.CountAsync() == participantsChatIds.Count())
+                    {
+                        bool chatExists = await participants
+                            .AllAsync(p => participantsChatIds.Contains(p.User.RawId));
+
+                        if (chatExists == true)
+                        {
+                            return CreateSuccessResponse(200, "", true);
+                        }
+                    }
+                }
+
+                return CreateSuccessResponse(200, "", false);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while checking if chat exists " + ex.Message);
+            }
         }
 
         public async Task<ServiceResponseDTO> GenerateChatAccessTokenAsync(string email)
@@ -124,10 +184,23 @@ namespace Services
             }
         }
 
-        public async Task<ServiceResponseDTO> CreateChatAsync(string? topic, List<int> participantsIds, AccessToken token)
+        public async Task<ServiceResponseDTO> CreateChatAsync(int userId, string? topic, List<int> participantsIds, AccessToken token)
         {
             try
             {
+                var chatExistsResponse = await CheckIfChatExistsAsync(token, userId, participantsIds);
+
+                if (chatExistsResponse.IsSuccess == false)
+                {
+                    return CreateFailureResponse(chatExistsResponse.StatusCode, chatExistsResponse.Message);
+                }
+                else if ((bool)chatExistsResponse.Result == true)
+                {
+                    return CreateFailureResponse(409, "A chat with those participants already exists");
+                }
+
+                participantsIds.Add(userId);
+
                 ChatClient chatClient = GetChatClient(token);
 
                 List<ChatParticipant> chatParticipants = new List<ChatParticipant>();
@@ -183,6 +256,8 @@ namespace Services
 
                 string messageId = sendChatMessageResult.Id;
 
+                await _chatHub.Clients.All.SendAsync("MessageSent");
+
                 return CreateSuccessResponse(201, "Message successfully sent", messageId);
             }
             catch (Exception ex)
@@ -195,11 +270,11 @@ namespace Services
         {
             try
             {
-                User user = await _userRepository.GetByIdAsync(userId);
+                User currentUser = await _userRepository.GetByIdAsync(userId);
 
-                if (user == null)
+                if (currentUser == null)
                 {
-                    CreateFailureResponse(500, "Error while loading the current user");
+                    return CreateFailureResponse(500, "Error while loading the current user");
                 }
 
                 ChatClient client = GetChatClient(token);
@@ -225,7 +300,7 @@ namespace Services
                             Message = message.Content.Message,
                             SenderId = message.Sender.RawId,
                             SenderName = message.SenderDisplayName,
-                            UserIsSender = message.Sender.RawId == user.ChatIdentityId ? true : false
+                            UserIsSender = message.Sender.RawId == currentUser.ChatIdentityId ? true : false
                         };
                     }
                     else
@@ -246,11 +321,32 @@ namespace Services
                 AsyncPageable<ChatParticipant> participants = chatThreadClient.GetParticipantsAsync();
                 List<ChatParticipant> chatParticipants = await participants.ToListAsync();
 
+                List<ChatParticipantDTO> chatParticipantDTOs = new List<ChatParticipantDTO>();
+
+                foreach (ChatParticipant chatParticipant in chatParticipants)
+                {
+                    User user = await _userRepository
+                        .GetUserByChatIdAsync(chatParticipant.User.RawId);
+
+                    if (user != null)
+                    {
+                        ChatParticipantDTO chatParticipantDTO = new ChatParticipantDTO()
+                        {
+                            UserId = user.Id,
+                            Email = user.Email,
+                            Username = user.UserName,
+                            AvatarId = user.AvatarId
+                        };
+
+                        chatParticipantDTOs.Add(chatParticipantDTO);
+                    }
+                }
+
                 GetChatDTO result = new GetChatDTO()
                 {
                     Id = chatThread.Id,
                     Topic = chatThread.Topic,
-                    Participants = chatParticipants,
+                    Participants = chatParticipantDTOs,
                     Messages = messages,
                     ContinuationToken = messagesPage.ContinuationToken
                 };
@@ -325,7 +421,7 @@ namespace Services
 
                 List<ChatMessageDTO> messages = new List<ChatMessageDTO>();
 
-                foreach (ChatMessage message in messagesPage.Values)
+                foreach (ChatMessage message in messagesPage.Values.OrderBy(m => m.CreatedOn))
                 {
                     ChatMessageDTO messageDTO;
                     if (message.Type == ChatMessageType.Text)
