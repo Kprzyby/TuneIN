@@ -137,6 +137,39 @@ namespace Services
                 return CreateFailureResponse(500, "Error while retrieving the playlist");
             }
         }
+
+        public async Task<ServiceResponseDTO> GetPlaylistDataAsync(int id)
+        {
+            try
+            {
+                Playlist playlist = await _playlistRepository.GetPlaylistAsync(id);
+
+                if (playlist == null)
+                {
+                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                }
+
+                GetPlaylistDataDTO result = new GetPlaylistDataDTO()
+                {
+                    Id = playlist.Id,
+                    Name = playlist.Name,
+                    TrackAmount = playlist.PlaylistTracks.Count(pt => pt.PlaylistId == id),
+                    Author = new ReadTutorshipAuthorDTO()
+                    {
+                        Id = playlist.User.Id,
+                        Username = playlist.User.UserName
+                    }
+                };
+
+
+                return CreateSuccessResponse(200, "Playlist retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while retrieving the playlist");
+            }
+        }
+
         public async Task<ServiceResponseDTO> AddPlaylistAsync(string name, int userId)
         {
             try
