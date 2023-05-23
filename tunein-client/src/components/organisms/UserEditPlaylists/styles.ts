@@ -2,9 +2,10 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
     width: 100%;
-    max-height: 80vh;
+    height: 80vh;
     display: flex;
     flex-flow: column nowrap;
+    position: relative;
 `;
 export const Header = styled.div`
     width: 100%;
