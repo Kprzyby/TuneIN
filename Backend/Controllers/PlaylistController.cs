@@ -106,6 +106,76 @@ namespace Backend.Controllers
         }
 
         /// <summary>
+        /// Asynchronous method for loading a playlist specified by an id with sorting and filtering values
+        /// </summary>
+        /// <param name="playlistId">Id of the playlist</param>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <returns>Object containing information about the track</returns>
+        /// <response code="200">Object containing information about the playlist</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        [HttpPost]
+        [Route("Playlist/WIP/{playlistId}", Name = "WIP")]
+        [ProducesResponseType(typeof(ReadPlaylistDTO), 200)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> WIP(int playlistId)
+        {
+            var result = await _playlistService.GetPlaylistAsync(playlistId);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            ReadPlaylistDTO playlistDTO = (ReadPlaylistDTO)result.Result;
+
+            return Ok(playlistDTO);
+        }
+
+        /// <summary>
+        /// Asynchronous method for getting the amount of tracks that are in the playlist specified by id
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks> 
+        /// <param name="playlistId">Id of the playlist from which we want to know the amount of tracks</param>
+        /// <returns>Object containing playlist's id, name and amount of tracks that are in it</returns>
+        /// <response code="200">Object containing id, name and amount of tracks in a playlist</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
+        /// <response code="500">Error message</response>
+        [HttpGet]
+        [Route("Playlist/GetAmountAsync/{playlistId}")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(GetPlaylistDataDTO), 200)]
+        [ProducesResponseType(typeof(string), 403)]
+        [ProducesResponseType(typeof(string), 404)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetAmountAsync(int playlistId)
+        {
+            int userId = GetUserId();
+
+            var playlist = await _playlistService.GetPlaylistDataAsync(playlistId);
+
+            if (playlist.IsSuccess == false)
+            {
+                return StatusCode(playlist.StatusCode, playlist.Message);
+            }
+
+            GetPlaylistDataDTO readPlaylistDTO = (GetPlaylistDataDTO)playlist.Result;
+
+            if (userId != readPlaylistDTO.Author.Id)
+            {
+                return StatusCode(403, "You can't modify the playlist that you don't own");
+            }
+
+            return Ok(readPlaylistDTO);
+        }
+
+        /// <summary>
         /// Asynchronous method for adding a new empty playlist
         /// </summary>
         /// <remarks>
@@ -241,7 +311,8 @@ namespace Backend.Controllers
         /// <param name="trackId">Id of the track which we want to add an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
         /// <response code="201">Track added succesfilly</response>
-        /// <response code="409">Error message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
         [HttpPut]
         [Route("Playlist/AddTrackToPlaylistAsync/{playlistId}")]
@@ -295,7 +366,8 @@ namespace Backend.Controllers
         /// <param name="trackId">Id of the track which we want to remove from an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
         /// <response code="201">Track added succesfilly</response>
-        /// <response code="409">Error message</response>
+        /// <response code="403">Error message</response>
+        /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
         [HttpDelete]
         [Route("Playlist/DeleteTrackFromPlaylistAsync/{playlistId}")]
@@ -338,6 +410,7 @@ namespace Backend.Controllers
             return StatusCode(204);
 
         }
+
 
         #endregion Methods
     }
