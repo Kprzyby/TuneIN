@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
     opacity: 0.8;
     border: unset;
     border-radius: 1rem;
+    cursor: pointer;
     display: flex;
     &:hover {
         background-color: ${({ theme }) => theme.colors.darkMain};
