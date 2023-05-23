@@ -224,7 +224,7 @@ namespace Backend.Controllers
 
             if (result.IsSuccess == false)
             {
-                StatusCode(result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, result.Message);
             }
 
             return StatusCode(204);
@@ -278,7 +278,7 @@ namespace Backend.Controllers
 
             if (result.IsSuccess == false)
             {
-                StatusCode(result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, result.Message);
             }
 
             return StatusCode(204);
@@ -332,7 +332,7 @@ namespace Backend.Controllers
 
             if (result.IsSuccess == false)
             {
-                StatusCode(result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, result.Message);
             }
 
             return StatusCode(204);

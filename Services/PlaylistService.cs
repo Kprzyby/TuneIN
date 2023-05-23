@@ -204,7 +204,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
@@ -226,9 +226,9 @@ namespace Services
                     return CreateFailureResponse(404, "Playlist with such an id was not found");
                 }
 
-                var trackExistInPlaylist = oldPlaylist.PlaylistTracks.FirstOrDefault(pt => pt.TrackInfoId == trackId);
+                var isTrackInPlaylist = oldPlaylist.PlaylistTracks.Any(pt => pt.TrackInfoId == trackId && pt.PlaylistId == playlistId);
 
-                if (trackExistInPlaylist != null)
+                if (isTrackInPlaylist)
                 {
                     return CreateFailureResponse(404, "Track with such an id already exists in playlist");
                 }
@@ -247,7 +247,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
@@ -284,7 +284,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
