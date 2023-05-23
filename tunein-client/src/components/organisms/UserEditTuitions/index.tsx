@@ -43,7 +43,7 @@ const EditTuitions:React.FC = () => {
           onClick={() => setAddItem(!addItem)}
         >
           <Styled.AddBtn>
-            <DarkButton text="Add new Tuition" />
+            <DarkButton text="Add New Tutorship" />
           </Styled.AddBtn>
         </div>
         {addItem && <TuitionForm />}

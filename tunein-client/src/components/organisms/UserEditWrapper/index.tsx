@@ -5,7 +5,7 @@ import EditProfile from '../UserEditProfile';
 import EditPlaylists from '../UserEditPlaylists';
 
 const EditCnt: React.FC = () => {
-  const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tuitions' }];
+  const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tutorships' }];
   const [pNaviagtion, setPNavigation] = useState(nList[0].label);
   const getEComponent = () => {
     let component;
@@ -16,7 +16,7 @@ const EditCnt: React.FC = () => {
       case 'Playlists':
         component = <EditPlaylists />;
         break;
-      case 'Tuitions':
+      case 'Tutorships':
         component = <EditTuitions />;
         break;
       default:

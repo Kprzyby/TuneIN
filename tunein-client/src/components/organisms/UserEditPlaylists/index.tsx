@@ -16,6 +16,9 @@ const EditPlaylists: React.FC = () => {
     // TODO: handle route change to picked playlist
     console.log(name);
   };
+  const handleDeletePlaylist = (name: string) => {
+    console.log(`delete Playlist with name: ${name}`);
+  };
   const handleAddPlaylist = () => {
     // TODO: handle add new playlist
     setIsNewPlaylist(false);
@@ -78,13 +81,26 @@ const EditPlaylists: React.FC = () => {
           let isLast = false;
           if (id === Playlists.length - 1) isLast = true;
           return (
-            <li style={{ display: 'flex' }}>
+            <li style={{ display: 'flex', flexFlow: 'row nowrap' }}>
               <Styled.ClearBtn type="button" onClick={() => handlePlaylistClick(playlist.name)}>
                 <PlaylistCard
                   {...playlist}
                   {...{ styled: { isLast } }}
                 />
               </Styled.ClearBtn>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                minHeight: '100%',
+                flex: '1',
+              }}
+              >
+                <Styled.ClearBtn type="button" onClick={() => handleDeletePlaylist(playlist.name)}>
+                  <DarkButton>
+                    <Typography variant="EditorList">Delete</Typography>
+                  </DarkButton>
+                </Styled.ClearBtn>
+              </div>
             </li>
           );
         })}
