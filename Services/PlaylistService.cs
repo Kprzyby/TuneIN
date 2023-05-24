@@ -1,9 +1,10 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Library;
+using Data.DTOs.Playlist;
+using Data.DTOs.Response;
+using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
-using Data.DTOs.Tutorship;
-using Data.DTOs.User;
 using X.PagedList;
 using Data.DTOs.Response;
 using Data.DTOs.Playlist;
@@ -31,7 +32,7 @@ namespace Services
 
         #endregion Constructors
 
-        #region Methods   
+        #region Methods
 
         public async Task<ServiceResponseDTO> GetPlaylistsAsync(GetPlaylistsDTO dto)
         {
@@ -76,7 +77,6 @@ namespace Services
                                 Username = ti.TrackInfo.User.UserName
                             }
                         }),
-
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
@@ -230,30 +230,32 @@ namespace Services
             }
         }
 
-
-        public async Task<ServiceResponseDTO> GetPlaylistDataAsync(int id)
+        public async Task<ServiceResponseDTO> GetPlaylistsDataAsync(string playlistName, int userId)
         {
             try
             {
-                Playlist playlist = await _playlistRepository.GetPlaylistAsync(id);
+                IQueryable<Playlist> playlists = _playlistRepository.GetPlaylists();
 
-                if (playlist == null)
+                playlists = playlists.Where(p => p.User.Id == userId);
+
+                if (!String.IsNullOrEmpty(playlistName))
                 {
-                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                    playlists = playlists.Where(p => p.Name.StartsWith(playlistName));
                 }
 
-                GetPlaylistDataDTO result = new GetPlaylistDataDTO()
-                {
-                    Id = playlist.Id,
-                    Name = playlist.Name,
-                    TrackAmount = playlist.PlaylistTracks.Count(pt => pt.PlaylistId == id),
-                    Author = new ReadTutorshipAuthorDTO()
+                List<GetPlaylistDataDTO> result = await playlists
+                    .Select(p => new GetPlaylistDataDTO()
                     {
-                        Id = playlist.User.Id,
-                        Username = playlist.User.UserName
-                    }
-                };
-
+                        Id = p.Id,
+                        Name = p.Name,
+                        TrackAmount = p.PlaylistTracks.Count(),
+                        Author = new ReadUserDTO()
+                        {
+                            Id = p.User.Id,
+                            UserName = p.User.UserName
+                        }
+                    })
+                    .ToListAsync();
 
                 return CreateSuccessResponse(200, "Playlist retrieved successfully", result);
             }
@@ -267,7 +269,6 @@ namespace Services
         {
             try
             {
-
                 Playlist playlist = new Playlist()
                 {
                     Name = name,
@@ -285,11 +286,9 @@ namespace Services
                         Id = playlist.User.Id,
                         Username = playlist.User.UserName
                     }
-
                 };
 
                 return CreateSuccessResponse(201, "Playlist added successfully", result);
-
             }
             catch (Exception ex)
             {
@@ -302,7 +301,6 @@ namespace Services
             try
             {
                 await _playlistRepository.RemoveByIdAndSaveChangesAsync(id);
-
             }
             catch (Exception ex)
             {

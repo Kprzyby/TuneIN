@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as Styled from "./styles";
 import { Props } from "./types";
-import { ENDPOINTS, createDBEndpoint } from "../../../../api/endpoint";
+import { ENDPOINTS, createDBEndpoint } from "../../../api/endpoint";
 import { Console } from "console";
 
 const Song: React.FC<Props> = ({ id }) => {
