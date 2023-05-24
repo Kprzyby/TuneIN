@@ -14,5 +14,8 @@ namespace Backend.ViewModels.Playlist
         public int PageNumber { get; set; }
 
         public string? PlaylistNameFilterValue { get; set; }
+        public string? TrackNameFilterValue { get; set; }
+
+        public string? DescriptionTagsFilterValue { get; set; }
     }
 }

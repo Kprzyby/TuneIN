@@ -11,6 +11,7 @@ import NavBar from './icons/Menu-Circles.svg';
 import MagnifyingGlass from './icons/MagnifyingGlass.svg';
 import MusicNote from './icons/MusicNote.svg';
 import Message from './icons/Message.svg';
+import Folder from './icons/Folder.svg';
 
 const Musicians = [
   { Musician: Musician1 },
@@ -23,5 +24,5 @@ const Musicians = [
 export {
   Twitter, Youtube, Instagram,
   Musicians, Musician1, Musician2, Musician3, Musician4, Musician5, Musician6,
-  NavBar, MagnifyingGlass, MusicNote, Message,
+  NavBar, MagnifyingGlass, MusicNote, Message, Folder,
 };
