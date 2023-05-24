@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import * as Styled from './styles';
 import EditTuitions from '../UserEditTuitions';
 import EditProfile from '../UserEditProfile';
+import EditPlaylists from '../UserEditPlaylists';
 
 const EditCnt: React.FC = () => {
   const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tuitions' }];
@@ -13,13 +14,13 @@ const EditCnt: React.FC = () => {
         component = <EditProfile />;
         break;
       case 'Playlists':
-        component = 'temp';
+        component = <EditPlaylists />;
         break;
       case 'Tuitions':
         component = <EditTuitions />;
         break;
       default:
-        component = 'temp';
+        component = <EditProfile />;
         break;
     }
     return component;

@@ -7,7 +7,7 @@ export const Wrapper = styled.div<StyledHeaderProps>`
     ? ` position: fixed;
             color: ${theme.colors.darkMainD};
             background-color: transparent;`
-    : ` position: sticky;
+    : ` position: fixed;
             color: ${theme.colors.darkMainL};
             background-color: ${theme.colors.darkMain};`)
 };
@@ -19,6 +19,7 @@ export const Wrapper = styled.div<StyledHeaderProps>`
     z-index: 2;
     padding-top: 1rem;
     padding-bottom: 0.5rem;
+    transition: all 0.15s linear;
 `;
 export const ItemsWrapper = styled.div`
     display: flex;
