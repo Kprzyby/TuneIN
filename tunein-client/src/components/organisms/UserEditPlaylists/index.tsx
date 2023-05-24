@@ -5,22 +5,37 @@ import PlaylistCard from '@components/molecules/PlaylistCard';
 import DarkButton from '@components/molecules/DarkButton';
 import * as Styled from './styles';
 import { PlaylistType } from './types';
-import { Playlists } from './consts';
+import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
+import Router from 'next/router';
 
 const EditPlaylists: React.FC = () => {
+  const [playlists, setPlaylists]=useState([
+    {
+      id:0,
+      name:'',
+      trackAmount:0
+    }
+  ]);
   const [isNewPlaylist, setIsNewPlaylist] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const { renderInputBar, barInput } = useInputBar({});
 
   const handlePlaylistClick = (name: string) => {
-    // TODO: handle route change to picked playlist
+    Router.push('/library');
     console.log(name);
   };
   const handleDeletePlaylist = (name: string) => {
     console.log(`delete Playlist with name: ${name}`);
   };
   const handleAddPlaylist = () => {
-    // TODO: handle add new playlist
+    if(newPlaylistName!=''){
+      createDBEndpoint(ENDPOINTS.library.addPlaylist+newPlaylistName)
+      .post({playlistName:newPlaylistName})
+      .then(()=>{
+        loadPlaylists();
+      });
+    }
+
     setIsNewPlaylist(false);
     if (!newPlaylistName) return;
     console.log(`new Playlist with name: ${newPlaylistName}`);
@@ -28,9 +43,18 @@ const EditPlaylists: React.FC = () => {
   };
 
   useEffect(() => {
-    // TODO: handle filter playlists
+    loadPlaylists();
     console.log(barInput);
   }, [barInput]);
+
+  const loadPlaylists=()=>{
+    createDBEndpoint(ENDPOINTS.library.getPlaylistsData)
+    .get({playlistName:barInput})
+    .then((res)=>{
+      const tmpData=res.data;
+      setPlaylists(tmpData);
+    })
+  }
 
   return (
     <Styled.Wrapper>
@@ -77,11 +101,11 @@ const EditPlaylists: React.FC = () => {
         width: '100%', maxHeight: '100%', overflow: 'auto', position: 'relative',
       }}
       >
-        {Playlists.map((playlist: PlaylistType, id) => {
+        {playlists.map((playlist: PlaylistType, index) => {
           let isLast = false;
-          if (id === Playlists.length - 1) isLast = true;
+          if (index === playlists.length - 1) isLast = true;
           return (
-            <li style={{ display: 'flex', flexFlow: 'row nowrap' }}>
+            <li style={{ display: 'flex', flexFlow: 'row nowrap' }} key={playlist.id}>
               <Styled.ClearBtn type="button" onClick={() => handlePlaylistClick(playlist.name)}>
                 <PlaylistCard
                   {...playlist}

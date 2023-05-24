@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage, GetStaticProps } from 'next';
-import Song from '../../../../organisms/Library/Song';
+import Song from '../../../../organisms/Song';
 import withAuth from '../../../../../api/pageAuth';
 import { Props } from './types';
 import { useRouter } from 'next/router';

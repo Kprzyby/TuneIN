@@ -1,6 +1,6 @@
 export type Props = {
   name: string;
-  count: number;
+  trackAmount: number;
   styled: StyledProps;
 };
 export type StyledProps = {
