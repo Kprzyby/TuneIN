@@ -32,7 +32,9 @@ export const ENDPOINTS = {
     sendMessage: 'Chat/SendMessageAsync',
   },
   library: {
-    getPlaylist:'Playlist/GetPlaylistAsync/'
+    getPlaylist:'Playlist/GetPlaylistAsync/',
+    getPlaylistsData:'Playlist/GetAmountsAsync',
+    addPlaylist:'Playlist/AddPlaylistAsync/'
   },
 };
 // TODO: change any
