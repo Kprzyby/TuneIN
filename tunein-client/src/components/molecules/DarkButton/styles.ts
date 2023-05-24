@@ -2,16 +2,13 @@ import { Typography } from '@components/styles/typography';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-export const Box = styled.div`
     width: auto;
     background-color: ${({ theme }) => theme.colors.darkMainL};
     opacity: 0.8;
     border: unset;
     border-radius: 1rem;
+    cursor: pointer;
+    display: flex;
     &:hover {
         background-color: ${({ theme }) => theme.colors.darkMain};
     }

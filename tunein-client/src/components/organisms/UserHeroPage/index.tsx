@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import ProfilePicture from '@components/atoms/ProfilePicture';
 import { Typography } from '@components/styles/typography';
 import DarkButton from '@components/molecules/DarkButton';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { UserData } from '@components/context/UserContext';
+import ProfilePicture from '@components/atoms/ProfilePicture';
 import * as Styled from './styles';
 import { Props } from './types';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
@@ -16,6 +16,20 @@ const UserHeroPage: React.FC<Props> = ({
   const [path, setPath] = useState<string | undefined>(undefined);
   const [tuitCounter, setTuitCounter] = useState(0);
   const [playlCounter, setPlaylCounter] = useState(0);
+  const handleSendMessage = () => {
+    createDBEndpoint(ENDPOINTS.chat.createChat)
+      .post({ topic: 'Message', participantsIds: [id] }, false)
+      .catch((error) => {
+        if (error.response.status === 409) {
+          console.log('Chat already exists');
+        } else {
+          console.log(error.response.data);
+        }
+      })
+      .finally(() => {
+        router.push(`/user/${userName}/messages`);
+      });
+  };
   useEffect(() => {
     setPath(router.asPath);
     createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + id)
@@ -44,7 +58,9 @@ const UserHeroPage: React.FC<Props> = ({
             flexFlow: 'row nowrap',
           }}
           >
-            <ProfilePicture id={avatarId} />
+            <Styled.AvatarWrapper>
+              <ProfilePicture id={avatarId} width={8} height={8} />
+            </Styled.AvatarWrapper>
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -65,9 +81,23 @@ const UserHeroPage: React.FC<Props> = ({
               </Typography>
             </div>
           </div>
-          {user?.userName === userName && path !== undefined && (
-            <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
-          )}
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {user !== undefined && user?.userName !== userName && path !== undefined && (
+              <button
+                type="button"
+                onClick={handleSendMessage}
+                style={{ background: 'transparent', cursor: 'pointer', border: 'unset' }}
+              >
+                <DarkButton text="Send Message" />
+              </button>
+            )}
+            {user?.userName === userName && path !== undefined && (
+            <>
+              <Link href={`${path}/messages`}><DarkButton text="Messages" /></Link>
+              <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
+            </>
+            )}
+          </div>
         </div>
       </Styled.Content>
     </Styled.Wrapper>
