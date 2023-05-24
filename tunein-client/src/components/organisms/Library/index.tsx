@@ -24,9 +24,9 @@ const Library: React.FC<Props> = ({playlistId}) => {
 
   const headSort = 'Sort by';
   const listSort = [
-    { title: 'By Title', value: 'title' },
-    { title: 'By Band', value: 'band' },
-    { title: 'By Genre', value: 'genre' }];
+    { title: 'By Title', value: 'TrackName' },
+    { title: 'By Band', value: 'Band' },
+    { title: 'By Genre', value: 'Genre' }];
   const {
     pickedItem: pickedCategory,
     renederDBtnExp: renderCategoryBtn,
@@ -42,9 +42,17 @@ const Library: React.FC<Props> = ({playlistId}) => {
   };
   useEffect(() => {
     console.log(pickedCategory);
+    console.log(barInput);
+    const pagingInfo={
+      TrackNameFilterValue:barInput,
+      SortInfo:{
+          key:pickedCategory,
+          value:'asc'
+      }
+    };
     //createDBEndpoint(ENDPOINTS.library.getPlaylist+playlistId)
     createDBEndpoint(ENDPOINTS.library.getPlaylist+7)
-    .get()
+    .post(pagingInfo)
     .then((res)=>{
       const tmpSongs:TrackInfoType[]=res.data.trackInfos;
       setSongs(tmpSongs);
