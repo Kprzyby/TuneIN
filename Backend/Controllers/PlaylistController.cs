@@ -29,8 +29,7 @@ namespace Backend.Controllers
 
         #endregion Constructors
 
-        #region Methods  
-
+        #region Methods
 
         /// <summary>
         /// Asynchronous method for loading all playlists
@@ -110,7 +109,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistName">Name of the playlist that you want to create</param>
         /// <returns>Object containing information about a new playlist along with a route to the get method</returns>
         /// <response code="201">Playlist added succesfilly</response>
@@ -228,7 +227,6 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
 
         /// <summary>
@@ -236,7 +234,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistId">Id of the playlist to which we want to add an existing track</param>
         /// <param name="trackId">Id of the track which we want to add an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
@@ -282,7 +280,6 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
 
         /// <summary>
@@ -290,7 +287,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistId">Id of the playlist from which we want to remove an existing track</param>
         /// <param name="trackId">Id of the track which we want to remove from an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
@@ -336,7 +333,6 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
 
         #endregion Methods

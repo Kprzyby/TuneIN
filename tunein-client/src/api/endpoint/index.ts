@@ -31,7 +31,9 @@ export const ENDPOINTS = {
     getMessages: 'Chat/GetMessagesAsync',
     sendMessage: 'Chat/SendMessageAsync',
   },
-  library: 'LIBRARY',
+  library: {
+    getPlaylist:'Playlist/GetPlaylistAsync/'
+  },
 };
 // TODO: change any
 export const createDBEndpoint = (endpoint: string) => {

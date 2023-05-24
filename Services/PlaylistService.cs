@@ -30,7 +30,7 @@ namespace Services
 
         #endregion Constructors
 
-        #region Methods   
+        #region Methods
 
         public async Task<ServiceResponseDTO> GetPlaylistsAsync(GetPlaylistsDTO dto)
         {
@@ -75,7 +75,6 @@ namespace Services
                                 Username = ti.TrackInfo.User.UserName
                             }
                         }),
-
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
@@ -137,11 +136,11 @@ namespace Services
                 return CreateFailureResponse(500, "Error while retrieving the playlist");
             }
         }
+
         public async Task<ServiceResponseDTO> AddPlaylistAsync(string name, int userId)
         {
             try
             {
-
                 Playlist playlist = new Playlist()
                 {
                     Name = name,
@@ -159,11 +158,9 @@ namespace Services
                         Id = playlist.User.Id,
                         Username = playlist.User.UserName
                     }
-
                 };
 
                 return CreateSuccessResponse(201, "Playlist added successfully", result);
-
             }
             catch (Exception ex)
             {
@@ -176,7 +173,6 @@ namespace Services
             try
             {
                 await _playlistRepository.RemoveByIdAndSaveChangesAsync(id);
-
             }
             catch (Exception ex)
             {
