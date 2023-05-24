@@ -1,11 +1,8 @@
-﻿using Common.CustomDataAttributes;
-using Microsoft.AspNetCore.Mvc;
-using Backend.ViewModels.Library;
-using Services;
-using Data.DTOs.Library;
+﻿using Backend.ViewModels.Playlist;
+using Common.CustomDataAttributes;
 using Data.DTOs.Playlist;
-using Data.Entities;
-using Backend.ViewModels.Playlist;
+using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace Backend.Controllers
 {
@@ -29,8 +26,7 @@ namespace Backend.Controllers
 
         #endregion Constructors
 
-        #region Methods  
-
+        #region Methods
 
         /// <summary>
         /// Asynchronous method for loading all playlists
@@ -140,7 +136,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistId">Id of the playlist from which we want to know the amount of tracks</param>
         /// <returns>Object containing playlist's id, name and amount of tracks that are in it</returns>
         /// <response code="200">Object containing id, name and amount of tracks in a playlist</response>
@@ -148,31 +144,34 @@ namespace Backend.Controllers
         /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
         [HttpGet]
-        [Route("Playlist/GetAmountAsync/{playlistId}")]
+        [Route("Playlist/GetAmountsAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
         [ProducesResponseType(typeof(GetPlaylistDataDTO), 200)]
         [ProducesResponseType(typeof(string), 403)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> GetAmountAsync(int playlistId)
+        public async Task<IActionResult> GetAmountsAsync(string? playlistName)
         {
             int userId = GetUserId();
 
-            var playlist = await _playlistService.GetPlaylistDataAsync(playlistId);
+            var playlist = await _playlistService.GetPlaylistsDataAsync(playlistName, userId);
 
             if (playlist.IsSuccess == false)
             {
                 return StatusCode(playlist.StatusCode, playlist.Message);
             }
 
-            GetPlaylistDataDTO readPlaylistDTO = (GetPlaylistDataDTO)playlist.Result;
+            List<GetPlaylistDataDTO> readPlaylistsDTO = (List<GetPlaylistDataDTO>)playlist.Result;
 
-            if (userId != readPlaylistDTO.Author.Id)
+            if (readPlaylistsDTO.Count != 0)
             {
-                return StatusCode(403, "You can't modify the playlist that you don't own");
+                if (userId != readPlaylistsDTO[0].Author.Id)
+                {
+                    return StatusCode(403, "You can't modify the playlist that you don't own");
+                }
             }
 
-            return Ok(readPlaylistDTO);
+            return Ok(readPlaylistsDTO);
         }
 
         /// <summary>
@@ -180,7 +179,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistName">Name of the playlist that you want to create</param>
         /// <returns>Object containing information about a new playlist along with a route to the get method</returns>
         /// <response code="201">Playlist added succesfilly</response>
@@ -298,7 +297,6 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
 
         /// <summary>
@@ -306,7 +304,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistId">Id of the playlist to which we want to add an existing track</param>
         /// <param name="trackId">Id of the track which we want to add an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
@@ -353,7 +351,6 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
 
         /// <summary>
@@ -361,7 +358,7 @@ namespace Backend.Controllers
         /// </summary>
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks> 
+        /// </remarks>
         /// <param name="playlistId">Id of the playlist from which we want to remove an existing track</param>
         /// <param name="trackId">Id of the track which we want to remove from an existing playlist</param>
         /// <returns>Nothing if the method executes correctly and an error message if it doesn't</returns>
@@ -408,9 +405,7 @@ namespace Backend.Controllers
             }
 
             return StatusCode(204);
-
         }
-
 
         #endregion Methods
     }

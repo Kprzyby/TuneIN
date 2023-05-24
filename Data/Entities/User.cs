@@ -21,6 +21,7 @@ namespace Data.Entities
         public Guid ConfirmationGUID { get; set; }
         public Guid? PasswordRecoveryGUID { get; set; }
         public string ChatIdentityId { get; set; }
+
         //public virtual ICollection<TrackInfo>? TrackInfos { get; set; }
         public virtual ICollection<Playlist>? Playlists { get; set; }
 
