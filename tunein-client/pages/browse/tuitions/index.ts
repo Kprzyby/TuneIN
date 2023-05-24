@@ -1,1 +1,2 @@
-export { default } from '../../../src/components/pages/browsetuitions';
+export { default } from '@components/pages/BrowseTuitions';
+
