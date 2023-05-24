@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Styled from './styles';
 import EditTuitions from '../UserEditTuitions';
 import EditProfile from '../UserEditProfile';
 import EditPlaylists from '../UserEditPlaylists';
+import { getLastViewUserEdit, setLastViewUserEdit } from '../../../api/cookie/localStorageHandler';
 
 const EditCnt: React.FC = () => {
-  const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tuitions' }];
-  const [pNaviagtion, setPNavigation] = useState(nList[0].label);
+  const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tutorships' }];
+  const [pNaviagtion, setPNavigation] = useState<undefined | string>(undefined);
   const getEComponent = () => {
     let component;
     switch (pNaviagtion) {
       case 'Profile':
         component = <EditProfile />;
+        setLastViewUserEdit('Profile');
         break;
       case 'Playlists':
         component = <EditPlaylists />;
+        setLastViewUserEdit('Playlists');
         break;
-      case 'Tuitions':
+      case 'Tutorships':
         component = <EditTuitions />;
+        setLastViewUserEdit('Tutorships');
         break;
       default:
         component = <EditProfile />;
@@ -25,6 +29,10 @@ const EditCnt: React.FC = () => {
     }
     return component;
   };
+
+  useEffect(() => {
+    setPNavigation(getLastViewUserEdit() || nList[0].label);
+  }, []);
   return (
     <Styled.LWrapper>
       <Styled.LContent>

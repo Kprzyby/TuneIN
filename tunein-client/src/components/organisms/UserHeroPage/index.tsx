@@ -16,6 +16,8 @@ const UserHeroPage: React.FC<Props> = ({
   const [path, setPath] = useState<string | undefined>(undefined);
   const [tuitCounter, setTuitCounter] = useState(0);
   const [playlCounter, setPlaylCounter] = useState(0);
+  const { user } = useContext(UserData);
+
   const handleSendMessage = () => {
     createDBEndpoint(ENDPOINTS.chat.createChat)
       .post({ topic: 'Message', participantsIds: [id] }, false)
@@ -30,6 +32,7 @@ const UserHeroPage: React.FC<Props> = ({
         router.push(`/user/${userName}/messages`);
       });
   };
+
   useEffect(() => {
     setPath(router.asPath);
     createDBEndpoint(ENDPOINTS.tutorship.getusertutorships + id)
@@ -40,8 +43,6 @@ const UserHeroPage: React.FC<Props> = ({
         setPlaylCounter(0);
       });
   }, [router.asPath]);
-  const { user } = useContext(UserData);
-  // TODO:add counters
   return (
     <Styled.Wrapper>
       <Styled.Content>
@@ -93,6 +94,7 @@ const UserHeroPage: React.FC<Props> = ({
             )}
             {user?.userName === userName && path !== undefined && (
             <>
+              <Link href={`${path}/library`}><DarkButton text="Library" /></Link>
               <Link href={`${path}/messages`}><DarkButton text="Messages" /></Link>
               <Link href={`${path}/edit`}><DarkButton text="Edit" /></Link>
             </>

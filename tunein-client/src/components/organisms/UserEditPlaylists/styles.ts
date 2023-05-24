@@ -19,5 +19,6 @@ export const ClearBtn = styled.button`
     border: unset;
     background: transparent;
     display: flex;
+    flex: auto;
     cursor: pointer;
 `;
