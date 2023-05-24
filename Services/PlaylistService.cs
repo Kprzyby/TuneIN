@@ -105,46 +105,69 @@ namespace Services
                     playlist.PlaylistTracks = playlist.PlaylistTracks.Where(pt => pt.TrackInfo.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper())).ToList();
                     //playlist.PlaylistTracks.Select(pt => pt.TrackInfo).Where(ti => ti.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()));
                 }
+                List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
 
-                if (dto.SortInfo == null)
+                sortInfo.Add((KeyValuePair<string, string>)dto.SortInfo);
+
+                playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.TrackName).ToList();
+
+                if (sortInfo[0].Value == "asc")
                 {
-                    playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.TrackName).ToList(); ;
+                    if (sortInfo[0].Key == "Genre")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.Genre).ToList();
+                    }
+                    else if (sortInfo[0].Key == "Band")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.Band).ToList();
+                    }
+                    else
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.TrackName).ToList();
+                    }
                 }
-                else
+                else if (sortInfo[0].Value == "desc")
                 {
-                    List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
+                    if (sortInfo[0].Key == "Genre")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.Genre).ToList();
+                    }
+                    else if (sortInfo[0].Key == "Band")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.Band).ToList();
+                    }
+                    else if (sortInfo[0].Key == "TrackName")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.TrackName).ToList();
+                    }
+                }
 
-                    sortInfo.Add((KeyValuePair<string, string>)dto.SortInfo);
-
-                    playlist.PlaylistTracks = SortingHelper<PlaylistTracks>.Sort(playlist.PlaylistTracks.AsQueryable(), sortInfo).ToList();
-
-                }            
 
                 GetPlaylistResponseDTO response = new GetPlaylistResponseDTO();
+                response.Id = playlist.Id;
+                response.Name = playlist.Name;
                 response.TotalCount = playlist.PlaylistTracks.Count();
                 response.TrackNameFilterValue = dto.TrackNameFilterValue;
                 response.SortInfo = dto.SortInfo;
-                response.TrackInfos = new List<ReadTrackInfoDTO>();
-
-                foreach (PlaylistTracks playlistTrack in playlist.PlaylistTracks)
+                response.Author = new ReadTutorshipAuthorDTO()
                 {
-                    ReadTrackInfoDTO trackInfoDTO = new ReadTrackInfoDTO()
+                    Id = playlist.User.Id,
+                    Username = playlist.User.UserName
+                };
+                response.TrackInfos = playlist.PlaylistTracks.Select(pt => new ReadTrackInfoDTO
+                {
+                    Id = pt.TrackInfo.Id,
+                    TrackName = pt.TrackInfo.TrackName,
+                    Band = pt.TrackInfo.Band,
+                    Genre = pt.TrackInfo.Genre,
+                    LinkToCover = pt.TrackInfo.LinkToCover,
+                    LinkToTabs = pt.TrackInfo.LinkToTabs,
+                    Author = new ReadTutorshipAuthorDTO()
                     {
-                        Id = playlistTrack.TrackInfo.Id,
-                        TrackName = playlistTrack.TrackInfo.TrackName,
-                        Band = playlistTrack.TrackInfo.Band,
-                        Genre = playlistTrack.TrackInfo.Genre,
-                        LinkToCover = playlistTrack.TrackInfo.LinkToCover,
-                        LinkToTabs = playlistTrack.TrackInfo.LinkToTabs,
-                        Author = new ReadTutorshipAuthorDTO()
-                        {
-                            Id = playlist.User.Id,
-                            Username = playlist.User.UserName
-                        }
-                    };
-
-                    response.TrackInfos.Add(trackInfoDTO);
-                }
+                        Id = playlist.User.Id,
+                        Username = playlist.User.UserName
+                    }
+                }).ToList();
 
                 return CreateSuccessResponse(200, "Playlist retrieved successfully", response);
             }

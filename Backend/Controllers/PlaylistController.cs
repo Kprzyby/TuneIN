@@ -83,10 +83,8 @@ namespace Backend.Controllers
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
         /// 
-        /// The number of the first page is 1. Both "PageNumber" and "PageSize" have to be greater or equal to 1.
-        /// 
-        /// The "SortInfo" parameter's key has to be either "Band", "Genre" or "Title (track name)" and its value either "asc" or "desc" depending on the desired sort order.
-        /// If this parameter is not provided, the tutorships will be sorted by title ascendingly.
+        /// The "SortInfo" parameter's key has to be either "Band", "Genre" or "TrackName" and its value either "asc" or "desc" depending on the desired sort order.
+        /// If this parameter is not provided, the tutorships will be sorted by TrackName ascendingly.
         /// 
         /// The trackName filter will return playlist with tracks that start with the given value (not case sensitive).
         /// </remarks>
