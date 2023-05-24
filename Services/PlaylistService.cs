@@ -6,8 +6,10 @@ using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
 using X.PagedList;
+
 using Data.DTOs.Response;
 using Data.DTOs.Playlist;
+
 using Common.Helpers;
 
 namespace Services
@@ -94,7 +96,6 @@ namespace Services
             {
                 Playlist playlist = await _playlistRepository.GetPlaylistAsync(id);
 
-
                 if (playlist == null)
                 {
                     return CreateFailureResponse(404, "Playlist with such an id was not found");
@@ -102,8 +103,9 @@ namespace Services
 
                 if (!String.IsNullOrEmpty(dto.TrackNameFilterValue))
                 {
-                    playlist.PlaylistTracks = playlist.PlaylistTracks.Where(pt => pt.TrackInfo.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper())).ToList();
-                    //playlist.PlaylistTracks.Select(pt => pt.TrackInfo).Where(ti => ti.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()));
+                    playlist.PlaylistTracks = playlist.PlaylistTracks
+                        .Where(pt => pt.TrackInfo.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()))
+                        .ToList();
                 }
                 List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
 
@@ -142,7 +144,6 @@ namespace Services
                     }
                 }
 
-
                 GetPlaylistResponseDTO response = new GetPlaylistResponseDTO();
                 response.Id = playlist.Id;
                 response.Name = playlist.Name;
@@ -175,7 +176,6 @@ namespace Services
             {
                 return CreateFailureResponse(500, "Error while retrieving the playlist");
             }
-
         }
 
         public async Task<ServiceResponseDTO> GetPlaylistAsync(int id)
@@ -188,7 +188,6 @@ namespace Services
                 {
                     return CreateFailureResponse(404, "Playlist with such an id was not found");
                 }
-
 
                 ReadPlaylistDTO result = new ReadPlaylistDTO()
                 {
