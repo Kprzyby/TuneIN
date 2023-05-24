@@ -1,19 +1,15 @@
 import styled from 'styled-components';
+import { StyledProps } from './types';
 
 export const Wrapper = styled.div`
     display: flex;
-    justify-content: center;
-    width: 100vw;
-    height: auto;
-`;
-export const Content = styled.div`
-    @media (min-width: 0px) {  min-width: 100%; }
-    @media (min-width: 900px) { min-width: 900px; }
+    flex-flow: column nowrap;
+    width: 100%;
+    height: 100%;
 `;
 export const ToolBox = styled.div`
     @media (min-width: 0px) { padding-top: 0.1rem; }
     @media (min-width: 600px) { padding-top: 0.5rem; }
-    background: transparent;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -32,13 +28,13 @@ export const DownRowSide = styled.div`
     font-size: 0.7rem;
 `;
 export const List = styled.div`
-    @media (min-width: 0px) { margin-top: 0.1rem; }
-    @media (min-width: 600px) { margin-top: 0.5rem; }
-    background-color: ${({ theme }) => theme.colors.darkMain};
-    @media (min-height: 0px) {
-        min-height: 100vh;
-    }
-    @media (min-height: 300px) {
-        min-height: 15rem;
-    }
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+`;
+export const ItemWrapper = styled.div<StyledProps>`
+    border-bottom: ${({ theme }) => theme.colors.darkMainL} 0.1rem;
+    border-bottom-style: ${({ isLast }) => (isLast ? 'unset' : 'solid')};
+    cursor: pointer;
 `;

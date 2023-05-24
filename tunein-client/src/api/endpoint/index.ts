@@ -31,10 +31,13 @@ export const ENDPOINTS = {
     getMessages: 'Chat/GetMessagesAsync',
     sendMessage: 'Chat/SendMessageAsync',
   },
-  library: {
-    getPlaylist:'Playlist/GetPlaylistAsync/',
-    getPlaylistsData:'Playlist/GetAmountsAsync',
-    addPlaylist:'Playlist/AddPlaylistAsync/'
+  playlists: {
+    getPlaylist: 'Playlist/GetPlaylistAsync/',
+    deletePlaylist: 'Playlist/DeletePlaylistAsync/',
+    renamePlaylist: 'Playlist/ChangePlaylistNameAsync/',
+    getUserPlaylists: 'Playlist/GetPlaylistsAsync',
+    getPlaylistsData: 'Playlist/GetAmountsAsync',
+    addPlaylist: 'Playlist/AddPlaylistAsync/',
   },
 };
 // TODO: change any
