@@ -3,6 +3,11 @@ using Common.CustomDataAttributes;
 using Data.DTOs.Playlist;
 using Microsoft.AspNetCore.Mvc;
 using Services;
+using Data.DTOs.Library;
+using Data.DTOs.Playlist;
+using Data.Entities;
+using Backend.ViewModels.Playlist;
+using Data.DTOs.Tutorship;
 
 namespace Backend.Controllers
 {
@@ -74,62 +79,46 @@ namespace Backend.Controllers
         /// <summary>
         /// Asynchronous method for loading a playlist specified by an id
         /// </summary>
-        /// <param name="playlistId">Id of the playlist</param>
+
         /// <remarks>
         /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// 
+        /// The "SortInfo" parameter's key has to be either "Band", "Genre" or "TrackName" and its value either "asc" or "desc" depending on the desired sort order.
+        /// If this parameter is not provided, the tutorships will be sorted by TrackName ascendingly.
+        /// 
+        /// The trackName filter will return playlist with tracks that start with the given value (not case sensitive).
         /// </remarks>
-        /// <returns>Object containing information about the track</returns>
-        /// <response code="200">Object containing information about the playlist</response>
-        /// <response code="404">Error message</response>
-        /// <response code="500">Error message</response>
-        [HttpGet]
-        [Route("Playlist/GetPlaylistAsync/{playlistId}", Name = "GetPlaylistAsync")]
-        [ProducesResponseType(typeof(ReadPlaylistDTO), 200)]
-        [ProducesResponseType(typeof(string), 404)]
-        [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> GetPlaylistAsync(int playlistId)
-        {
-            var result = await _playlistService.GetPlaylistAsync(playlistId);
-
-            if (result.IsSuccess == false)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
-            ReadPlaylistDTO playlistDTO = (ReadPlaylistDTO)result.Result;
-
-            return Ok(playlistDTO);
-        }
-
-        /// <summary>
-        /// Asynchronous method for loading a playlist specified by an id with sorting and filtering values
-        /// </summary>
         /// <param name="playlistId">Id of the playlist</param>
-        /// <remarks>
-        /// Only a user that is currently logged in and has a confirmed account can access this method
-        /// </remarks>
+        /// <param name="pagingInfo">Object containing information about paging, filtering and order</param> 
         /// <returns>Object containing information about the track</returns>
         /// <response code="200">Object containing information about the playlist</response>
         /// <response code="404">Error message</response>
         /// <response code="500">Error message</response>
         [HttpPost]
-        [Route("Playlist/WIP/{playlistId}", Name = "WIP")]
+        [Route("Playlist/GetPlaylistAsync/{playlistId}", Name = "GetPlaylistAsync")]
         [ProducesResponseType(typeof(ReadPlaylistDTO), 200)]
         [ProducesResponseType(typeof(string), 404)]
         [ProducesResponseType(typeof(string), 500)]
-        public async Task<IActionResult> WIP(int playlistId)
+        public async Task<IActionResult> GetPlaylistAsync(int playlistId, GetPlaylistFilteredViewModel pagingInfo)
         {
-            var result = await _playlistService.GetPlaylistAsync(playlistId);
+            GetPlaylistFilteredDTO dto = new GetPlaylistFilteredDTO()
+            {
+                SortInfo = pagingInfo.SortInfo,
+                TrackNameFilterValue = pagingInfo.TrackNameFilterValue,
+            };
+
+            var result = await _playlistService.GetPlaylistFilteredAsync(playlistId, dto);
 
             if (result.IsSuccess == false)
             {
                 return StatusCode(result.StatusCode, result.Message);
             }
 
-            ReadPlaylistDTO playlistDTO = (ReadPlaylistDTO)result.Result;
+            GetPlaylistResponseDTO playlistDTO = (GetPlaylistResponseDTO)result.Result;
 
             return Ok(playlistDTO);
         }
+
 
         /// <summary>
         /// Asynchronous method for getting the amount of tracks that are in the playlist specified by id
