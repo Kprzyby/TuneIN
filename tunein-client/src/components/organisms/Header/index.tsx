@@ -8,9 +8,9 @@ import { HeaderProps } from './types';
 
 const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
   const { asPath } = useRouter();
-  // TODO: isHighlighted
+  const isHomepage = asPath === '/';
   return (
-    <Styled.Wrapper {...{ isLight }}>
+    <Styled.Wrapper {...{ isLight, isHomepage }}>
       <Inner variant="wide">
         <Styled.ItemsWrapper>
           <Styled.Logo variant="Logo">
@@ -20,11 +20,13 @@ const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
             {items.map(({ label, href }) => {
               const isHighlighted = asPath.startsWith(href);
               return (
-                <Styled.ListItem key={label} {...{ isHighlighted }}>
-                  <Typography variant="Navigation" style={{ fontSize: 'inherit' }}>
-                    <Link {...{ href }}>{label}</Link>
-                  </Typography>
-                </Styled.ListItem>
+                <Link {...{ href }} key={label}>
+                  <Styled.ListItem {...{ isHighlighted }}>
+                    <Typography variant="Navigation" style={{ fontSize: 'inherit' }}>
+                      {label}
+                    </Typography>
+                  </Styled.ListItem>
+                </Link>
               );
             })}
           </ul>

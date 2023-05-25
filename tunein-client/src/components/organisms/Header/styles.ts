@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { StyledHeaderProps } from './types';
 
 export const Wrapper = styled.div<StyledHeaderProps>`
-    ${({ isLight, theme }) => (isLight
+    ${({ isLight, theme, isHomepage }) => (isLight
     ? ` position: fixed;
-            color: ${theme.colors.darkMainD};
-            background-color: transparent;`
-    : ` position: fixed;
-            color: ${theme.colors.darkMainL};
-            background-color: ${theme.colors.darkMain};`)
-};
+        color: ${theme.colors.darkMainD};
+        background-color: transparent;`
+    : ` position: ${isHomepage ? 'fixed' : 'sticky'};
+        color: ${theme.colors.darkMainL};
+        background-color: ${theme.colors.darkMain};`
+  )};
     top: 0;
     height: auto;
     width: 100%;
@@ -26,9 +26,11 @@ export const ItemsWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
 `;
-export const ListItem = styled.li`
+export const ListItem = styled.li<StyledHeaderProps>`
     display: table;
     float: right;
+    color: inherit;
+    ${({ isHighlighted, theme }) => (isHighlighted && `color: ${theme.colors.white}`)};
     @media (min-width: 0) {
         font-size: 0.3rem;
         padding: 0 0.1rem;
