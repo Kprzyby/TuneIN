@@ -120,7 +120,7 @@ namespace Backend.Controllers
         [HttpPost]
         [Route("Tracks/AddTrackAsync")]
         [RequireRole("REGULAR_USER", "TUTOR")]
-        [ProducesResponseType(typeof(string), 201)]
+        [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 409)]
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> AddTrackAsync(TrackViewModel trackInfo)
@@ -150,9 +150,8 @@ namespace Backend.Controllers
                 return StatusCode(result.StatusCode, result.Message);
             }
 
-            ReadTrackInfoDTO trackDTO = (ReadTrackInfoDTO)result.Result;
 
-            return CreatedAtRoute("GetTrackAsync", new { trackId = trackDTO.Id }, trackDTO);
+            return Ok();
         }
 
         /// <summary>
