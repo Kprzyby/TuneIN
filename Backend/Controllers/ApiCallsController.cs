@@ -1,6 +1,9 @@
 ﻿using Backend.ViewModels.Library;
 using Common.CustomDataAttributes;
 using Data.DTOs.Library;
+using Data.DTOs.Tracks;
+using Data.Entities;
+using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
@@ -12,15 +15,16 @@ namespace Backend.Controllers
         #region Properties
 
         private readonly ApiCallsService _apiCallsService;
-
+        private readonly TrackService _trackService;
 
         #endregion Properties
 
         #region Constructors
 
-        public ApiCallsController(ApiCallsService apiCallsService)
+        public ApiCallsController(ApiCallsService apiCallsService, TrackService trackService)
         {
             _apiCallsService = apiCallsService;
+            _trackService = trackService;
         }
 
         #endregion Constructors
@@ -41,28 +45,16 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(string), 500)]
         public async Task<IActionResult> GetTrackInfoAsync(string artist, string trackName)
         {
-            var trackInfo = await _apiCallsService.GetTrackInfoAsync(artist, trackName);
+            var result = await _apiCallsService.GetTrackInfoAsync(artist, trackName);
 
-            if (trackInfo == null)
+            if (result.IsSuccess == false)
             {
-                return BadRequest("Error");
-
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            if ((string)trackInfo["message"] == "Track not found")
-            {
-                return StatusCode(500, "Track not found");
-            }
+            RetrieveTrackInfoDTO trackInfo = (RetrieveTrackInfoDTO)result.Result;
 
-            TrackViewModel trackViewModel = new TrackViewModel
-            {
-                TrackName = (string)trackInfo["track"]["name"],
-                Band = (string)trackInfo["track"]["artist"]["name"],
-                Genre = (string)trackInfo["track"]["toptags"]["tag"][0]["name"],
-                LinkToCover = (string)trackInfo["track"]["album"]["image"][3]["#text"]
-            };
-
-            return Ok(trackViewModel);
+            return Ok(trackInfo);
         }
         /// <summary>
         /// Asynchronous method for calling Last.fm api to get list of tracks mathing the provided name
@@ -80,6 +72,53 @@ namespace Backend.Controllers
             var trackList = await _apiCallsService.GetSearchListAsync(name);
             if (trackList == null) return StatusCode(500, "Error");
             return Ok(trackList);
+        }
+
+        /// <summary>
+        /// Asynchronous method for calling Last.fm api to get track information and automatically adding it to db.
+        /// </summary>
+        /// <remarks>
+        /// Only a user that is currently logged in and has a confirmed account can access this method
+        /// </remarks>
+        /// <param name="artist">Name of the band/artist</param>
+        /// <param name="trackName">Name of the track</param>
+        [HttpPost]
+        [Route("APICalls/GetTrackInfoAndAddAsync")]
+        [RequireRole("REGULAR_USER", "TUTOR")]
+        [ProducesResponseType(typeof(TrackInfoDTO), 201)]
+        [ProducesResponseType(typeof(string), 500)]
+        public async Task<IActionResult> GetTrackInfoAndAddAsync(string artist, string trackName)
+        {
+            var resultFromApi = await _apiCallsService.GetTrackInfoAsync(artist, trackName);
+
+            int UserId = GetUserId();
+
+            if (resultFromApi.IsSuccess == false)
+            {
+                return StatusCode(resultFromApi.StatusCode, resultFromApi.Message);
+            }
+
+            RetrieveTrackInfoDTO trackInfo = (RetrieveTrackInfoDTO)resultFromApi.Result;
+
+            TrackInfoDTO trackInfoDTO = new TrackInfoDTO()
+            {
+                TrackName = trackInfo.TrackName,
+                Band = trackInfo.Band,
+                Genre = trackInfo.Genre,
+                LinkToCover = trackInfo.LinkToCover,
+                UserId = UserId
+            };
+
+            var result = await _trackService.AddTrackAsync(trackInfoDTO);
+
+            if (result.IsSuccess == false)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
+
+            ReadTrackInfoDTO trackDTO = (ReadTrackInfoDTO)result.Result;
+
+            return StatusCode(201);
         }
 
         #endregion Methods
