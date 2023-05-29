@@ -104,8 +104,8 @@ namespace Backend.Controllers
             {
                 TrackName = trackInfo.TrackName,
                 Band = trackInfo.Band,
-                Genre = trackInfo.Genre,
-                LinkToCover = trackInfo.LinkToCover,
+                Genre = trackInfo.Genre ?? "No know genre",
+                LinkToCover = trackInfo.LinkToCover ?? "No link to cover",
                 UserId = UserId
             };
 
