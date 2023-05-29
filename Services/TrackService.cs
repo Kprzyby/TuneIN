@@ -201,7 +201,7 @@ namespace Services
 
                 };
 
-                return CreateSuccessResponse(201, "Track added successfully", result);
+                return CreateSuccessResponse(200, "Track added successfully", result);
 
             }
             catch (Exception ex)

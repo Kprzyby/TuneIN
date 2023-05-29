@@ -47,7 +47,7 @@ namespace Services
                     TrackName = trackInfo.track.name,
                     Band = trackInfo.track.artist.name,
                     Genre = trackInfo.track.toptags.tag[0].name,
-                    LinkToCover = trackInfo.track.album.image[3].Text
+                    LinkToCover = trackInfo.track.album.image[3].Text,
                 };
 
                 return CreateSuccessResponse(200, "Track information retrieved successfully", response);

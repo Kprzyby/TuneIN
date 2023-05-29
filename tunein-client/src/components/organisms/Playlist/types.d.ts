@@ -23,3 +23,14 @@ export interface PlaylistType {
 export type StyledProps = {
   isLast: boolean;
 };
+export type SearchSongType = {
+  name: string;
+  artist: string;
+  url: string;
+};
+export type SearchSongDetailsType = {
+  band: string;
+  genre: string;
+  linkToCover: string;
+  trackName: string;
+};

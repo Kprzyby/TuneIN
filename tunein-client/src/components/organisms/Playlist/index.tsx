@@ -1,28 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext, useEffect, useState,
+} from 'react';
 import useInputBar, {} from '@components/molecules/InputBar';
 import DarkButton from '@components/molecules/DarkButton';
 import useDarkButtonExpand from '@components/molecules/DarkButtonExpand';
 import SongCard from '@components/molecules/SongCard';
 import { useRouter } from 'next/router';
 import { UserData } from '@components/context/UserContext';
+import { Typography } from '@components/styles/typography';
 import * as Styled from './styles';
-import { PlaylistType, Props } from './types';
+import {
+  PlaylistType, Props, SearchSongDetailsType, SearchSongType,
+} from './types';
 import { setLastViewUserEdit } from '../../../api/cookie/localStorageHandler';
+import { headSort, listSort } from './consts';
+import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 
 const Playlist: React.FC<Props> = ({ playlist }) => {
   const router = useRouter();
   const { user } = useContext(UserData);
+  const [isFindMore, setIsFindMore] = useState(false);
+  const [searchSongs, setSearchSongs] = useState<undefined | SearchSongType[]>(undefined);
   const [pPlaylist, setPPlaylist] = useState<undefined | PlaylistType>(undefined);
-  const headSort = 'Sort by';
-  const listSort = [
-    { title: 'By Title', value: 'title' },
-    { title: 'By Band', value: 'band' },
-    { title: 'By Genre', value: 'genre' }];
   const {
     pickedItem: pickedCategory,
     renederDBtnExp: renderCategoryBtn,
   } = useDarkButtonExpand(listSort, headSort);
-  const { renderInputBar, barInput } = useInputBar({ type: 'search' });
+  const searchInputBar = useInputBar({ type: 'search' });
+  const fmInputBar = useInputBar({});
 
   const handleEditClick = () => {
     setLastViewUserEdit('Playlists');
@@ -35,14 +40,66 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
     // TODO: add single song view
     console.log(`Song clicked: ${id}`);
   };
+  const getSongSerch = async (input: string) => {
+    await createDBEndpoint(ENDPOINTS.songs.getSongSearch)
+      .get({ name: input })
+      .then((res) => {
+        const array: SearchSongType[] = res.data;
+        setSearchSongs(array);
+      });
+  };
+  const getSongDetails = async (name: string, band: string) => {
+    let details: SearchSongDetailsType | undefined;
+    await createDBEndpoint(ENDPOINTS.songs.getTrackInfo)
+      .get({ artist: band, trackName: name })
+      .then((res) => {
+        details = res.data;
+      });
+    return details;
+  };
+  const addSongToDB = async (details: SearchSongDetailsType) => {
+    let id: string | undefined;
+    await createDBEndpoint(ENDPOINTS.songs.addSong)
+      .post(details)
+      .then((res) => {
+        id = res.data.id;
+      });
+    return id;
+  };
+  const addSongToPlaylist = async (id: string) => {
+    await createDBEndpoint(ENDPOINTS.playlists.addSong + playlist.id)
+      .put({ trackId: id })
+      .then(() => {
+        // TODO: idk make it less idiotic
+        router.reload();
+      });
+  };
+  const handleAddSong = async (name: string, band: string) => {
+    let details: SearchSongDetailsType | undefined;
+    await getSongDetails(name, band)
+      .then((res) => { details = res; });
+    if (!details) return;
+    let id: string | undefined;
+    await addSongToDB(details)
+      .then((res) => { id = res; });
+    if (!id) return;
+    addSongToPlaylist(id);
+  };
 
   useEffect(() => {
     setPPlaylist(playlist);
   }, [playlist]);
+  useEffect(() => {
+    if (fmInputBar.barInput === '') {
+      setSearchSongs(undefined);
+      return;
+    }
+    getSongSerch(fmInputBar.barInput);
+  }, [fmInputBar.barInput]);
   return (
     <Styled.Wrapper>
       <Styled.ToolBox>
-        <Styled.UpRow>{renderInputBar}</Styled.UpRow>
+        <Styled.UpRow>{searchInputBar.renderInputBar}</Styled.UpRow>
         <Styled.DownRow>
           <Styled.DownRowSide>
             {renderCategoryBtn}
@@ -76,7 +133,75 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
             </Styled.ItemWrapper>
           );
         })}
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+          {
+            !isFindMore
+              ? (
+                <button
+                  type="button"
+                  style={{ backgroundColor: 'transparent', border: 'unset', width: 'auto' }}
+                  onClick={() => setIsFindMore(true)}
+                >
+                  <DarkButton text="Find more" />
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  style={{ backgroundColor: 'transparent', border: 'unset', width: 'auto' }}
+                  onClick={() => setIsFindMore(false)}
+                >
+                  <DarkButton text="Exit" />
+                </button>
+              )
+          }
+        </div>
       </Styled.List>
+      {isFindMore
+      && (
+        <div>
+          <div style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            paddingBottom: '1rem',
+          }}
+          >
+            <Typography variant="PasswordTileTitle">Find and add songs</Typography>
+          </div>
+          {fmInputBar.renderInputBar}
+          <Styled.List>
+            {searchSongs && searchSongs.map((i, index) => {
+              let isLast = false;
+              if (index === searchSongs.length - 1) isLast = true;
+              return (
+                <Styled.ItemWrapper
+                  key={i.url}
+                  {...{ isLast }}
+                >
+                  <div style={{ flex: 'auto' }}>
+                    <SongCard
+                      name={i.name}
+                      band={i.artist}
+                      genre="temp"
+                    />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Styled.ClearBtn
+                      type="button"
+                      onClick={() => handleAddSong(i.name, i.artist)}
+                    >
+                      <DarkButton>
+                        <Typography variant="EditorList">Add</Typography>
+                      </DarkButton>
+                    </Styled.ClearBtn>
+                  </div>
+                </Styled.ItemWrapper>
+              );
+            })}
+          </Styled.List>
+        </div>
+      )}
     </Styled.Wrapper>
   );
 };

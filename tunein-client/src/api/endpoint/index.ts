@@ -38,6 +38,13 @@ export const ENDPOINTS = {
     getUserPlaylists: 'Playlist/GetPlaylistsAsync',
     getPlaylistsData: 'Playlist/GetAmountsAsync',
     addPlaylist: 'Playlist/AddPlaylistAsync/',
+    addSong: 'Playlist/AddTrackToPlaylistAsync/',
+  },
+  songs: {
+    getSongSearch: 'APICalls/GetSearchListAsync',
+    getSongDtAddPlaylist: 'APICalls/GetTrackInfoAndAddAsync',
+    getTrackInfo: 'APICalls/GetTrackInfoAsync',
+    addSong: 'Tracks/AddTrackAsync',
   },
 };
 // TODO: change any

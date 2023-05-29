@@ -151,7 +151,7 @@ namespace Backend.Controllers
             }
 
 
-            return Ok();
+            return StatusCode(result.StatusCode, result.Result);
         }
 
         /// <summary>
