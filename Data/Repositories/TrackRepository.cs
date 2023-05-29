@@ -43,6 +43,15 @@ namespace Data.Repositories
 
             return result;
         }
+
+        public async Task<TrackInfo> GetTrackByName(string artist, string trackName)
+        {
+            var result = await DataContext.TrackInfo
+                .SingleOrDefaultAsync(t => (t.TrackName == trackName && t.Band == artist));
+
+            return result;
+        }
+        
         public IQueryable<TrackInfo> GetTracks()
         {
             var result = DataContext.TrackInfo

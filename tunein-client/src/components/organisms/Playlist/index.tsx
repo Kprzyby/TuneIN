@@ -54,17 +54,11 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
       .get({ artist: band, trackName: name })
       .then((res) => {
         details = res.data;
+      })
+      .catch(() => {
+
       });
     return details;
-  };
-  const addSongToDB = async (details: SearchSongDetailsType) => {
-    let id: string | undefined;
-    await createDBEndpoint(ENDPOINTS.songs.addSong)
-      .post(details)
-      .then((res) => {
-        id = res.data.id;
-      });
-    return id;
   };
   const addSongToPlaylist = async (id: string) => {
     await createDBEndpoint(ENDPOINTS.playlists.addSong + playlist.id)
@@ -72,7 +66,27 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
       .then(() => {
         // TODO: idk make it less idiotic
         router.reload();
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          // TODO: handle already exists in playlist
+        }
       });
+  };
+  const addSongToDB = async (details: SearchSongDetailsType) => {
+    let songId: string | undefined;
+    await createDBEndpoint(ENDPOINTS.songs.addSong)
+      .post(details)
+      .then((res) => {
+        songId = res.data.id;
+      })
+      .catch((err) => {
+        if (err.response.status === 409) {
+          const { id } = err.response.data;
+          addSongToPlaylist(id);
+        }
+      });
+    return songId;
   };
   const handleAddSong = async (name: string, band: string) => {
     let details: SearchSongDetailsType | undefined;

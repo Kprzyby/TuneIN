@@ -128,10 +128,12 @@ namespace Backend.Controllers
 
             bool trackExists = await _trackService.CheckIfTrackExistsAsync(trackInfo.Band, trackInfo.TrackName);
             int UserId = GetUserId();
-
             if (trackExists == true)
             {
-                return StatusCode(409, "This track already exists in library");
+                var pickedTrack = await _trackService.GetTrackByName(trackInfo.Band, trackInfo.TrackName);
+                return StatusCode(409, new { 
+                    message = "This track already exists in library",
+                    id = pickedTrack.Id});
             }
 
             TrackInfoDTO trackInfoDTO = new TrackInfoDTO()
