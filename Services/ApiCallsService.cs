@@ -42,13 +42,15 @@ namespace Services
 
                 var trackInfo = JsonConvert.DeserializeObject<Root>(responseContent);
 
-                RetrieveTrackInfoDTO response = new RetrieveTrackInfoDTO()
+                RetrieveTrackInfoDTO response = new RetrieveTrackInfoDTO();
+
+                if (trackInfo?.track != null)
                 {
-                    TrackName = trackInfo.track.name,
-                    Band = trackInfo.track.artist.name,
-                    Genre = trackInfo.track.toptags.tag[0].name,
-                    LinkToCover = trackInfo.track.album.image[3].Text
-                };
+                    response.TrackName = trackInfo.track.name;
+                    response.Band = trackInfo.track.artist?.name;
+                    response.Genre = trackInfo.track.toptags?.tag?[0]?.name;
+                    response.LinkToCover = trackInfo.track.album?.image?[3]?.Text;
+                }
 
                 return CreateSuccessResponse(200, "Track information retrieved successfully", response);
             }
