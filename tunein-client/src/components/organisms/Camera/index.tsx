@@ -18,7 +18,7 @@ const Camera: React.FC<Props> = ({ stream, size }: Props) => {
         track.stop();
       });
     };
-  }, []);
+  }, [stream]);
 
   return (
     <div style={{ backgroundColor: 'black', width: 'fit-content' }}>

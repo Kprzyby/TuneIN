@@ -5,22 +5,35 @@ const http = require('http')
 const cors = require('cors')
 const { Server } = require('socket.io')
 const { v4: uuidV4} = require('uuid')
-const ExpressPeerServer = require('peer').ExpressPeerServer
+const { ExpressPeerServer } = require('peer')
 const fs = require('fs')
+const { disconnect } = require('process')
 
 app.use(cors())
-app.use('/peerjs', ExpressPeerServer)
 
 const sslOptions = {
     key: fs.readFileSync('../tunein-client/tuneinCert+3-key.pem'),
     cert: fs.readFileSync('../tunein-client/tuneinCert+3.pem')
-  };
+};
 
 const server = https.createServer(sslOptions, app)
 //const server = http.createServer(app)
 const io = new Server(server, {
     cors: 'http://localhost:3000'
 })
+
+const peerServer = ExpressPeerServer(server, {debug: true})
+
+app.use('/peerjs', peerServer);
+
+
+peerServer.on('connection', client => {
+    //console.log(client.getId());
+});
+
+peerServer.on('disconnect', client => {
+    //console.log(client.getId() + 'disconnected');
+});
 
 const publicRooms = io.of("/publicRooms")
 
@@ -30,23 +43,37 @@ io.on('connection', (socket) => {
     socket.on('join', (room, userId) => {
         socket.leave(socket.id)
         socket.join(room)
-        console.log(`User with ID: ${userId} joined room: ${room}`)
-        socket.to(room).emit('user-connected', userId)
+        console.log(`User with ID: ${userId} joined room: ${room}`)    
     })
 
+    socket.on('ready', (room, userId) => {
+        console.log('User ' + userId + 'is ready')
+        socket.to(room).emit('user-connected', userId)
+    });
+    
     socket.on('disconnect', () => {
         console.log('User Disconnected', socket.id)
     })
 })
 
 publicRooms.on('connection', (socket) => {
-    console.log('User Connected', socket.id);
+    console.log('User Connected to publicRooms', socket.id);
 
     socket.on('join', (room, userId) => {
         socket.leave(socket.id)
         socket.join(room)
         console.log(`User with ID: ${userId} joined room: ${room} in publicRooms`)
         socket.broadcast.to(room).emit('user-connected', userId)
+    })
+
+    /*socket.on('ready', (room, userId) => {
+        console.log('User ' + userId + 'is ready')
+        socket.to(room).emit('user-connected', userId)
+    });*/
+
+    socket.on('user-disconnected', (room) => {
+        console.log('User disconnected');
+        socket.broadcast.to(room).emit('user-left');
     })
 
     socket.on('disconnect', () => {

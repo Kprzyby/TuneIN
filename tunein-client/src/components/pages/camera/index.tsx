@@ -1,4 +1,3 @@
-import React from 'react';
 import CameraRoom from '@components/organisms/CameraRoom';
 import { NextPage } from 'next'
 import React, { useEffect, useRef, useState  } from "react"
