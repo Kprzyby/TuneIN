@@ -38,6 +38,13 @@ namespace Services
             return trackExists;
         }
 
+        public async Task<TrackInfo> GetTrackByName(string artist, string trackName)
+        {
+            var track = await _trackRepository.GetTrackByName(artist, trackName);
+
+            return track;
+        }
+
         public async Task<bool> CheckIfTrackExistsAsync(int id)
         {
             var trackExists = await _trackRepository.CheckIfTrackExistsAsync(id);
@@ -201,7 +208,7 @@ namespace Services
 
                 };
 
-                return CreateSuccessResponse(201, "Track added successfully", result);
+                return CreateSuccessResponse(200, "Track added successfully", result);
 
             }
             catch (Exception ex)

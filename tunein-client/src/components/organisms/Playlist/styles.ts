@@ -4,6 +4,7 @@ import { StyledProps } from './types';
 export const Wrapper = styled.div`
     display: flex;
     flex-flow: column nowrap;
+    position: relative;
     width: 100%;
     height: 100%;
 `;
@@ -36,5 +37,14 @@ export const List = styled.div`
 export const ItemWrapper = styled.div<StyledProps>`
     border-bottom: ${({ theme }) => theme.colors.darkMainL} 0.1rem;
     border-bottom-style: ${({ isLast }) => (isLast ? 'unset' : 'solid')};
+    cursor: pointer;
+    display: flex;
+`;
+export const ClearBtn = styled.button`
+    width: 100%;
+    border: unset;
+    background: transparent;
+    display: flex;
+    flex: auto;
     cursor: pointer;
 `;
