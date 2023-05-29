@@ -38,7 +38,6 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
   };
   const handleSongClicked = (id: number) => {
     // TODO: add single song view
-    console.log(`Song clicked: ${id}`);
   };
   const getSongSerch = async (input: string) => {
     await createDBEndpoint(ENDPOINTS.songs.getSongSearch)
@@ -71,6 +70,17 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
         if (err.response.status === 404) {
           // TODO: handle already exists in playlist
         }
+      });
+  };
+  const removeSongFromPlaylist = async (id: number) => {
+    await createDBEndpoint(ENDPOINTS.playlists.removeSong + playlist.id)
+      .delete({ trackId: id })
+      .then(() => {
+        // TODO: idk make it less idiotic
+        router.reload();
+      })
+      .catch((err) => {
+        // TODO: handle this err
       });
   };
   const addSongToDB = async (details: SearchSongDetailsType) => {
@@ -139,11 +149,20 @@ const Playlist: React.FC<Props> = ({ playlist }) => {
               onClick={() => handleSongClicked(i.id)}
               {...{ isLast }}
             >
-              <SongCard
-                name={i.trackName}
-                band={i.band}
-                genre={i.genre}
-              />
+              <div style={{ flex: 'auto' }}>
+                <SongCard
+                  name={i.trackName}
+                  band={i.band}
+                  genre={i.genre}
+                />
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Styled.ClearBtn type="button" onClick={() => removeSongFromPlaylist(i.id)}>
+                  <DarkButton>
+                    <Typography variant="EditorList">Remove</Typography>
+                  </DarkButton>
+                </Styled.ClearBtn>
+              </div>
             </Styled.ItemWrapper>
           );
         })}

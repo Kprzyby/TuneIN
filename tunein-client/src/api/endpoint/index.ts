@@ -39,6 +39,7 @@ export const ENDPOINTS = {
     getPlaylistsData: 'Playlist/GetAmountsAsync',
     addPlaylist: 'Playlist/AddPlaylistAsync/',
     addSong: 'Playlist/AddTrackToPlaylistAsync/',
+    removeSong: 'Playlist/DeleteTrackFromPlaylistAsync/',
   },
   songs: {
     getSongSearch: 'APICalls/GetSearchListAsync',
