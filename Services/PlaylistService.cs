@@ -1,12 +1,14 @@
 ﻿using Data.CustomDataAttributes.InjectionAttributes;
 using Data.DTOs.Library;
+using Data.DTOs.Playlist;
+using Data.DTOs.Response;
+using Data.DTOs.User;
 using Data.Entities;
 using Data.Repositories;
-using Data.DTOs.Tutorship;
-using Data.DTOs.User;
 using X.PagedList;
 using Data.DTOs.Response;
 using Data.DTOs.Playlist;
+using Common.Helpers;
 
 namespace Services
 {
@@ -30,7 +32,7 @@ namespace Services
 
         #endregion Constructors
 
-        #region Methods   
+        #region Methods
 
         public async Task<ServiceResponseDTO> GetPlaylistsAsync(GetPlaylistsDTO dto)
         {
@@ -75,7 +77,6 @@ namespace Services
                                 Username = ti.TrackInfo.User.UserName
                             }
                         }),
-
                     })
                     .ToPagedListAsync(dto.PageNumber, dto.PageSize);
 
@@ -85,6 +86,96 @@ namespace Services
             {
                 return CreateFailureResponse(500, "Error while retrieving the playlists");
             }
+        }
+
+        public async Task<ServiceResponseDTO> GetPlaylistFilteredAsync(int id, GetPlaylistFilteredDTO dto)
+        {
+            try
+            {
+                Playlist playlist = await _playlistRepository.GetPlaylistAsync(id);
+
+
+                if (playlist == null)
+                {
+                    return CreateFailureResponse(404, "Playlist with such an id was not found");
+                }
+
+                if (!String.IsNullOrEmpty(dto.TrackNameFilterValue))
+                {
+                    playlist.PlaylistTracks = playlist.PlaylistTracks.Where(pt => pt.TrackInfo.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper())).ToList();
+                    //playlist.PlaylistTracks.Select(pt => pt.TrackInfo).Where(ti => ti.TrackName.ToUpper().StartsWith(dto.TrackNameFilterValue.ToUpper()));
+                }
+                List<KeyValuePair<string, string>> sortInfo = new List<KeyValuePair<string, string>>();
+
+                sortInfo.Add((KeyValuePair<string, string>)dto.SortInfo);
+
+                playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.TrackName).ToList();
+
+                if (sortInfo[0].Value == "asc")
+                {
+                    if (sortInfo[0].Key == "Genre")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.Genre).ToList();
+                    }
+                    else if (sortInfo[0].Key == "Band")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.Band).ToList();
+                    }
+                    else
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderBy(pt => pt.TrackInfo.TrackName).ToList();
+                    }
+                }
+                else if (sortInfo[0].Value == "desc")
+                {
+                    if (sortInfo[0].Key == "Genre")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.Genre).ToList();
+                    }
+                    else if (sortInfo[0].Key == "Band")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.Band).ToList();
+                    }
+                    else if (sortInfo[0].Key == "TrackName")
+                    {
+                        playlist.PlaylistTracks = playlist.PlaylistTracks.OrderByDescending(pt => pt.TrackInfo.TrackName).ToList();
+                    }
+                }
+
+
+                GetPlaylistResponseDTO response = new GetPlaylistResponseDTO();
+                response.Id = playlist.Id;
+                response.Name = playlist.Name;
+                response.TotalCount = playlist.PlaylistTracks.Count();
+                response.TrackNameFilterValue = dto.TrackNameFilterValue;
+                response.SortInfo = dto.SortInfo;
+                response.Author = new ReadTutorshipAuthorDTO()
+                {
+                    Id = playlist.User.Id,
+                    Username = playlist.User.UserName
+                };
+                response.TrackInfos = playlist.PlaylistTracks.Select(pt => new ReadTrackInfoDTO
+                {
+                    Id = pt.TrackInfo.Id,
+                    TrackName = pt.TrackInfo.TrackName,
+                    Band = pt.TrackInfo.Band,
+                    Genre = pt.TrackInfo.Genre,
+                    LinkToCover = pt.TrackInfo.LinkToCover,
+                    LinkToTabs = pt.TrackInfo.LinkToTabs,
+                    Author = new ReadTutorshipAuthorDTO()
+                    {
+                        Id = playlist.User.Id,
+                        Username = playlist.User.UserName
+                    }
+                }).ToList();
+
+                return CreateSuccessResponse(200, "Playlist retrieved successfully", response);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while retrieving the playlist");
+            }
+
         }
 
         public async Task<ServiceResponseDTO> GetPlaylistAsync(int id)
@@ -97,6 +188,7 @@ namespace Services
                 {
                     return CreateFailureResponse(404, "Playlist with such an id was not found");
                 }
+
 
                 ReadPlaylistDTO result = new ReadPlaylistDTO()
                 {
@@ -137,11 +229,46 @@ namespace Services
                 return CreateFailureResponse(500, "Error while retrieving the playlist");
             }
         }
+
+        public async Task<ServiceResponseDTO> GetPlaylistsDataAsync(string playlistName, int userId)
+        {
+            try
+            {
+                IQueryable<Playlist> playlists = _playlistRepository.GetPlaylists();
+
+                playlists = playlists.Where(p => p.User.Id == userId);
+
+                if (!String.IsNullOrEmpty(playlistName))
+                {
+                    playlists = playlists.Where(p => p.Name.StartsWith(playlistName));
+                }
+
+                List<GetPlaylistDataDTO> result = await playlists
+                    .Select(p => new GetPlaylistDataDTO()
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        TrackAmount = p.PlaylistTracks.Count(),
+                        Author = new ReadUserDTO()
+                        {
+                            Id = p.User.Id,
+                            UserName = p.User.UserName
+                        }
+                    })
+                    .ToListAsync();
+
+                return CreateSuccessResponse(200, "Playlist retrieved successfully", result);
+            }
+            catch (Exception ex)
+            {
+                return CreateFailureResponse(500, "Error while retrieving the playlist");
+            }
+        }
+
         public async Task<ServiceResponseDTO> AddPlaylistAsync(string name, int userId)
         {
             try
             {
-
                 Playlist playlist = new Playlist()
                 {
                     Name = name,
@@ -159,11 +286,9 @@ namespace Services
                         Id = playlist.User.Id,
                         Username = playlist.User.UserName
                     }
-
                 };
 
                 return CreateSuccessResponse(201, "Playlist added successfully", result);
-
             }
             catch (Exception ex)
             {
@@ -176,7 +301,6 @@ namespace Services
             try
             {
                 await _playlistRepository.RemoveByIdAndSaveChangesAsync(id);
-
             }
             catch (Exception ex)
             {
@@ -204,7 +328,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
@@ -226,9 +350,9 @@ namespace Services
                     return CreateFailureResponse(404, "Playlist with such an id was not found");
                 }
 
-                var trackExistInPlaylist = oldPlaylist.PlaylistTracks.FirstOrDefault(pt => pt.TrackInfoId == trackId);
+                var isTrackInPlaylist = oldPlaylist.PlaylistTracks.Any(pt => pt.TrackInfoId == trackId && pt.PlaylistId == playlistId);
 
-                if (trackExistInPlaylist != null)
+                if (isTrackInPlaylist)
                 {
                     return CreateFailureResponse(404, "Track with such an id already exists in playlist");
                 }
@@ -247,7 +371,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
@@ -284,7 +408,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                return CreateFailureResponse(500, "Error while updating the tutorship");
+                return CreateFailureResponse(500, "Error while updating the playlist");
             }
         }
 
