@@ -25,6 +25,7 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
   const [roomID, setRoomID] = useState<undefined | string>(videocall?.id);
   const socket = useRef<Socket>();
   const peer = useRef<Peer>();
+  const videoServer = '192.168.1.3';
 
   const getUsrStream = () => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: { autoGainControl: false, echoCancellation: false } })
@@ -75,7 +76,7 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
   }, [])
 
   useEffect(() => {
-    socket.current = io('https://192.168.1.3:3001/publicRooms');
+    socket.current = io(`https://${videoServer}:3001/publicRooms`);
 
     if (socket.current) {
       socket.current.on('connect', () => {
@@ -92,32 +93,13 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
     }
   }, []);
 
-  /*useEffect(() => {
-
-    import("peerjs").then(({ default: Peer }) => {
-      peer.current = new Peer({
-        host: '192.168.1.3',
-        port: 3001,
-        path: '/peerjs'
-      })
-
-      peer.current.on('open', id => {
-        console.log('PeerID: ' + id);
-        socket.current?.emit('join', roomID, peer.current?.id);
-      });
-
-    });
-
-
-  }, []);*/
-
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: { autoGainControl: false, echoCancellation: false } })
       .then((stream) => {
         setUsrStream(stream);
         import("peerjs").then(({ default: Peer }) => {
           peer.current = new Peer({
-            host: '192.168.1.3',
+            host: videoServer,
             port: 3001,
             path: '/peerjs'
           })
