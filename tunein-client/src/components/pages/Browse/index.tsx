@@ -7,8 +7,10 @@ import * as Styled from './styles';
 
 const Browser: NextPage = () => {
   const [data, setData] = useState<Array<any>>([])
-  const [option, setOption] = useState('')
   const [sortedData, setSortedData] = useState<Array<any>>([])
+  const [finalData, setFinalData] = useState<Array<any>>([])
+  const [option, setOption] = useState('')
+  const [sortedBy, setSortedBy] = useState({ text: '', order: false })
 
   useEffect(() => {
     let endpoint = ''
@@ -24,9 +26,17 @@ const Browser: NextPage = () => {
           setData(res.data.tutorships);
         });
   }, [option])
+
+  useEffect(() => {
+    setSortedData(data)
+    setFinalData(data)
+  }, [data])
   
   const handleOptionChange = (option: string) => {
     setOption(option)
+    const nameSearchInput = document.getElementById('nameSearch') as HTMLInputElement
+    nameSearchInput.value = ''
+    setData(SampleData) // ! To be removed
   }
 
   const SampleData = [
@@ -42,8 +52,13 @@ const Browser: NextPage = () => {
     { id: 10, name: 'Product J', price: 6.99, category: 'Electronics' }
   ];
 
-  const handleSorying = (option: string) => {
-    setData(SampleData)
+  const handleSorting = (option: string) => {
+    var order = sortedBy.order
+    if (sortedBy.text === option) {
+      order = !order
+    }
+    setSortedBy({ text: option, order: order })
+
     const sortedData = data.sort((a, b) => {
       if (a[option] < b[option]) {
         return -1;
@@ -53,9 +68,18 @@ const Browser: NextPage = () => {
       }
       return 0;
     });
-    console.log(data)
-    console.log(sortedData)
+    if (order) {
+      sortedData.reverse()
+    }
     setSortedData(sortedData);
+  }
+
+  const handleClick = (text: string) => {
+    handleSorting(text)
+  };
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFinalData(sortedData.filter((item) => item.name.toLowerCase().includes(event.target.value.toLowerCase())))
   }
 
   return (
@@ -63,10 +87,11 @@ const Browser: NextPage = () => {
     <Styled.OptionsWrapper>
       <a onClick={() => handleOptionChange('tuitions')}>Tuitions</a>
       <a onClick={() => handleOptionChange('playlists')}>Playlists</a>
-      <a onClick={() => handleSorying('price')}>Name</a>
     </Styled.OptionsWrapper>
 
-    <ObjectListing objects={sortedData} />
+    <input id="nameSearch" onChange={handleChange} />
+
+    <ObjectListing objects={finalData} handleTextClick={handleClick}/>
 
   </Styled.Wrapper>
 );
