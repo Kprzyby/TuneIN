@@ -18,6 +18,8 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
                 .AddEnvironmentVariables();
 });
 
+//builder.WebHost.ConfigureKestrel(options => options.Listen(System.Net.IPAddress.Parse("192.168.1.3"), 7074));
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -33,10 +35,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000")
-                          .AllowCredentials()
+                          policy.WithOrigins("http://localhost:3000", "https://localhost:4001", "https://192.168.1.3:4001", "https://192.168.43.80:4001", "http://192.168.1.3:3000")
+                          .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowAnyHeader(); ;
+                          .AllowCredentials();
                       });
 });
 
@@ -52,7 +54,10 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.RegisterServices(builder.Configuration);
 
 //SignalR
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddHubOptions<ChatHub>(options =>
+{
+    
+});
 
 //adding session
 builder.Services.AddDistributedMemoryCache();
@@ -104,5 +109,7 @@ app.UseSession();
 app.MapHub<ChatHub>("Services/ChatService");
 
 app.MapControllers();
+
+//app.Urls.Add("https://192.168.1.3:7074");
 
 app.Run();

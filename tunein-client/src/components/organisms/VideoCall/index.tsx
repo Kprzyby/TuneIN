@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Typography } from '@components/styles/typography';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { UserData } from '@components/context/UserContext';
@@ -8,9 +8,12 @@ import Camera from '../Camera';
 import * as Styled from './styles';
 import Chat from '../Chat';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
+import { io, Socket } from 'socket.io-client';
+import Peer from 'peerjs';
 
-const VideoCall: React.FC<Props> = () => {
+const VideoCall: React.FC<Props> = ({ videocall }) => {
   const [usrStream, setUsrStream] = useState<MediaStream | undefined>(undefined);
+  const [remoteUsrStream, setRemoteUsrStream] = useState<MediaStream | undefined>(undefined);
   const [is2ndUsr, setIs2ndUsr] = useState(false);
   const [messeges, setMesseges] = useState<MessageType[] | undefined>(undefined);
   const [isMesseges, setIsMesseges] = useState(false);
@@ -19,9 +22,13 @@ const VideoCall: React.FC<Props> = () => {
   const [isChat, setIsChat] = useState(false);
   const [signalRHub, setSignalRHub] = useState<HubConnection | undefined>(undefined);
   const { user } = useContext(UserData);
+  const [roomID, setRoomID] = useState<undefined | string>(videocall?.id);
+  const socket = useRef<Socket>();
+  const peer = useRef<Peer>();
+  const videoServer = '192.168.1.3';
 
   const getUsrStream = () => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    navigator.mediaDevices.getUserMedia({ video: true, audio: { autoGainControl: false, echoCancellation: false } })
       .then((stream) => {
         setUsrStream(stream);
       });
@@ -65,25 +72,116 @@ const VideoCall: React.FC<Props> = () => {
   };
 
   useEffect(() => {
+    getUsrStream();
+  }, [])
+
+  useEffect(() => {
+    socket.current = io(`https://${videoServer}:3001/publicRooms`);
+
+    if (socket.current) {
+      socket.current.on('connect', () => {
+        console.log('SocketID: ' + socket.current?.id);
+      })
+    }
+
+    return () => {
+      if (socket.current) {
+        socket.current.emit('user-disconnected', roomID);
+        socket.current.disconnect()
+        socket.current = undefined
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: { autoGainControl: false, echoCancellation: false } })
+      .then((stream) => {
+        setUsrStream(stream);
+        import("peerjs").then(({ default: Peer }) => {
+          peer.current = new Peer({
+            host: videoServer,
+            port: 3001,
+            path: '/peerjs'
+          })
+
+          //console.log(peer.current);
+          peer.current.on('open', id => {
+            console.log('PeerID: ' + id);
+            socket.current?.emit('join', roomID, peer.current?.id);
+          });
+
+          peer.current?.on('call', call => {
+            call.answer(stream);
+            console.log('User answered');
+            setIs2ndUsr(true);
+            call.on('stream', userVideoStream => {
+              //console.log('Remote video: ' + userVideoStream);
+              setRemoteUsrStream(userVideoStream);
+            });
+
+          });
+          
+          peer.current?.on('disconnected', (roomID) => {
+            console.log('User disconected');
+          });
+
+          socket.current?.on('user-left', () => {
+            console.log('User left');
+            setIs2ndUsr(false);
+          })
+
+          socket.current?.on('user-connected', userId => {
+            if (userId !== peer.current?.id) {
+              connectToNewUser(userId, stream);
+            };
+          });
+          
+          function connectToNewUser(userId: string, stream: MediaStream) {
+            const call = peer.current?.call(userId, stream);
+            //console.log(stream);
+            console.log('User called');
+            setIs2ndUsr(true)
+            call?.on('stream', userVideoStream => {
+              console.log('Calling user received stream');
+              setRemoteUsrStream(userVideoStream);
+            });
+            call?.on('close', () => {
+              setRemoteUsrStream(undefined);
+            });
+          };
+        });
+      });
+      
+      return () => {
+        peer.current?.disconnect();
+        peer.current?.destroy();
+    };
+
+  }, []);
+
+  useEffect(() => {
     initHubConnection();
     initChats();
     return () => {
       signalRHub?.off('MessageSent');
     };
   }, []);
+
   useEffect(() => {
     if (!newMessege) return;
     fetchMessages();
     setNewMessege(false);
   }, [newMessege]);
+
   useEffect(() => {
     setIsMesseges(false);
     fetchMessages();
   }, [chatID]);
   useEffect(() => {
-    setUsrStream(undefined);
-    if (is2ndUsr === false) return;
-    getUsrStream();
+    if (is2ndUsr === false) {
+      setUsrStream(undefined);
+      return;
+    }
   }, [is2ndUsr]);
 
   return (
@@ -96,12 +194,12 @@ const VideoCall: React.FC<Props> = () => {
               {!is2ndUsr
                 ? (
                   <Styled.WaitingScreen>
-                    <Typography variant="ConfirmationDesc">Connection PIN is: 1111</Typography>
+                    <Typography variant="ConfirmationDesc">Connection PIN is: {roomID}</Typography>
                     <Typography variant="ConfirmationDesc">Wait for another user</Typography>
                   </Styled.WaitingScreen>
                 )
-                : usrStream && (
-                  <Camera stream={usrStream} />
+                : remoteUsrStream && (
+                  <Camera stream={remoteUsrStream} />
                 )}
             </Styled.TopPanel>
           </Styled.TopPanelWrapper>
@@ -110,13 +208,13 @@ const VideoCall: React.FC<Props> = () => {
             <button type="button" onClick={() => setIsChat(!isChat)}>Show/Hide Chat</button>
           </div>
           {isChat && messeges && chatID && (
-          <div style={{ width: '100%', padding: '0 8rem 3rem 8rem', minHeight: '20rem' }}>
-            <Chat
-              chatId={chatID}
-              messages={messeges}
-              isMesseges={isMesseges}
-            />
-          </div>
+            <div style={{ width: '100%', padding: '0 8rem 3rem 8rem', minHeight: '20rem' }}>
+              <Chat
+                chatId={chatID}
+                messages={messeges}
+                isMesseges={isMesseges}
+              />
+            </div>
           )}
           {isChat && (!messeges || !chatID) && (
             <Loader borderColor="white transparent" />

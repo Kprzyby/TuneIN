@@ -10,7 +10,7 @@ const Homepage: NextPage = () => {
     const socket = useRef<Socket>()
 
     useEffect(() => {
-        socket.current = io('https://192.168.1.3:3001/publicRooms');
+        socket.current = io('https://192.168.43.80:3001/publicRooms');
 
         if (socket.current) {
             socket.current.on("connect", () => {
@@ -18,9 +18,9 @@ const Homepage: NextPage = () => {
                 console.log(socket.current?.id)
             })
 
-            socket.current.on("user-connected", (id: string) => {
+            /*socket.current.on("user-connected", (id: string) => {
                 console.log("User connected: " + id)
-            })
+            })*/
         }
         return () => {
             if (socket.current) {
