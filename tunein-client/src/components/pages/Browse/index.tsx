@@ -14,7 +14,7 @@ const Browser: NextPage = () => {
     let endpoint = ''
     switch (option) {
       case 'tuitions': endpoint = ENDPOINTS.tutorship.gettutorships; break;
-      case 'playlists': endpoint = ENDPOINTS.library; break;
+      case 'playlists': endpoint = ENDPOINTS.library.getPlaylist; break;
       default: endpoint = ENDPOINTS.tutorship.gettutorships; break;
     }
 
