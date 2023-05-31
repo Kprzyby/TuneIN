@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { AnnouncementProperties } from './types';
+import { Props } from './types';
 
-export const Announcement = styled.div<Pick<AnnouncementProperties, 'img'>>`
+export const Announcement = styled.div<Pick<Props, 'img'>>`
   position: relative;
   aspect-ratio: 1 / 1;
   height: 12rem;
