@@ -36,21 +36,21 @@ const Browser: NextPage = () => {
     setOption(option)
     const nameSearchInput = document.getElementById('nameSearch') as HTMLInputElement
     nameSearchInput.value = ''
-    setData(SampleData) // ! To be removed
+    // setData(SampleData) // ! To be removed
   }
 
-  const SampleData = [
-    { id: 1, name: 'Product A', price: 10.99, category: 'Electronics' },
-    { id: 2, name: 'Product B', price: 19.99, category: 'Clothing' },
-    { id: 3, name: 'Product C', price: 7.99, category: 'Home & Kitchen' },
-    { id: 4, name: 'Product D', price: 5.49, category: 'Electronics' },
-    { id: 5, name: 'Product E', price: 14.99, category: 'Clothing' },
-    { id: 6, name: 'Product F', price: 9.99, category: 'Home & Kitchen' },
-    { id: 7, name: 'Product G', price: 8.49, category: 'Electronics' },
-    { id: 8, name: 'Product H', price: 24.99, category: 'Clothing' },
-    { id: 9, name: 'Product I', price: 12.99, category: 'Home & Kitchen' },
-    { id: 10, name: 'Product J', price: 6.99, category: 'Electronics' }
-  ];
+  // const SampleData = [
+  //   { id: 1, name: 'Product A', price: 10.99, category: 'Electronics' },
+  //   { id: 2, name: 'Product B', price: 19.99, category: 'Clothing' },
+  //   { id: 3, name: 'Product C', price: 7.99, category: 'Home & Kitchen' },
+  //   { id: 4, name: 'Product D', price: 5.49, category: 'Electronics' },
+  //   { id: 5, name: 'Product E', price: 14.99, category: 'Clothing' },
+  //   { id: 6, name: 'Product F', price: 9.99, category: 'Home & Kitchen' },
+  //   { id: 7, name: 'Product G', price: 8.49, category: 'Electronics' },
+  //   { id: 8, name: 'Product H', price: 24.99, category: 'Clothing' },
+  //   { id: 9, name: 'Product I', price: 12.99, category: 'Home & Kitchen' },
+  //   { id: 10, name: 'Product J', price: 6.99, category: 'Electronics' }
+  // ];
 
   const handleSorting = (option: string) => {
     var order = sortedBy.order
