@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import ObjectListing from '@components/organisms/ObjectListing';
 import * as Styled from './styles';
+import { tuple } from 'yup';
 
 const Browser: NextPage = () => {
   const [data, setData] = useState<Array<any>>([])
   const [option, setOption] = useState('')
   const [sortedData, setSortedData] = useState<Array<any>>([])
+  const [sortedBy, setSortedBy] = useState({ text: '', order: false })
 
   useEffect(() => {
     let endpoint = ''
@@ -27,6 +29,7 @@ const Browser: NextPage = () => {
   
   const handleOptionChange = (option: string) => {
     setOption(option)
+    setSortedData(SampleData) // ! To be removed
   }
 
   const SampleData = [
@@ -42,8 +45,13 @@ const Browser: NextPage = () => {
     { id: 10, name: 'Product J', price: 6.99, category: 'Electronics' }
   ];
 
-  const handleSorying = (option: string) => {
-    setData(SampleData)
+  const handleSorting = (option: string) => {
+    var order = sortedBy.order
+    if (sortedBy.text === option) {
+      order = !order
+    }
+    setSortedBy({ text: option, order: order })
+
     const sortedData = data.sort((a, b) => {
       if (a[option] < b[option]) {
         return -1;
@@ -53,20 +61,24 @@ const Browser: NextPage = () => {
       }
       return 0;
     });
-    console.log(data)
-    console.log(sortedData)
+    if (order) {
+      sortedData.reverse()
+    }
     setSortedData(sortedData);
   }
+
+  const handleClick = (text: string) => {
+    handleSorting(text)
+  };
 
   return (
   <Styled.Wrapper>
     <Styled.OptionsWrapper>
       <a onClick={() => handleOptionChange('tuitions')}>Tuitions</a>
       <a onClick={() => handleOptionChange('playlists')}>Playlists</a>
-      <a onClick={() => handleSorying('price')}>Name</a>
     </Styled.OptionsWrapper>
 
-    <ObjectListing objects={sortedData} />
+    <ObjectListing objects={sortedData} handleTextClick={handleClick}/>
 
   </Styled.Wrapper>
 );

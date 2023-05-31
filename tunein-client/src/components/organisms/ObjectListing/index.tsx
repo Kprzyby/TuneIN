@@ -2,7 +2,7 @@ import React from 'react';
 import * as Styled from './styles';
 import { Props } from './types';
 
-const ObjectListing: React.FC<Props<any>> = ({ objects }) => {
+const ObjectListing: React.FC<Props<any>> = ({ objects, handleTextClick }) => {
 
     if (objects.length === 0) {
         return <div>No objects to display.</div>;
@@ -10,13 +10,20 @@ const ObjectListing: React.FC<Props<any>> = ({ objects }) => {
 
     const columns = Object.keys(objects[0]);
 
+    const handleHeaderClick = (event: React.MouseEvent<HTMLTableCellElement>) => {
+        const text = event.currentTarget.textContent;
+        if (text) {
+          handleTextClick(text);
+        }
+      };
+
     return (
         <Styled.Wrapper>
             <Styled.Table>
                 <thead>
                     <tr>
                         {columns.map((column) => (
-                            <Styled.TableHeader key={column}>{column}</Styled.TableHeader>
+                            <Styled.TableHeader key={column} onClick={handleHeaderClick}>{column}</Styled.TableHeader>
                         ))}
                     </tr>
                 </thead>
