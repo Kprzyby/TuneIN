@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
 import ObjectListing from '@components/organisms/ObjectListing';
 import * as Styled from './styles';
-import { tuple } from 'yup';
 
 const Browser: NextPage = () => {
   const [data, setData] = useState<Array<any>>([])
-  const [option, setOption] = useState('')
   const [sortedData, setSortedData] = useState<Array<any>>([])
+  const [finalData, setFinalData] = useState<Array<any>>([])
+  const [option, setOption] = useState('')
   const [sortedBy, setSortedBy] = useState({ text: '', order: false })
 
   useEffect(() => {
@@ -26,10 +26,17 @@ const Browser: NextPage = () => {
           setData(res.data.tutorships);
         });
   }, [option])
+
+  useEffect(() => {
+    setSortedData(data)
+    setFinalData(data)
+  }, [data])
   
   const handleOptionChange = (option: string) => {
     setOption(option)
-    setSortedData(SampleData) // ! To be removed
+    const nameSearchInput = document.getElementById('nameSearch') as HTMLInputElement
+    nameSearchInput.value = ''
+    setData(SampleData) // ! To be removed
   }
 
   const SampleData = [
@@ -71,6 +78,10 @@ const Browser: NextPage = () => {
     handleSorting(text)
   };
 
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setFinalData(sortedData.filter((item) => item.name.toLowerCase().includes(event.target.value.toLowerCase())))
+  }
+
   return (
   <Styled.Wrapper>
     <Styled.OptionsWrapper>
@@ -78,7 +89,9 @@ const Browser: NextPage = () => {
       <a onClick={() => handleOptionChange('playlists')}>Playlists</a>
     </Styled.OptionsWrapper>
 
-    <ObjectListing objects={sortedData} handleTextClick={handleClick}/>
+    <input id="nameSearch" onChange={handleChange} />
+
+    <ObjectListing objects={finalData} handleTextClick={handleClick}/>
 
   </Styled.Wrapper>
 );

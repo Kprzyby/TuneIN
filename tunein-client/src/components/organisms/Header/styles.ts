@@ -4,10 +4,10 @@ import { StyledHeaderProps } from './types';
 
 export const Wrapper = styled.div<StyledHeaderProps>`
     ${({ isLight, theme }) => (isLight
-    ? ` position: fixed;
+    ? ` position: sticky;
             color: ${theme.colors.darkMainD};
             background-color: transparent;`
-    : ` position: fixed;
+    : ` position: sticky;
             color: ${theme.colors.darkMainL};
             background-color: ${theme.colors.darkMain};`)
 };

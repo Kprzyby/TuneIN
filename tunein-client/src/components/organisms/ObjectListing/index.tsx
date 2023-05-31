@@ -5,7 +5,7 @@ import { Props } from './types';
 const ObjectListing: React.FC<Props<any>> = ({ objects, handleTextClick }) => {
 
     if (objects.length === 0) {
-        return <div>No objects to display.</div>;
+        return <p>No objects to display.</p>;
     }
 
     const columns = Object.keys(objects[0]);
