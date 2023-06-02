@@ -11,7 +11,7 @@ import Chat from '../Chat';
 import { MessageType } from '../Chat/types';
 
 const ChatRoom: React.FC = () => {
-  const [chats, setChats] = useState<ChatType[] | undefined>(undefined);
+  const [chats, setChats] = useState<ChatType[]>([]);
   const [chatListLoading, setChatListLoading] = useState(false);
   const [pickedChatId, setPickedChatId] = useState<string | undefined>(undefined);
   const [messages, setMessages] = useState<MessageType[] | undefined>(undefined);
@@ -48,6 +48,7 @@ const ChatRoom: React.FC = () => {
       .get({ PageSize: 100, messagePageSize: 100 })
       .then((res) => {
         const tempChats: ChatType[] = res.data.chats;
+        if (!tempChats || tempChats.length < 0) return;
         setChats(tempChats);
         setPickedChatId(tempChats[0].id);
       });
@@ -77,7 +78,7 @@ const ChatRoom: React.FC = () => {
         <Styled.UsersList>
           {chatListLoading
             ? <Loader borderColor="white transparent" />
-            : chats && chats.map((c) => {
+            : chats.length > 0 && chats.map((c) => {
               const isHighlighted = c.id === pickedChatId;
               const otherUser = user?.id === c.participants[0].userId
                 ? c.participants[1]
