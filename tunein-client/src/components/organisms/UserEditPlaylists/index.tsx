@@ -12,7 +12,7 @@ import { setLastViewPlaylist } from '../../../api/cookie/localStorageHandler';
 
 const EditPlaylists: React.FC = () => {
   const router = useRouter();
-  const [playlists, setPlaylists] = useState<undefined | PlaylistType[]>(undefined);
+  const [playlists, setPlaylists] = useState<PlaylistType[]>([]);
   const [isNewPlaylist, setIsNewPlaylist] = useState(false);
   const [isRenamePlaylist, setIsRenamePlaylist] = useState(false);
   const [renamePlaylistID, setRenamePlaylistID] = useState<undefined | number>(undefined);
@@ -31,7 +31,8 @@ const EditPlaylists: React.FC = () => {
     await createDBEndpoint(ENDPOINTS.playlists.getPlaylistsData)
       .get({ playlistName: barInput })
       .then((res) => {
-        const tmpData = res.data;
+        const tmpData: PlaylistType[] = res.data;
+        if (!tmpData || tmpData.length < 0) return;
         setPlaylists(tmpData);
       });
   };
@@ -133,7 +134,7 @@ const EditPlaylists: React.FC = () => {
         width: '100%', height: '100%', overflow: 'auto', position: 'relative',
       }}
       >
-        {playlists && playlists.map((playlist: PlaylistType, index) => {
+        {playlists.length > 0 && playlists.map((playlist: PlaylistType, index) => {
           let isLast = false;
           if (index === playlists.length - 1) isLast = true;
           return (

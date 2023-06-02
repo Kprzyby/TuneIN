@@ -19,7 +19,7 @@ const NewPassword: NextPage = () => {
     const idString: string = router.query.id;
     // @ts-ignore
     setGuid(router.query.passwordRecoveryGUID);
-    createDBEndpoint(ENDPOINTS.auth.getuserbyid)
+    createDBEndpoint(ENDPOINTS.user.getuserbyid)
       .get({ userId: parseInt(idString, 10) })
       .then((res) => {
         setUser(res.data);
