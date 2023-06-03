@@ -76,7 +76,7 @@ const UserHeroPage: React.FC<Props> = ({ userName, email, id, avatarId }) => {
               <Typography variant="Logo">{userName}</Typography>
               <Typography variant="Navigation">{email}</Typography>
               <Typography variant="Navigation">
-                {tuitCounter} Tuitions | {playlCounter} Playlists
+                {tuitCounter} Tutorships | {playlCounter} Playlists
               </Typography>
             </div>
           </div>

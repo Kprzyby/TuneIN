@@ -5,7 +5,7 @@ import * as Styled from "./styles";
 import { Props } from "./types";
 
 const Announcement: React.FC<Props> = ({ tuitionId, title, author, img }) => (
-  <Link href={`/tuition/${tuitionId}`}>
+  <Link href={`/tutorship/${tuitionId}`}>
     <Styled.Announcement {...{ img }}>
       <Styled.SeeTrough>
         <Styled.Title>{title}</Styled.Title>

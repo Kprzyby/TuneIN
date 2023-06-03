@@ -12,7 +12,7 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
   const nitems = [
     { label: "Home" },
     { label: "Playlists" },
-    { label: "Tuitions" },
+    { label: "Tutorships" },
   ];
   const { pickedNavigation, renderNavigation } = useNavigation({
     items: nitems,
@@ -27,7 +27,7 @@ const ProfilePage: NextPage<Props> = ({ user }: Props) => {
       case "Playlists":
         component = "";
         break;
-      case "Tuitions":
+      case "Tutorships":
         component = <Announcements id={user.id} />;
         break;
       default:
