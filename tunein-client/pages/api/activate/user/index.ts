@@ -1,6 +1,5 @@
 import { NextApiResponse, NextApiRequest } from "next";
-
-import { createDBEndpoint, ENDPOINTS } from "../../../../src/api/endpoint";
+import { createDBEndpoint, ENDPOINTS } from "@source/api/endpoint";
 
 export default async (
   req: NextApiRequest,
