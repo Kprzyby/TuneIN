@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Collapse } from 'react-collapse';
-import { Typography } from '@components/styles/typography';
-import DarkButton from '../DarkButton';
-import { Props } from './types';
-import * as Styled from './styles';
+import React, { useState } from "react";
+import { Collapse } from "react-collapse";
+import { Typography } from "@components/styles/typography";
 
-const useDarkButtonExpand = (items: Props['items'], head: Props['head']) => {
+import DarkButton from "../DarkButton";
+
+import { Props } from "./types";
+import * as Styled from "./styles";
+
+const useDarkButtonExpand = (items: Props["items"], head: Props["head"]) => {
   const [isCollapsed, setIsCollapse] = useState(false);
   const [pickedItem, setPickedItem] = useState(items[0].value);
   const handleClick = () => {
@@ -14,6 +16,7 @@ const useDarkButtonExpand = (items: Props['items'], head: Props['head']) => {
   const handleItemPick = (item: string) => {
     setPickedItem(item);
   };
+
   return {
     pickedItem,
     renederDBtnExp: (
@@ -41,4 +44,5 @@ const useDarkButtonExpand = (items: Props['items'], head: Props['head']) => {
     ),
   };
 };
+
 export default useDarkButtonExpand;

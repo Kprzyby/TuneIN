@@ -1,10 +1,12 @@
-import Loader from '@components/atoms/Loader';
-import DarkButton from '@components/molecules/DarkButton';
-import { useFormik } from 'formik';
-import React, { useState } from 'react';
-import * as Yup from 'yup';
-import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
-import * as Styled from './styles';
+import Loader from "@components/atoms/Loader";
+import DarkButton from "@components/molecules/DarkButton";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import * as Yup from "yup";
+
+import { createDBEndpoint, ENDPOINTS } from "../../../api/endpoint";
+
+import * as Styled from "./styles";
 
 const RecoverPasswordForm: React.FC = () => {
   const [success, setSuccess] = useState(false);
@@ -12,14 +14,14 @@ const RecoverPasswordForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
-      email: '',
+      email: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: Yup.object({
       email: Yup.string()
-        .email('Email is not valid')
-        .required('Email is required'),
+        .email("Email is not valid")
+        .required("Email is required"),
     }),
     onSubmit: (values) => {
       setLoading(true);
@@ -36,6 +38,7 @@ const RecoverPasswordForm: React.FC = () => {
         });
     },
   });
+
   return (
     <>
       {!success ? (
@@ -44,7 +47,9 @@ const RecoverPasswordForm: React.FC = () => {
             <Loader borderColor="white transparent" />
           ) : (
             <Styled.Form onSubmit={formik.handleSubmit}>
-              <Styled.InputTitle variant="PasswordTileTitle">Email</Styled.InputTitle>
+              <Styled.InputTitle variant="PasswordTileTitle">
+                Email
+              </Styled.InputTitle>
               <Styled.Input
                 placeholder="Email"
                 id="email"
@@ -53,7 +58,7 @@ const RecoverPasswordForm: React.FC = () => {
               />
               <Styled.Error>{formik.errors.email}</Styled.Error>
 
-              {err && (<Styled.Error>Wrong credentials</Styled.Error>)}
+              {err && <Styled.Error>Wrong credentials</Styled.Error>}
 
               <Styled.Button type="submit">
                 <DarkButton text="Recover password" />

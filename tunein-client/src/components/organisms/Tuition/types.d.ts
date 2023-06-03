@@ -5,10 +5,10 @@ interface TuitionType {
   price: number;
   category: string;
   author: {
-    id: number,
-    username: string,
-  },
-  imageDataURL: string,
+    id: number;
+    username: string;
+  };
+  imageDataURL: string;
 }
 
 export interface Props {

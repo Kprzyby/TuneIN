@@ -1,36 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { GetStaticProps, NextPage } from 'next';
-import UserHeroPage from '@components/organisms/UserHeroPage';
-import useNavigation from '@components/organisms/UserHeroPageNavigation';
-import Announcements from '@components/organisms/Announcements';
-import { Props } from './types';
-import { ENDPOINTS, createDBEndpoint } from '../../../../api/endpoint';
+import React, { useEffect, useState } from "react";
+import { GetStaticProps, NextPage } from "next";
+import UserHeroPage from "@components/organisms/UserHeroPage";
+import useNavigation from "@components/organisms/UserHeroPageNavigation";
+import Announcements from "@components/organisms/Announcements";
+
+import { ENDPOINTS, createDBEndpoint } from "../../../../api/endpoint";
+
+import { Props } from "./types";
 
 const ProfilePage: NextPage<Props> = ({ user }: Props) => {
-  const nitems = [{ label: 'Home' }, { label: 'Playlists' }, { label: 'Tuitions' }];
-  const { pickedNavigation, renderNavigation } = useNavigation({ items: nitems });
+  const nitems = [
+    { label: "Home" },
+    { label: "Playlists" },
+    { label: "Tuitions" },
+  ];
+  const { pickedNavigation, renderNavigation } = useNavigation({
+    items: nitems,
+  });
   const getComponent = () => {
     let component;
+
     switch (pickedNavigation) {
-      case 'Home':
-        component = '';
+      case "Home":
+        component = "";
         break;
-      case 'Playlists':
-        component = '';
+      case "Playlists":
+        component = "";
         break;
-      case 'Tuitions':
+      case "Tuitions":
         component = <Announcements id={user.id} />;
         break;
       default:
-        component = '';
+        component = "";
         break;
     }
+
     return component;
   };
   const [profComponent, setProfComponent] = useState(getComponent());
+
   useEffect(() => {
     setProfComponent(getComponent());
   }, [pickedNavigation]);
+
   return (
     <div>
       <UserHeroPage {...user} />
@@ -49,13 +61,16 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
       pageNumber: 1,
       sortInfo: [
         {
-          key: 'UserName',
-          value: 'asc',
+          key: "UserName",
+          value: "asc",
         },
       ],
     })
-    .then((res) => {
-      const usr = res.data.users.find((x: any) => x.userName === context.params?.username);
+    .then((res: any) => {
+      const usr = res.data.users.find(
+        (x: any) => x.userName === context.params?.username
+      );
+
       return usr;
     })
     .catch(() => undefined);
@@ -65,10 +80,15 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
       notFound: true,
     };
   }
+
   return {
     props: {
       user: pickedUser || {
-        userName: '', id: 0, email: '', userRole: '', avatarId: 0,
+        userName: "",
+        id: 0,
+        email: "",
+        userRole: "",
+        avatarId: 0,
       },
     },
     revalidate: 20,
@@ -78,7 +98,8 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
 export const getStaticPaths = async () => {
   const usernames = await createDBEndpoint(ENDPOINTS.user.getusernames)
     .get()
-    .then((res) => res.data);
+    .then((res: any) => res.data);
+
   return {
     paths: usernames.map((u: string) => ({
       params: { username: u },

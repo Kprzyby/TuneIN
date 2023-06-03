@@ -1,13 +1,13 @@
-import { GetStaticProps, NextPage } from 'next';
-import React from 'react';
-import Tuition from '@components/organisms/Tuition';
-import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
-import { Props, TuitionType } from './types';
+import { GetStaticProps, NextPage } from "next";
+import React from "react";
+import Tuition from "@components/organisms/Tuition";
+
+import { ENDPOINTS, createDBEndpoint } from "../../../api/endpoint";
+
+import { Props, TuitionType } from "./types";
 
 const TuitionPage: NextPage<Props> = ({ tuition }: Props) => (
-  <>
-    <Tuition {...{ tuition }} />
-  </>
+  <Tuition {...{ tuition }} />
 );
 
 export default TuitionPage;
@@ -19,11 +19,16 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   //   .get()
   //   .then((res) => res.data)
   //   .catch(() => undefined);
-  const pickedTuition: TuitionType = await createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
+  const pickedTuition: TuitionType = await createDBEndpoint(
+    ENDPOINTS.tutorship.gettutorships
+  )
     .post({ pageSize: 100, pageNumber: 1 })
-    .then((res) => {
+    .then((res: any) => {
       const { tutorships } = res.data;
-      const t = tutorships.find((x: TuitionType) => x.id.toString() === params?.id);
+      const t = tutorships.find(
+        (x: TuitionType) => x.id.toString() === params?.id
+      );
+
       return t;
     })
     .catch(() => undefined);
@@ -33,6 +38,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
       notFound: true,
     };
   }
+
   return {
     props: {
       tuition: pickedTuition || {},
@@ -44,7 +50,8 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
 export const getStaticPaths = async () => {
   const tutorships = await createDBEndpoint(ENDPOINTS.tutorship.gettutorships)
     .post({ pageSize: 100, pageNumber: 1 })
-    .then((res) => res.data.tutorships);
+    .then((res: any) => res.data.tutorships);
+
   return {
     paths: tutorships.map((t: TuitionType) => ({
       params: { id: t.id.toString() },

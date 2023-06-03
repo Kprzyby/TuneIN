@@ -1,14 +1,16 @@
-import { Inner } from '@components/styles/inners';
-import { Typography } from '@components/styles/typography';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React from 'react';
-import * as Styled from './styles';
-import { HeaderProps } from './types';
+import { Inner } from "@components/styles/inners";
+import { Typography } from "@components/styles/typography";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
+
+import * as Styled from "./styles";
+import { HeaderProps } from "./types";
 
 const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
   const { asPath } = useRouter();
-  const isHomepage = asPath === '/';
+  const isHomepage = asPath === "/";
+
   return (
     <Styled.Wrapper {...{ isLight, isHomepage }}>
       <Inner variant="wide">
@@ -19,10 +21,14 @@ const Header: React.FC<HeaderProps> = ({ items, isLight }) => {
           <ul>
             {items.map(({ label, href }) => {
               const isHighlighted = asPath.startsWith(href);
+
               return (
                 <Link {...{ href }} key={label}>
                   <Styled.ListItem {...{ isHighlighted }}>
-                    <Typography variant="Navigation" style={{ fontSize: 'inherit' }}>
+                    <Typography
+                      variant="Navigation"
+                      style={{ fontSize: "inherit" }}
+                    >
                       {label}
                     </Typography>
                   </Styled.ListItem>

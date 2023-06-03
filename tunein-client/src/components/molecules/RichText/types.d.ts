@@ -5,9 +5,9 @@ interface Tuition {
   price: number;
   category: string;
   author: {
-    id: number,
-    username: string,
-  },
+    id: number;
+    username: string;
+  };
 }
 
 export interface Props {

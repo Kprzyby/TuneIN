@@ -1,11 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as Styled from './styles';
-import { Props } from './types';
-import { BarTypes } from './consts';
+import React, { useEffect, useRef, useState } from "react";
 
-const useInputBar = ({ type } :Props) => {
+import * as Styled from "./styles";
+import { Props } from "./types";
+import { BarTypes } from "./consts";
+
+const useInputBar = ({ type }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [barInput, setBarInput] = useState('');
+  const [barInput, setBarInput] = useState("");
   const [enterEvent, setEnterEvent] = useState(false);
   const [reset, setReset] = useState(false);
 
@@ -15,7 +16,7 @@ const useInputBar = ({ type } :Props) => {
   };
   const handleKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
     event.preventDefault();
-    if (event.key === 'Enter' && !enterEvent) {
+    if (event.key === "Enter" && !enterEvent) {
       setEnterEvent(true);
     }
   };
@@ -24,9 +25,9 @@ const useInputBar = ({ type } :Props) => {
     if (reset === true) {
       setReset(false);
       setEnterEvent(false);
-      setBarInput('');
+      setBarInput("");
       if (inputRef.current === null) return;
-      inputRef.current.value = '';
+      inputRef.current.value = "";
     }
   }, [reset]);
 

@@ -2,4 +2,4 @@ export {
   default,
   getStaticProps,
   getStaticPaths,
-} from '../../src/components/pages/tutorship/[id]';
+} from "../../src/components/pages/tutorship/[id]";
