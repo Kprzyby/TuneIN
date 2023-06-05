@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import * as Styled from './styles';
-import { Props } from './types';
+import React, { useEffect } from "react";
+
+import * as Styled from "./styles";
+import { Props } from "./types";
 
 const ObjectListing: React.FC<Props<any>> = ({ objects, handleTextClick }) => {
   if (objects.length === 0) {
@@ -11,6 +12,7 @@ const ObjectListing: React.FC<Props<any>> = ({ objects, handleTextClick }) => {
 
   const handleHeaderClick = (event: React.MouseEvent<HTMLTableCellElement>) => {
     const text = event.currentTarget.textContent;
+
     if (text) {
       handleTextClick(text);
     }
@@ -33,15 +35,17 @@ const ObjectListing: React.FC<Props<any>> = ({ objects, handleTextClick }) => {
           </tr>
         </thead>
         <tbody>
-          {objects.map((object, index) => (
-            <tr key={index}>
+          {objects.map((object) => (
+            <tr key={object}>
               {columns.map((column) => {
-                const text = object[column] ? object[column].toString() : '';
+                const text = object[column] ? object[column].toString() : "";
+
                 if (text.length < 50) {
                   return (
                     <Styled.TableData key={column}>{text}</Styled.TableData>
                   );
                 }
+
                 return null;
               })}
             </tr>

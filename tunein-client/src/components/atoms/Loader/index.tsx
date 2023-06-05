@@ -1,5 +1,5 @@
-import styled, { keyframes } from 'styled-components';
-import { border, BorderProps } from 'styled-system';
+import styled, { keyframes } from "styled-components";
+import { border, BorderProps } from "styled-system";
 
 const circleAnimation = keyframes`
   0% {

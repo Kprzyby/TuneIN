@@ -1,10 +1,10 @@
 export type Props = {
   items: BtnProps[];
-  head: String;
+  head: string;
 };
 export type BtnProps = {
   title: Strin;
-  value: String;
+  value: string;
 };
 export type StyleProps = {
   ishighlighted?: boolean;

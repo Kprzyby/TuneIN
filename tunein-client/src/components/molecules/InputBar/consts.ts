@@ -1,1 +1,1 @@
-export const BarTypes = ['search'];
+export const BarTypes = ["search"];

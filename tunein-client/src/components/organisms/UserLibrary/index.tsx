@@ -1,28 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import Loader from '@components/atoms/Loader';
-import * as Styled from './styles';
-import Playlist from '../Playlist';
-import { ENDPOINTS, createDBEndpoint } from '../../../api/endpoint';
-import { PlaylistType } from './types';
-import { getLastViewPlaylist, setLastViewPlaylist } from '../../../api/cookie/localStorageHandler';
+import React, { useEffect, useState } from "react";
+import Loader from "@components/atoms/Loader";
+
+import Playlist from "../Playlist";
+import { ENDPOINTS, createDBEndpoint } from "../../../api/endpoint";
+import {
+  getLastViewPlaylist,
+  setLastViewPlaylist,
+} from "../../../api/cookie/localStorageHandler";
+
+import { PlaylistType } from "./types";
+import * as Styled from "./styles";
 
 const UserLibrary: React.FC = () => {
   const [isPlaylistsLoading, setIsPlaylistsLoading] = useState(true);
   const [pPlaylistID, setPPlaylistID] = useState<undefined | number>(undefined);
-  const [pPlaylist, setPPlaylist] = useState<undefined | PlaylistType>(undefined);
-  const [playlists, setPlaylists] = useState<undefined | PlaylistType[]>(undefined);
+  const [pPlaylist, setPPlaylist] = useState<undefined | PlaylistType>(
+    undefined
+  );
+  const [playlists, setPlaylists] = useState<undefined | PlaylistType[]>(
+    undefined
+  );
 
   const getPlaylists = async () => {
     await createDBEndpoint(ENDPOINTS.playlists.getUserPlaylists)
       .post({
         pageSize: 100,
         pageNumber: 1,
-        playlistNameFilterValue: '',
-        trackNameFilterValue: '',
-        descriptionTagsFilterValue: '',
+        playlistNameFilterValue: "",
+        trackNameFilterValue: "",
+        descriptionTagsFilterValue: "",
       })
-      .then((res) => {
+      .then((res: any) => {
         const tempData: PlaylistType[] = res.data.playlists;
+
         setPlaylists(tempData);
         setPPlaylistID(getLastViewPlaylist() || tempData[0].id);
       });
@@ -30,6 +40,7 @@ const UserLibrary: React.FC = () => {
   const getPlaylistByID = (inID: number) => {
     if (!playlists) return;
     const p = playlists.find(({ id }) => id === inID);
+
     setPPlaylist(p);
   };
 
@@ -42,27 +53,40 @@ const UserLibrary: React.FC = () => {
     getPlaylists();
     setIsPlaylistsLoading(false);
   }, []);
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.PlaylistList>
-          {isPlaylistsLoading
-            ? <Loader borderColor="white transparent" />
-            : playlists && playlists.length > 0 && playlists.map((i) => {
+          {isPlaylistsLoading ? (
+            <Loader borderColor="white transparent" />
+          ) : (
+            playlists &&
+            playlists.length > 0 &&
+            playlists.map((i) => {
               const isHighlighted = i.id === pPlaylistID;
+
               return (
                 <button
-                  style={{ border: 'unset', backgroundColor: 'transparent', cursor: 'pointer' }}
+                  style={{
+                    border: "unset",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                  }}
                   type="button"
                   key={i.id}
                   onClick={() => setPPlaylistID(i.id)}
                 >
-                  <Styled.NavigationItem variant="ProfileNavbar" {...{ isHighlighted }}>
+                  <Styled.NavigationItem
+                    variant="ProfileNavbar"
+                    {...{ isHighlighted }}
+                  >
                     {i.name}
                   </Styled.NavigationItem>
                 </button>
               );
-            })}
+            })
+          )}
         </Styled.PlaylistList>
         <Styled.PlaylistWrapper>
           {pPlaylist && <Playlist playlist={pPlaylist} />}

@@ -3,7 +3,7 @@ export interface Props {
 }
 
 export interface VideoCallType {
-  id: string,
-  pin: string,
-  creatorsID: number,
+  id: string;
+  pin: string;
+  creatorsID: number;
 }

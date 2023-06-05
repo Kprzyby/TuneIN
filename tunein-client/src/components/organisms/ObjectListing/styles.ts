@@ -1,12 +1,12 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: top;
-    align-items: center;
-    margin: 2em 0;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  align-items: center;
+  margin: 2em 0;
+  width: 100%;
 `;
 
 export const Table = styled.table`

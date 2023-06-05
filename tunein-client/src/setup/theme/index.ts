@@ -1,11 +1,11 @@
-import colors from './partials/colors';
+import colors from "./partials/colors";
 import {
   fontFamilies,
   fontSizes,
   textStyles,
   fontWeights,
-} from './partials/typography';
-import innerStyles from './partials/inners';
+} from "./partials/typography";
+import innerStyles from "./partials/inners";
 
 const theme = {
   colors,

@@ -24,7 +24,6 @@
     "peerjs": "^1.4.7",
     "react": "^18.2.0",
     "react-collapse": "^5.1.1",
-    "react-countup": "^6.4.1",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
     "react-is": "^18.2.0",
@@ -39,7 +38,7 @@
   },
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "build": "next build",
+    "build": "next build && rm -rf ./.next/cache",
     "start": "next start",
     "dev": "next dev",
     "dev-https": "local-ssl-proxy --key ./tuneinCert+3-key.pem --cert ./tuneinCert+3.pem --source 4001 --target 3000",
@@ -60,6 +59,7 @@
   "devDependencies": {
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@svgr/webpack": "^6.5.1",
+    "@types/axios": "^0.14.0",
     "@types/draft-js": "^0.11.10",
     "@types/js-cookie": "^3.0.3",
     "@types/node": "^18.11.15",
@@ -72,14 +72,18 @@
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-next": "^13.2.4",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard-with-typescript": "^34.0.1",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-webpack-plugin": "^4.0.0",
     "formik": "^2.2.9",
+    "prettier": "2.8.8",
+    "react-countup": "^6.4.2",
     "typescript": "^5.0.2",
     "yup": "^1.0.2"
   }

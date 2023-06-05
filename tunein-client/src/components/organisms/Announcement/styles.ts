@@ -1,11 +1,13 @@
-import styled from 'styled-components';
-import { Props } from './types';
+import styled from "styled-components";
 
-export const Announcement = styled.div<Pick<Props, 'img'>>`
+import { Props } from "./types";
+
+export const Announcement = styled.div<Pick<Props, "img">>`
   position: relative;
   aspect-ratio: 1 / 1;
   height: 12rem;
-  background: ${(props) => (props.img ? `url(${props.img}) no-repeat center/cover` : '#ccc')};
+  background: ${(props) =>
+    props.img ? `url(${props.img}) no-repeat center/cover` : "#ccc"};
   border-radius: 0.5rem;
   overflow: hidden;
   border-radius: 1rem;

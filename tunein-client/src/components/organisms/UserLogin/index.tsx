@@ -1,13 +1,15 @@
-import { useFormik } from 'formik';
-import React, { useContext, useState } from 'react';
-import * as Yup from 'yup';
-import { useRouter } from 'next/router';
-import DarkButton from '@components/molecules/DarkButton';
-import { UserData } from '@components/context/UserContext';
-import Loader from '@components/atoms/Loader';
-import Link from 'next/link';
-import { createDBEndpoint, ENDPOINTS } from '../../../api/endpoint';
-import * as Styled from './styles';
+import { useFormik } from "formik";
+import React, { useContext, useState } from "react";
+import * as Yup from "yup";
+import { useRouter } from "next/navigation";
+import DarkButton from "@components/molecules/DarkButton";
+import { UserData } from "@components/context/UserContext";
+import Loader from "@components/atoms/Loader";
+import Link from "next/link";
+
+import { createDBEndpoint, ENDPOINTS } from "../../../api/endpoint";
+
+import * as Styled from "./styles";
 
 const UserLogin: React.FC = () => {
   const { setUser } = useContext(UserData);
@@ -17,24 +19,23 @@ const UserLogin: React.FC = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: Yup.object({
       email: Yup.string()
-        .email('Email is not valid')
-        .required('Email is required'),
-      password: Yup.string()
-        .required('Password is required'),
+        .email("Email is not valid")
+        .required("Email is required"),
+      password: Yup.string().required("Password is required"),
     }),
     onSubmit: (values) => {
       setLoading(true);
       setErr(false);
       createDBEndpoint(ENDPOINTS.auth.signin)
         .post(values)
-        .then((res) => {
+        .then((res: any) => {
           setLoading(false);
           setUser(res.data);
           router.back();
@@ -46,6 +47,7 @@ const UserLogin: React.FC = () => {
         });
     },
   });
+
   return (
     <Styled.Wrapper>
       <Styled.Title variant="Navigation">Login</Styled.Title>
@@ -53,7 +55,9 @@ const UserLogin: React.FC = () => {
         <Loader borderColor="white transparent" />
       ) : (
         <Styled.Form onSubmit={formik.handleSubmit}>
-          <Styled.InputTitle variant="PasswordTileTitle">Email</Styled.InputTitle>
+          <Styled.InputTitle variant="PasswordTileTitle">
+            Email
+          </Styled.InputTitle>
           <Styled.Input
             placeholder="Email"
             id="email"
@@ -62,7 +66,9 @@ const UserLogin: React.FC = () => {
           />
           <Styled.Error>{formik.errors.email}</Styled.Error>
 
-          <Styled.InputTitle variant="PasswordTileTitle">Password</Styled.InputTitle>
+          <Styled.InputTitle variant="PasswordTileTitle">
+            Password
+          </Styled.InputTitle>
           <Styled.Input
             type="password"
             placeholder="Password"
@@ -72,10 +78,15 @@ const UserLogin: React.FC = () => {
           />
           <Styled.Error>{formik.errors.password}</Styled.Error>
 
-          {err && (<Styled.Error>Wrong credentials</Styled.Error>)}
+          {err && <Styled.Error>Wrong credentials</Styled.Error>}
 
-          <Styled.Button style={{ paddingRight: '0', marginLeft: 'auto' }} type="button">
-            <Link href="/auth/recoverpassword"><Styled.RecoveryText>Recover Password</Styled.RecoveryText></Link>
+          <Styled.Button
+            style={{ paddingRight: "0", marginLeft: "auto" }}
+            type="button"
+          >
+            <Link href="/auth/recoverpassword">
+              <Styled.RecoveryText>Recover Password</Styled.RecoveryText>
+            </Link>
           </Styled.Button>
           <Styled.Button type="submit">
             <DarkButton text="Login" />
@@ -85,4 +96,5 @@ const UserLogin: React.FC = () => {
     </Styled.Wrapper>
   );
 };
+
 export default UserLogin;
