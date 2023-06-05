@@ -15,11 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "/tunein-client"
+        working-directory: tunein-client
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
-        run: "cd TuneIN/TuneIN"
         with:
           submodules: true
       - name: Build And Deploy
