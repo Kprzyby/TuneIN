@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 import Header from "@components/organisms/Header";
-import Footer from "@components/organisms/Footer/indes";
+import Footer from "@components/organisms/Footer";
 import { useRouter } from "next/router";
 import { UserData } from "@components/context/UserContext";
 
