@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          app_location: "/tunein-client"
           submodules: true
       - name: Build And Deploy
         id: builddeploy
