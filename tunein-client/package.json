@@ -38,7 +38,7 @@
   },
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "build": "next build",
+    "build": "next build && rm -rf ./.next/cache",
     "start": "next start",
     "dev": "next dev",
     "dev-https": "local-ssl-proxy --key ./tuneinCert+3-key.pem --cert ./tuneinCert+3.pem --source 4001 --target 3000",
