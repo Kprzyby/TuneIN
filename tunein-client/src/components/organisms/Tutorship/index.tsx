@@ -11,7 +11,7 @@ import { ENDPOINTS, createDBEndpoint } from "../../../api/endpoint";
 import { Props } from "./types";
 import * as Styled from "./styles";
 
-const Tuition: React.FC<Props> = ({ tuition }) => {
+const Tutorship: React.FC<Props> = ({ tuition }) => {
   const { renderDraftDisplay, editorState } = useRichText({ tuition });
   const isTextEmpty = !editorState.getCurrentContent().hasText();
   const router = useRouter();
@@ -84,4 +84,4 @@ const Tuition: React.FC<Props> = ({ tuition }) => {
   );
 };
 
-export default Tuition;
+export default Tutorship;

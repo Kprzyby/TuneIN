@@ -1,24 +1,19 @@
 import { GetStaticProps, NextPage } from "next";
 import React from "react";
-import Tuition from "@components/organisms/Tuition";
+import Tutorship from "@components/organisms/Tutorship";
 
-import { ENDPOINTS, createDBEndpoint } from "../../../api/endpoint";
+import { ENDPOINTS, createDBEndpoint } from "../../../../api/endpoint";
 
 import { Props, TuitionType } from "./types";
 
 const TuitionPage: NextPage<Props> = ({ tuition }: Props) => (
-  <Tuition {...{ tuition }} />
+  <Tutorship {...{ tuition }} />
 );
 
 export default TuitionPage;
 
 export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const { params } = context;
-  // const pickedTuition: TuitionType = await
-  // createDBEndpoint(ENDPOINTS.tutorship.gettutorshipbyid + parseInt(params.id, 10))
-  //   .get()
-  //   .then((res) => res.data)
-  //   .catch(() => undefined);
   const pickedTuition: TuitionType = await createDBEndpoint(
     ENDPOINTS.tutorship.gettutorships
   )
