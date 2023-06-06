@@ -19,7 +19,7 @@ const sslOptions = {
 const server = https.createServer(sslOptions, app)
 //const server = http.createServer(app)
 const io = new Server(server, {
-    cors: 'http://localhost:3000'
+    cors: 'https://thankful-forest-010f5cf0f.3.azurestaticapps.net'
 })
 
 const peerServer = ExpressPeerServer(server, {debug: true})
