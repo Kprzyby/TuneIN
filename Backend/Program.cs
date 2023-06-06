@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("http://localhost:3000", "https://localhost:4001", "https://192.168.1.3:4001", "https://192.168.43.80:4001", "http://192.168.1.3:3000")
+                          policy.WithOrigins("https://thankful-forest-010f5cf0f.3.azurestaticapps.net")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
