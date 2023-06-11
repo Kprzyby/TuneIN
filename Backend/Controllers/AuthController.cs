@@ -39,7 +39,7 @@ namespace Backend.Controllers
 
         private Uri CreatePasswordRecoveryURL(Guid passwordRecoveryGUID, string host, int userId)
         {
-            var uriBuilder = new UriBuilder("https://" + clientURL + ":3000" + "/api/recover/password");
+            var uriBuilder = new UriBuilder("https://" + clientURL + "/api/recover/password");
             var parameters = HttpUtility.ParseQueryString(string.Empty);
             parameters["id"] = userId.ToString();
             parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
@@ -52,7 +52,7 @@ namespace Backend.Controllers
 
         private Uri CreateAccountConfirmationURL(string host, string email, Guid confirmationGUID)
         {
-            var uriBuilder = new UriBuilder("https://" + clientURL + ":3000" + "/api/activate/user");
+            var uriBuilder = new UriBuilder("https://" + clientURL + "/api/activate/user");
             var parameters = HttpUtility.ParseQueryString(string.Empty);
             parameters["email"] = email;
             parameters["confirmationGUID"] = confirmationGUID.ToString();
