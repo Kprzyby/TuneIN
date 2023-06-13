@@ -1,59 +1,59 @@
-import colors from './colors';
+import colors from "./colors";
 
 export const fontFamilies = {
-  header: 'Prata',
-  body: 'Helvetica',
-  logo: 'Zen Dots',
+  header: "Prata",
+  body: "Helvetica",
+  logo: "Zen Dots",
 };
 
 export const fontSizes = {
-  fontSize10: '0.6rem',
-  fontSize16: '1rem',
-  fontSize24: '1.5rem',
-  fontSize48: '3rem',
-  fontSize72: '4.5rem',
-  fontSize96: '6rem',
+  fontSize10: "0.6rem",
+  fontSize16: "1rem",
+  fontSize24: "1.5rem",
+  fontSize48: "3rem",
+  fontSize72: "4.5rem",
+  fontSize96: "6rem",
 };
 
 export const fontWeights = {
-  bold: '700',
-  regular: '400',
+  bold: "700",
+  regular: "400",
 };
 
 export const textStyles = {
   h1: {
     fontFamily: fontFamilies.body,
     fontSize: fontSizes.fontSize16,
-    lineHeight: '1rem',
+    lineHeight: "1rem",
   },
   h2: {
     fontFamilies: fontFamilies.body,
     fontSizes: fontSizes.fontSize10,
-    lineHeight: '1rem',
+    lineHeight: "1rem",
   },
   profileTitleS: {
     fontFamily: fontFamilies.header,
     fontSize: fontSizes.fontSize10,
-    lineHeight: '1rem',
-    color: 'white',
+    lineHeight: "1rem",
+    color: "white",
   },
   profileTitleB: {
     fonstFamily: fontFamilies.header,
     fontSize: fontSizes.fontSize48,
-    lineHeight: '1rem',
-    color: 'white',
+    lineHeight: "1rem",
+    color: "white",
   },
   profileName: {
     fontFamily: fontFamilies.header,
     fontSize: fontSizes.fontSize96,
-    lineHeight: '1rem',
-    color: 'white',
+    lineHeight: "1rem",
+    color: "white",
   },
   RegisterTitile: {
     fontFamily: fontFamilies.body,
     fontSize: fontSizes.fontSize96,
     fontWeight: fontWeights.bold,
-    lineHeight: '1rem',
+    lineHeight: "1rem",
     color: colors.darkMainD,
   },
   RegisterSuccess: {
@@ -64,7 +64,7 @@ export const textStyles = {
   PasswordTitile: {
     fontFamily: fontFamilies.logo,
     fontSize: fontSizes.fontSize96,
-    lineHeight: '5rem',
+    lineHeight: "5rem",
     color: colors.darkMainD,
   },
   PasswordTileTitle: {

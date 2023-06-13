@@ -1,6 +1,6 @@
 export type Props = {
-  name: String,
-  band: String,
-  genre: String,
-  imagePath?: String
+  name: string;
+  band: string;
+  genre: string;
+  imagePath?: string;
 };

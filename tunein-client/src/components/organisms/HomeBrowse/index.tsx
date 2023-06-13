@@ -1,7 +1,8 @@
-import RgbButton from '@components/molecules/RgbButton';
-import { useRouter } from 'next/router';
-import React, { cloneElement, useEffect, useState } from 'react';
-import * as Styled from './styles';
+import RgbButton from "@components/molecules/RgbButton";
+import { useRouter } from "next/router";
+import React, { cloneElement, useEffect, useState } from "react";
+
+import * as Styled from "./styles";
 
 const HomeBrowse: React.FC = () => {
   const [boxSize, setBoxSize] = useState(0.4);
@@ -47,32 +48,39 @@ const HomeBrowse: React.FC = () => {
   };
   const handleResize = () => {
     const currentSize = window.outerWidth;
+
     Object.values(breakpoints).map((e) => {
       if (currentSize >= e.width) return 0;
       setBoxSize(e.boxSize);
       setTextSize(e.textSize);
       setBorderSize(e.borderSize);
+
       return 1;
     });
   };
   const router = useRouter();
   const handleClick = (e: any) => {
     e.preventDefault();
-    router.push('/');
+    router.push("/");
   };
+
   useEffect(() => {
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <Styled.Wrapper>
       <Styled.Content>
         <Styled.Icon />
         <Styled.RightSide>
-          <Styled.Text variant="HomepageText">Browse for your desired lessons and achieve your goals</Styled.Text>
+          <Styled.Text variant="HomepageText">
+            Browse for your desired lessons and achieve your goals
+          </Styled.Text>
           <div onClick={(e) => handleClick(e)}>
             {cloneElement(
               <RgbButton
@@ -80,7 +88,7 @@ const HomeBrowse: React.FC = () => {
                 boxSize={boxSize}
                 textSize={textSize}
                 borderSize={borderSize}
-              />,
+              />
             )}
           </div>
         </Styled.RightSide>
@@ -88,4 +96,5 @@ const HomeBrowse: React.FC = () => {
     </Styled.Wrapper>
   );
 };
+
 export default HomeBrowse;

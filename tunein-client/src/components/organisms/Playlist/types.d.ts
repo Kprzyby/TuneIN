@@ -6,7 +6,7 @@ export interface AuthorType {
   username: string;
 }
 export interface SongType {
-  id: number
+  id: number;
   trackName: string;
   band: string;
   genre: string;

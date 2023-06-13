@@ -20,6 +20,7 @@ namespace Backend.Controllers
         private readonly AuthService _authService;
         private readonly ChatService _chatService;
         private readonly UserService _userService;
+        private readonly String clientURL = "thankful-forest-010f5cf0f.3.azurestaticapps.net";
 
         #endregion Properties
 
@@ -38,7 +39,7 @@ namespace Backend.Controllers
 
         private Uri CreatePasswordRecoveryURL(Guid passwordRecoveryGUID, string host, int userId)
         {
-            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/recover/password");
+            var uriBuilder = new UriBuilder("https://" + clientURL + "/api/recover/password");
             var parameters = HttpUtility.ParseQueryString(string.Empty);
             parameters["id"] = userId.ToString();
             parameters["passwordRecoveryGUID"] = passwordRecoveryGUID.ToString();
@@ -51,7 +52,7 @@ namespace Backend.Controllers
 
         private Uri CreateAccountConfirmationURL(string host, string email, Guid confirmationGUID)
         {
-            var uriBuilder = new UriBuilder("http://" + host + ":3000" + "/api/activate/user");
+            var uriBuilder = new UriBuilder("https://" + clientURL + "/api/activate/user");
             var parameters = HttpUtility.ParseQueryString(string.Empty);
             parameters["email"] = email;
             parameters["confirmationGUID"] = confirmationGUID.ToString();

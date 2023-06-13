@@ -1,38 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import * as Styled from './styles';
-import EditTuitions from '../UserEditTuitions';
-import EditProfile from '../UserEditProfile';
-import EditPlaylists from '../UserEditPlaylists';
-import { getLastViewUserEdit, setLastViewUserEdit } from '../../../api/cookie/localStorageHandler';
+import React, { useEffect, useState } from "react";
+
+import EditTuitions from "../UserEditTuitions";
+import EditProfile from "../UserEditProfile";
+import EditPlaylists from "../UserEditPlaylists";
+import {
+  getLastViewUserEdit,
+  setLastViewUserEdit,
+} from "../../../api/cookie/localStorageHandler";
+
+import * as Styled from "./styles";
 
 const EditCnt: React.FC = () => {
-  const nList = [{ label: 'Profile' }, { label: 'Playlists' }, { label: 'Tutorships' }];
+  const nList = [
+    { label: "Profile" },
+    { label: "Playlists" },
+    { label: "Tutorships" },
+  ];
   const [pNaviagtion, setPNavigation] = useState<undefined | string>(undefined);
   const getEComponent = () => {
     let component;
+
     switch (pNaviagtion) {
-      case 'Profile':
+      case "Profile":
         component = <EditProfile />;
-        setLastViewUserEdit('Profile');
+        setLastViewUserEdit("Profile");
         break;
-      case 'Playlists':
+      case "Playlists":
         component = <EditPlaylists />;
-        setLastViewUserEdit('Playlists');
+        setLastViewUserEdit("Playlists");
         break;
-      case 'Tutorships':
+      case "Tutorships":
         component = <EditTuitions />;
-        setLastViewUserEdit('Tutorships');
+        setLastViewUserEdit("Tutorships");
         break;
       default:
         component = <EditProfile />;
         break;
     }
+
     return component;
   };
 
   useEffect(() => {
     setPNavigation(getLastViewUserEdit() || nList[0].label);
   }, []);
+
   return (
     <Styled.LWrapper>
       <Styled.LContent>
@@ -40,14 +52,22 @@ const EditCnt: React.FC = () => {
           <Styled.NList>
             {nList.map((i) => {
               const isHighlighted = i.label === pNaviagtion;
+
               return (
                 <li key={i.label}>
                   <button
-                    style={{ border: 'unset', backgroundColor: 'transparent', cursor: 'pointer' }}
+                    style={{
+                      border: "unset",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                    }}
                     type="button"
                     onClick={() => setPNavigation(i.label)}
                   >
-                    <Styled.NItem variant="ProfileNavbar" {...{ isHighlighted }}>
+                    <Styled.NItem
+                      variant="ProfileNavbar"
+                      {...{ isHighlighted }}
+                    >
                       {i.label}
                     </Styled.NItem>
                   </button>
@@ -55,9 +75,7 @@ const EditCnt: React.FC = () => {
               );
             })}
           </Styled.NList>
-          <Styled.CWrapper>
-            {getEComponent()}
-          </Styled.CWrapper>
+          <Styled.CWrapper>{getEComponent()}</Styled.CWrapper>
         </Styled.Wrapper>
       </Styled.LContent>
     </Styled.LWrapper>

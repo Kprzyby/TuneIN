@@ -1,1 +1,1 @@
-export { default } from '../../../../src/components/pages/user/[username]/library';
+export { default } from "@components/pages/user/[username]/library";

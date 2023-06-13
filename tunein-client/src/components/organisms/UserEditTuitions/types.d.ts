@@ -1,5 +1,5 @@
 export interface StyledProps {
-  flexPart: number
+  flexPart: number;
 }
 export interface Tuition {
   id: number;
