@@ -35,7 +35,7 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
   const [roomID, setRoomID] = useState<undefined | string>(videocall?.id);
   const socket = useRef<Socket>();
   const peer = useRef<Peer>();
-  const videoServer = "192.168.1.3";
+  const videoServer = "https://black-coast-0973c120f.3.azurestaticapps.net";
 
   const getUsrStream = () => {
     navigator.mediaDevices
@@ -73,7 +73,9 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
   };
   const initHubConnection = () => {
     const newConnection = new HubConnectionBuilder()
-      .withUrl("https://localhost:7074/Services/ChatService")
+      .withUrl(
+        "https://backend20230531150741.azurewebsites.net/Services/ChatService"
+      )
       .withAutomaticReconnect()
       .build();
 
@@ -93,7 +95,7 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
   }, []);
 
   useEffect(() => {
-    socket.current = io(`https://${videoServer}:3001/publicRooms`);
+    socket.current = io(`https://${videoServer}/publicRooms`);
 
     if (socket.current) {
       socket.current.on("connect", () => {
@@ -121,7 +123,7 @@ const VideoCall: React.FC<Props> = ({ videocall }) => {
         import("peerjs").then(({ default: Peer }) => {
           peer.current = new Peer({
             host: videoServer,
-            port: 3001,
+            // port: 3001,
             path: "/peerjs",
           });
 
