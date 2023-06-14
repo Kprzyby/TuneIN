@@ -4,20 +4,18 @@ const https = require('https')
 const http = require('http')
 const cors = require('cors')
 const { Server } = require('socket.io')
-const { v4: uuidV4} = require('uuid')
 const { ExpressPeerServer } = require('peer')
 const fs = require('fs')
-const { disconnect } = require('process')
 
 app.use(cors())
 
-const sslOptions = {
+/*const sslOptions = {
     key: fs.readFileSync('../tunein-client/tuneinCert+3-key.pem'),
     cert: fs.readFileSync('../tunein-client/tuneinCert+3.pem')
-};
+};*/
 
-const server = https.createServer(sslOptions, app)
-//const server = http.createServer(app)
+//const server = https.createServer(sslOptions, app)
+const server = http.createServer(app)
 const io = new Server(server, {
     cors: 'https://thankful-forest-010f5cf0f.3.azurestaticapps.net'
 })
